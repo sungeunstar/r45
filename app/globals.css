@@ -25,20 +25,6 @@ html:not([data-theme]) {
 /* 라이트 모드 - 원래의 화이트 배경 */
 html[data-theme="light"] {
   background: #FFFFFF;
-  color: #000000;
-}
-
-/* 라이트 모드에서 텍스트 색상 조정 */
-html[data-theme="light"] h1,
-html[data-theme="light"] h2,
-html[data-theme="light"] h3 {
-  color: #000000;
-}
-
-html[data-theme="light"] p,
-html[data-theme="light"] span,
-html[data-theme="light"] label {
-  color: #000000;
 }
 
 /* AdminNav 스타일 - 다크 모드 */
@@ -125,4 +111,17 @@ button {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* 라이트 모드에서 다크 스타일 오버라이드 */
+html[data-theme="light"] .text-white {
+  color: #000000 !important;
+}
+
+html[data-theme="light"] [class*="text-white/"] {
+  color: rgba(0,0,0,0.7) !important;
+}
+
+html[data-theme="light"] .hover\:text-white:hover {
+  color: rgba(0,0,0,0.9) !important;
 }
