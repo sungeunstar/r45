@@ -16,13 +16,14 @@ export default function AdminNav() {
   const isActive = (href: string) => pathname.startsWith(href);
 
   return (
-    <div className="border-b border-gray-200 mb-6">
+    <div className="mb-6" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-semibold">R45 Worship Team</h1>
+        <h1 className="text-xl font-semibold text-white">R45 Worship Team</h1>
         <form action={logoutAdmin}>
           <button
             type="submit"
-            className="text-sm text-gray-600 hover:text-black transition-colors"
+            className="text-sm transition-colors"
+            style={{ color: 'rgba(255,255,255,0.6)' }}
           >
             Logout
           </button>
@@ -34,15 +35,14 @@ export default function AdminNav() {
           <Link
             key={tab.href}
             href={tab.href}
-            className={`pb-3 text-sm font-medium transition-colors relative ${
-              isActive(tab.href)
-                ? 'text-black'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
+            className="pb-3 text-sm font-medium transition-colors relative"
+            style={{
+              color: isActive(tab.href) ? '#FFFFFF' : 'rgba(255,255,255,0.5)'
+            }}
           >
             {tab.name}
             {isActive(tab.href) && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
             )}
           </Link>
         ))}

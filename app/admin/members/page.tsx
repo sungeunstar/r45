@@ -28,67 +28,89 @@ export default function MembersPage() {
   }, [filter]);
 
   const groups = ['all', '보컬', '악기', '음향'];
+  const groupEmojis: { [key: string]: string } = {
+    'all': '👥',
+    '보컬': '🎤',
+    '악기': '🎸',
+    '음향': '🎚️'
+  };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold">Members</h2>
+        <h2 className="text-lg font-semibold text-white">Members</h2>
         <Link
           href="/admin/members/new"
-          className="h-9 px-4 bg-black text-white rounded-lg text-sm font-medium flex items-center hover:bg-gray-800 transition-colors"
+          className="h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all text-black"
+          style={{
+            background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+          }}
         >
           Add Member
         </Link>
       </div>
 
-      <div className="flex gap-2 mb-6 border-b border-gray-200">
+      <div className="flex gap-2 mb-6" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
         {groups.map((group) => (
           <button
             key={group}
             onClick={() => setFilter(group)}
-            className={`pb-3 px-3 text-sm font-medium transition-colors relative ${
-              filter === group
-                ? 'text-black'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
+            className="pb-3 px-3 text-sm font-medium transition-colors relative"
+            style={{
+              color: filter === group ? '#FFFFFF' : 'rgba(255,255,255,0.5)'
+            }}
           >
-            {group === 'all' ? 'All' : group}
+            {groupEmojis[group]} {group === 'all' ? 'All' : group}
             {filter === group && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
             )}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12" style={{ color: 'rgba(255,255,255,0.5)' }}>
           <p>Loading...</p>
         </div>
       ) : members.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12" style={{ color: 'rgba(255,255,255,0.5)' }}>
           <p>No members found</p>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {members.map((member) => (
-            <Link
-              key={member.id}
-              href={`/admin/members/${member.id}/edit`}
-              className="border border-gray-200 rounded-xl px-4 py-3 hover:border-black transition-colors"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-medium">{member.name}</h3>
-                  <p className="text-sm text-gray-500">{member.group}</p>
+          {members.map((member) => {
+            const emoji = member.group === '보컬' ? '🎤' : member.group === '악기' ? '🎸' : '🎚️';
+            return (
+              <Link
+                key={member.id}
+                href={`/admin/members/${member.id}/edit`}
+                className="rounded-[18px] px-5 py-4 transition-all"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{emoji}</span>
+                    <div>
+                      <h3 className="font-semibold text-white">{member.name}</h3>
+                      <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>{member.group}</p>
+                    </div>
+                  </div>
+                  {!member.isActive && (
+                    <span className="text-xs px-2 py-1 rounded" style={{
+                      background: 'rgba(255,255,255,0.1)',
+                      color: 'rgba(255,255,255,0.5)'
+                    }}>
+                      Inactive
+                    </span>
+                  )}
                 </div>
-                {!member.isActive && (
-                  <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">
-                    Inactive
-                  </span>
-                )}
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

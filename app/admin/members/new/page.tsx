@@ -41,24 +41,24 @@ export default function NewMemberPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-120px)] flex flex-col">
+    <div className="min-h-[calc(100vh-120px)] flex flex-col max-w-[420px] mx-auto w-full px-5">
       {/* Header */}
-      <div className="mb-8 relative">
+      <div className="mb-8 relative pt-6">
         <button
           onClick={() => router.back()}
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-600 hover:text-black transition-colors"
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
           aria-label="뒤로가기"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <h1 className="text-xl font-bold text-center">멤버 등록</h1>
+        <h1 className="text-xl font-bold text-center text-white">멤버 등록</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1">
-        <div className="flex flex-col gap-3">
-          <label htmlFor="name" className="text-sm font-semibold text-gray-900">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 flex-1 pb-6">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="name" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
             이름
           </label>
           <input
@@ -67,13 +67,17 @@ export default function NewMemberPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-base"
+            className="h-[52px] px-4 rounded-xl text-white placeholder-white/40 transition-all focus:outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.14)',
+            }}
             placeholder="홍길동"
           />
         </div>
 
-        <div className="flex flex-col gap-3">
-          <label htmlFor="phone" className="text-sm font-semibold text-gray-900">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="phone" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
             전화번호
           </label>
           <input
@@ -86,16 +90,20 @@ export default function NewMemberPage() {
             }}
             required
             maxLength={11}
-            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-base"
+            className="h-[52px] px-4 rounded-xl text-white placeholder-white/40 transition-all focus:outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.14)',
+            }}
             placeholder="01012345678"
           />
-          <p className="text-xs text-gray-500">
+          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
             하이픈 없이 숫자만 11자리 입력해주세요
           </p>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <label htmlFor="group" className="text-sm font-semibold text-gray-900">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="group" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
             그룹
           </label>
           <select
@@ -103,9 +111,11 @@ export default function NewMemberPage() {
             value={group}
             onChange={(e) => setGroup(e.target.value)}
             required
-            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all bg-white text-base appearance-none cursor-pointer"
+            className="h-[52px] px-4 rounded-xl text-white transition-all appearance-none cursor-pointer focus:outline-none"
             style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23fff' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1rem center',
               paddingRight: '3rem',
@@ -118,15 +128,24 @@ export default function NewMemberPage() {
         </div>
 
         {error && (
-          <div className="bg-red-50 border-2 border-red-200 rounded-xl px-4 py-3">
-            <p className="text-sm text-red-600">{error}</p>
+          <div
+            className="rounded-xl px-4 py-3"
+            style={{
+              background: 'rgba(239,68,68,0.1)',
+              border: '1px solid rgba(239,68,68,0.3)',
+            }}
+          >
+            <p className="text-sm font-medium" style={{ color: 'rgba(239,68,68,1)' }}>{error}</p>
           </div>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="h-14 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 text-base mt-auto"
+          className="h-14 rounded-xl font-semibold text-base text-black transition-all disabled:opacity-40 mt-auto"
+          style={{
+            background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+          }}
         >
           {loading ? '등록 중...' : '멤버 등록'}
         </button>

@@ -34,7 +34,12 @@ export default function DeleteAdminButton({
     <button
       onClick={handleDelete}
       disabled={loading}
-      className="h-8 px-3 border border-red-600 text-red-600 rounded-lg text-sm hover:bg-red-50 transition-colors disabled:opacity-50"
+      className="h-8 px-3 rounded-lg text-sm transition-colors disabled:opacity-50"
+      style={{
+        background: 'rgba(239,68,68,0.15)',
+        border: '1px solid rgba(239,68,68,0.3)',
+        color: 'rgba(239,68,68,1)',
+      }}
     >
       {loading ? 'Deleting...' : 'Delete'}
     </button>

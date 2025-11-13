@@ -17,15 +17,15 @@ export default async function PublicCheckInPage({
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-[420px] mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold mb-2">{session.name}</h1>
-          <p className="text-sm text-gray-500 mb-2">
+    <div className="min-h-screen">
+      <div className="max-w-[420px] mx-auto px-5 py-12">
+        <div className="text-center mb-10">
+          <h1 className="text-2xl font-bold mb-3 text-white">{session.name}</h1>
+          <p className="text-sm mb-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
             {formatDate(session.date)}
           </p>
           {session.note && (
-            <p className="text-sm text-gray-600">{session.note}</p>
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>{session.note}</p>
           )}
         </div>
 

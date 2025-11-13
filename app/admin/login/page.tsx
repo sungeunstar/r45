@@ -28,13 +28,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+    <div className="min-h-screen flex items-center justify-center px-5">
       <div className="w-full max-w-[420px]">
-        <h1 className="text-2xl font-semibold mb-8 text-center">관리자 로그인</h1>
+        <h1 className="text-2xl font-bold mb-10 text-center text-white">관리자 로그인</h1>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
-            <label htmlFor="email" className="text-sm font-medium">
+            <label htmlFor="email" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
               Email
             </label>
             <input
@@ -43,13 +43,17 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+              className="h-[52px] px-4 rounded-xl text-white placeholder-white/40 transition-all focus:outline-none"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.14)',
+              }}
               placeholder="admin@joyful.app"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="password" className="text-sm font-medium">
+            <label htmlFor="password" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
               Password
             </label>
             <input
@@ -58,19 +62,34 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+              className="h-[52px] px-4 rounded-xl text-white placeholder-white/40 transition-all focus:outline-none"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.14)',
+              }}
               placeholder="••••••••"
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-600 text-center">{error}</p>
+            <div
+              className="rounded-xl px-4 py-3"
+              style={{
+                background: 'rgba(239,68,68,0.1)',
+                border: '1px solid rgba(239,68,68,0.3)',
+              }}
+            >
+              <p className="text-sm text-center font-medium" style={{ color: 'rgba(239,68,68,1)' }}>{error}</p>
+            </div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="h-11 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+            className="h-14 rounded-xl font-semibold text-base text-black transition-all disabled:opacity-40"
+            style={{
+              background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+            }}
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>

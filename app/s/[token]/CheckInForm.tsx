@@ -51,40 +51,45 @@ export default function CheckInForm({
     setLoading(false);
   }
 
-  // Success State - Markdown-style Design
+  // Success State - Dark Glassmorphism Design
   if (success) {
     const groupEmoji = memberGroup === '보컬' ? '🎤' : memberGroup === '악기' ? '🎸' : memberGroup === '음향' ? '🎚️' : '👤';
 
     return (
-      <div className="py-12">
+      <div className="py-6">
         {/* Success Icon */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-full mb-4">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 16L14 22L24 12" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+          <div className="text-6xl mb-4">
+            {duplicate ? '✋' : '✅'}
           </div>
         </div>
 
         {/* Status Card */}
-        <div className="bg-white/70 border border-gray-200 rounded-2xl p-6 mb-6">
-          <div className="text-center mb-4">
-            <h2 className="text-2xl font-bold mb-2">
-              {duplicate ? '✋ 이미 출석 처리됨' : '✅ 출석 완료!'}
+        <div
+          className="rounded-[18px] p-6 mb-6"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.12)',
+          }}
+        >
+          <div className="text-center mb-5">
+            <h2 className="text-2xl font-bold mb-2 text-white">
+              {duplicate ? '이미 출석 처리됨' : '출석 완료!'}
             </h2>
             {duplicate && (
-              <p className="text-sm text-gray-600">
+              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
                 이미 출석 체크가 완료된 상태입니다
               </p>
             )}
           </div>
 
-          <div className="space-y-3 pt-4 border-t border-gray-100">
+          <div className="space-y-4 pt-5" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
             <div className="flex items-center gap-3">
               <span className="text-2xl">{groupEmoji}</span>
               <div>
-                <p className="text-xs font-semibold text-gray-500">이름</p>
-                <p className="text-base font-bold">{memberName}</p>
+                <p className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>이름</p>
+                <p className="text-base font-bold text-white">{memberName}</p>
               </div>
             </div>
 
@@ -92,8 +97,8 @@ export default function CheckInForm({
               <div className="flex items-center gap-3">
                 <span className="text-2xl">🏷️</span>
                 <div>
-                  <p className="text-xs font-semibold text-gray-500">그룹</p>
-                  <p className="text-base font-semibold">{memberGroup}</p>
+                  <p className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>그룹</p>
+                  <p className="text-base font-semibold text-white">{memberGroup}</p>
                 </div>
               </div>
             )}
@@ -102,8 +107,8 @@ export default function CheckInForm({
               <div className="flex items-center gap-3">
                 <span className="text-2xl">⏰</span>
                 <div>
-                  <p className="text-xs font-semibold text-gray-500">출석 시간</p>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>출석 시간</p>
+                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>
                     {new Date(checkedAt).toLocaleString('ko-KR', {
                       year: 'numeric',
                       month: 'long',
@@ -121,7 +126,11 @@ export default function CheckInForm({
         {/* Action Button */}
         <button
           onClick={handleReset}
-          className="w-full h-12 bg-gray-100 text-gray-900 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+          className="w-full h-14 rounded-xl font-semibold transition-all text-white"
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.14)',
+          }}
         >
           다른 사람 출석하기
         </button>
@@ -129,11 +138,11 @@ export default function CheckInForm({
     );
   }
 
-  // Form State - New Style Guide
+  // Form State - Dark Glassmorphism
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
-        <label htmlFor="phone" className="text-sm font-semibold text-gray-900">
+        <label htmlFor="phone" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
           전화번호 입력
         </label>
         <input
@@ -147,27 +156,37 @@ export default function CheckInForm({
           required
           autoFocus
           maxLength={11}
-          className="h-12 px-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:border-black focus:bg-white transition-all text-base"
-          placeholder="01012345678"
+          className="h-[52px] px-4 rounded-xl text-white placeholder-white/40 transition-all focus:outline-none"
           style={{
-            borderWidth: phoneNumber ? '1.5px' : '1px',
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.14)',
           }}
+          placeholder="01012345678"
         />
-        <p className="text-xs text-gray-500">
+        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
           하이픈 없이 숫자만 입력 (예: 01012345678)
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-          <p className="text-sm text-red-600 text-center font-medium">{error}</p>
+        <div
+          className="rounded-xl px-4 py-3"
+          style={{
+            background: 'rgba(239,68,68,0.1)',
+            border: '1px solid rgba(239,68,68,0.3)',
+          }}
+        >
+          <p className="text-sm text-center font-medium" style={{ color: 'rgba(239,68,68,1)' }}>{error}</p>
         </div>
       )}
 
       <button
         type="submit"
         disabled={loading || !phoneNumber.trim()}
-        className="h-12 bg-black text-white rounded-xl font-semibold text-base hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        className="h-14 rounded-xl font-semibold text-base text-black transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+        style={{
+          background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+        }}
       >
         {loading ? '처리중...' : '출석하기'}
       </button>

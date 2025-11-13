@@ -48,43 +48,50 @@ export default function SessionSuccessPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <p className="text-gray-500">로딩 중...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <p style={{ color: 'rgba(255,255,255,0.5)' }}>로딩 중...</p>
       </div>
     );
   }
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <p className="text-gray-500">세션을 찾을 수 없습니다</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <p style={{ color: 'rgba(255,255,255,0.5)' }}>세션을 찾을 수 없습니다</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center p-4">
-      <div className="max-w-[420px] w-full">
+    <div className="min-h-screen flex items-center justify-center px-5">
+      <div className="max-w-[420px] w-full py-12">
         {/* Success Icon */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-10">
           <div className="text-6xl mb-4">🎉</div>
-          <h1 className="text-2xl font-bold mb-2">세션 생성 완료!</h1>
-          <p className="text-gray-600 text-sm">
+          <h1 className="text-2xl font-bold mb-2 text-white">세션 생성 완료!</h1>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
             세션이 성공적으로 생성되었습니다
           </p>
         </div>
 
         {/* Session Info Card */}
-        <div className="bg-white rounded-2xl border-2 border-gray-200 p-6 mb-4 shadow-sm">
+        <div
+          className="rounded-[18px] p-6 mb-5"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.12)',
+          }}
+        >
           <div className="space-y-4">
             <div>
-              <p className="text-xs font-semibold text-gray-500 mb-1">📌 세션 이름</p>
-              <p className="text-lg font-bold">{session.name}</p>
+              <p className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>📌 세션 이름</p>
+              <p className="text-lg font-bold text-white">{session.name}</p>
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-gray-500 mb-1">📅 일시</p>
-              <p className="text-base">
+              <p className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>📅 일시</p>
+              <p className="text-base text-white">
                 {new Date(session.date).toLocaleString('ko-KR', {
                   year: 'numeric',
                   month: 'long',
@@ -97,26 +104,39 @@ export default function SessionSuccessPage() {
 
             {session.note && (
               <div>
-                <p className="text-xs font-semibold text-gray-500 mb-1">📝 세션 내용</p>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{session.note}</p>
+                <p className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>📝 세션 내용</p>
+                <p className="text-sm whitespace-pre-wrap" style={{ color: 'rgba(255,255,255,0.8)' }}>{session.note}</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Check-in Link Card */}
-        <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 mb-4 shadow-lg">
+        <div
+          className="rounded-[18px] p-6 mb-5"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.12)',
+          }}
+        >
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">🔗</span>
               <h2 className="text-lg font-bold text-white">체크인 링크</h2>
             </div>
 
-            <p className="text-xs text-gray-300 mb-3">
+            <p className="text-xs mb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>
               이 링크를 멤버들에게 공유하세요!
             </p>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+            <div
+              className="rounded-xl p-4"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.14)',
+              }}
+            >
               <p className="text-sm text-white font-mono break-all">
                 {checkInUrl}
               </p>
@@ -124,7 +144,10 @@ export default function SessionSuccessPage() {
 
             <button
               onClick={handleCopyLink}
-              className="w-full h-12 bg-white text-black rounded-xl font-semibold hover:bg-gray-100 transition-all flex items-center justify-center gap-2"
+              className="w-full h-12 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-black"
+              style={{
+                background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+              }}
             >
               {copied ? (
                 <>
@@ -150,13 +173,20 @@ export default function SessionSuccessPage() {
         <div className="flex flex-col gap-3">
           <button
             onClick={() => router.push('/admin/sessions')}
-            className="h-12 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
+            className="h-14 rounded-xl font-semibold transition-all text-black"
+            style={{
+              background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+            }}
           >
             세션 목록으로
           </button>
           <button
             onClick={() => router.push('/admin/sessions/new')}
-            className="h-12 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold hover:border-black hover:text-black transition-all"
+            className="h-14 rounded-xl font-semibold transition-all text-white"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.14)',
+            }}
           >
             새 세션 만들기
           </button>

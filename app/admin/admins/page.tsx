@@ -11,17 +11,20 @@ export default async function AdminUsersPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold">Admin Users</h2>
+        <h2 className="text-lg font-semibold text-white">Admin Users</h2>
         <Link
           href="/admin/admins/new"
-          className="h-9 px-4 bg-black text-white rounded-lg text-sm font-medium flex items-center hover:bg-gray-800 transition-colors"
+          className="h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all text-black"
+          style={{
+            background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+          }}
         >
           Add Admin
         </Link>
       </div>
 
       {admins.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12" style={{ color: 'rgba(255,255,255,0.5)' }}>
           <p>No admin users</p>
         </div>
       ) : (
@@ -29,12 +32,17 @@ export default async function AdminUsersPage() {
           {admins.map((admin) => (
             <div
               key={admin.id}
-              className="border border-gray-200 rounded-xl px-4 py-3"
+              className="rounded-[18px] px-5 py-4"
+              style={{
+                background: 'rgba(255,255,255,0.06)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255,255,255,0.12)',
+              }}
             >
-              <div className="flex items-start justify-between mb-2">
+              <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="font-medium">{admin.email}</h3>
-                  <p className="text-sm text-gray-500">
+                  <h3 className="font-semibold text-white">{admin.email}</h3>
+                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
                     Created {formatDate(admin.createdAt)}
                   </p>
                 </div>
