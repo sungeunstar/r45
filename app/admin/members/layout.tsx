@@ -12,7 +12,7 @@ export default function MembersLayout({
   const hideNav = pathname?.includes('/new') || pathname?.includes('/edit');
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <div className="max-w-[420px] mx-auto px-4 py-6">
         {!hideNav && <AdminNav />}
         {children}
