@@ -25,15 +25,9 @@ export default async function SessionsPage() {
       {sessions.length === 0 ? (
         <div className="text-center py-16">
           <div className="mb-4 text-5xl">📭</div>
-          <h3 className="text-base font-semibold text-gray-900 mb-6">
+          <h3 className="text-base font-semibold text-gray-900">
             생성된 세션이 없습니다
           </h3>
-          <Link
-            href="/admin/sessions/new"
-            className="inline-flex h-11 px-6 bg-black text-white rounded-xl text-sm font-semibold hover:bg-gray-800 transition-colors items-center"
-          >
-            세션 생성하기
-          </Link>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
