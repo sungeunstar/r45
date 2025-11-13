@@ -1,22 +1,20 @@
-import AdminNav from '@/components/AdminNav';
-import { isAuthenticated } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+'use client';
 
-export default async function SessionsLayout({
+import AdminNav from '@/components/AdminNav';
+import { usePathname } from 'next/navigation';
+
+export default function SessionsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const authenticated = await isAuthenticated();
-
-  if (!authenticated) {
-    redirect('/admin/login');
-  }
+  const pathname = usePathname();
+  const hideNav = pathname?.includes('/new') || pathname?.includes('/success');
 
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-[420px] mx-auto px-4 py-6">
-        <AdminNav />
+        {!hideNav && <AdminNav />}
         {children}
       </div>
     </div>
