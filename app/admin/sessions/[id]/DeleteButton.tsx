@@ -35,7 +35,12 @@ export default function DeleteButton({
     <button
       onClick={handleDelete}
       disabled={loading}
-      className="h-9 px-4 border border-red-600 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50"
+      className="h-11 px-4 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
+      style={{
+        background: 'rgba(239,68,68,0.15)',
+        border: '1px solid rgba(239,68,68,0.3)',
+        color: 'rgba(239,68,68,1)',
+      }}
     >
       {loading ? 'Deleting...' : 'Delete Session'}
     </button>

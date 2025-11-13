@@ -18,7 +18,10 @@ export default function CopyLinkButton({ url }: { url: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="h-9 px-4 bg-black text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors"
+      className="h-11 px-4 rounded-xl text-sm font-semibold transition-all text-black"
+      style={{
+        background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+      }}
     >
       {copied ? 'Copied!' : 'Copy Check-in Link'}
     </button>

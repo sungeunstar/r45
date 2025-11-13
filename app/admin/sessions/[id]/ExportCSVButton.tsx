@@ -38,7 +38,11 @@ export default function ExportCSVButton({ sessionId }: { sessionId: string }) {
     <button
       onClick={handleExport}
       disabled={loading}
-      className="h-9 px-4 border border-gray-200 rounded-lg text-sm font-medium hover:border-black transition-colors disabled:opacity-50"
+      className="h-11 px-4 rounded-xl text-sm font-semibold transition-all disabled:opacity-40 text-white"
+      style={{
+        background: 'rgba(255,255,255,0.08)',
+        border: '1px solid rgba(255,255,255,0.14)',
+      }}
     >
       {loading ? 'Exporting...' : 'Export CSV'}
     </button>
