@@ -28,7 +28,7 @@ export default function SessionsPage() {
         getAllMembers()
       ]);
       setSessions(sessionsData);
-      setTotalMembers(membersData.filter((m) => m.isActive).length);
+      setTotalMembers(membersData.filter((m: any) => m.isActive).length);
       setLoading(false);
     }
     loadData();

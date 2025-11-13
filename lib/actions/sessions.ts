@@ -120,7 +120,7 @@ export async function getAllSessions() {
 
   // Get attendance counts for each session
   const sessionsWithCounts = await Promise.all(
-    sessions.map(async (session) => {
+    sessions.map(async (session: any) => {
       const attendanceCount = await prisma.attendance.count({
         where: { sessionId: session.id },
       });
@@ -164,7 +164,7 @@ export async function getSessionAttendance(sessionId: string) {
 
   // Get member details for each attendance
   const attendanceWithMembers = await Promise.all(
-    attendance.map(async (att) => {
+    attendance.map(async (att: any) => {
       const member = await prisma.member.findUnique({
         where: { id: att.memberId },
       });
@@ -190,7 +190,7 @@ export async function getSessionMembers(sessionId: string) {
   });
 
   const members = await Promise.all(
-    sessionMembers.map(async (sm) => {
+    sessionMembers.map(async (sm: any) => {
       const member = await prisma.member.findUnique({
         where: { id: sm.memberId },
       });
@@ -213,7 +213,7 @@ export async function getInvitedMembers(sessionToken: string) {
   });
 
   const members = await Promise.all(
-    sessionMembers.map(async (sm) => {
+    sessionMembers.map(async (sm: any) => {
       const member = await prisma.member.findUnique({
         where: { id: sm.memberId },
       });
@@ -238,6 +238,6 @@ export async function getAbsentMembers(sessionId: string) {
     select: { memberId: true },
   });
 
-  const attendedMemberIds = new Set(attendance.map((a) => a.memberId));
+  const attendedMemberIds = new Set(attendance.map((a: any) => a.memberId));
   return invitedMembers.filter((m) => !attendedMemberIds.has(m.id));
 }

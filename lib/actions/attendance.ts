@@ -94,7 +94,7 @@ export async function exportAttendanceCSV(sessionId: string) {
 
     // Get member details for each attendance
     const rows = await Promise.all(
-      attendance.map(async (att) => {
+      attendance.map(async (att: any) => {
         const member = await prisma.member.findUnique({
           where: { id: att.memberId },
         });
