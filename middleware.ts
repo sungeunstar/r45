@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { getIronSession } from 'iron-session';
-import { SessionData, sessionOptions } from './lib/auth';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -11,12 +9,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check authentication for admin routes
+  // Check if session cookie exists
   if (pathname.startsWith('/admin')) {
-    const response = NextResponse.next();
-    const session = await getIronSession<SessionData>(request, response, sessionOptions);
+    const sessionCookie = request.cookies.get('joyful_admin_session');
 
-    if (!session.isLoggedIn) {
+    if (!sessionCookie) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }
   }
