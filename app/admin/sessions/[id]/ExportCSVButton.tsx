@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { exportAttendanceCSV } from '@/lib/actions/attendance';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function ExportCSVButton({ sessionId }: { sessionId: string }) {
+  const theme = useTheme();
   const [loading, setLoading] = useState(false);
 
   async function handleExport() {
@@ -38,10 +40,15 @@ export default function ExportCSVButton({ sessionId }: { sessionId: string }) {
     <button
       onClick={handleExport}
       disabled={loading}
-      className="h-11 px-4 rounded-xl text-sm font-semibold transition-all disabled:opacity-40 text-white"
-      style={{
+      className="h-11 px-4 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
+      style={theme === 'dark' ? {
         background: 'rgba(255,255,255,0.08)',
         border: '1px solid rgba(255,255,255,0.14)',
+        color: '#FFFFFF',
+      } : {
+        background: '#FFFFFF',
+        border: '1px solid #e5e7eb',
+        color: '#000000',
       }}
     >
       {loading ? 'Exporting...' : 'Export CSV'}
