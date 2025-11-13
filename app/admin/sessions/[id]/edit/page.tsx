@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { getSessionById, updateSession } from '@/lib/actions/sessions';
 import { toDatetimeLocalString } from '@/lib/utils';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function EditSessionPage() {
   const router = useRouter();
   const params = useParams();
+  const theme = useTheme();
   const sessionId = params.id as string;
 
   const [name, setName] = useState('');
@@ -49,7 +51,7 @@ export default function EditSessionPage() {
   if (loadingData) {
     return (
       <div className="text-center py-12">
-        <p style={{ color: 'rgba(255,255,255,0.5)' }}>Loading...</p>
+        <p style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }}>Loading...</p>
       </div>
     );
   }
@@ -59,19 +61,20 @@ export default function EditSessionPage() {
       <div className="mb-8 relative">
         <button
           onClick={() => router.back()}
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center transition-colors"
+          style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}
           aria-label="뒤로가기"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <h1 className="text-xl font-bold text-center text-white">Edit Session</h1>
+        <h1 className="text-xl font-bold text-center" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>Edit Session</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          <label htmlFor="name" className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
             Session Name
           </label>
           <input
@@ -80,16 +83,21 @@ export default function EditSessionPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="h-[52px] px-4 rounded-xl text-white placeholder-white/40 transition-all focus:outline-none"
-            style={{
+            className="h-[52px] px-4 rounded-xl transition-all focus:outline-none"
+            style={theme === 'dark' ? {
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
+              color: '#FFFFFF',
+            } : {
+              background: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              color: '#000000',
             }}
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="date" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          <label htmlFor="date" className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
             Date & Time
           </label>
           <input
@@ -98,17 +106,23 @@ export default function EditSessionPage() {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
-            className="h-[52px] px-4 rounded-xl text-white transition-all focus:outline-none"
-            style={{
+            className="h-[52px] px-4 rounded-xl transition-all focus:outline-none"
+            style={theme === 'dark' ? {
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
+              color: '#FFFFFF',
               colorScheme: 'dark',
+            } : {
+              background: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              color: '#000000',
+              colorScheme: 'light',
             }}
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="note" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          <label htmlFor="note" className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
             Note (Optional)
           </label>
           <textarea
@@ -116,10 +130,15 @@ export default function EditSessionPage() {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             rows={4}
-            className="px-4 py-3 rounded-xl text-white placeholder-white/40 transition-all focus:outline-none resize-none"
-            style={{
+            className="px-4 py-3 rounded-xl transition-all focus:outline-none resize-none"
+            style={theme === 'dark' ? {
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
+              color: '#FFFFFF',
+            } : {
+              background: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              color: '#000000',
             }}
           />
         </div>
@@ -139,9 +158,13 @@ export default function EditSessionPage() {
         <button
           type="submit"
           disabled={loading}
-          className="h-14 rounded-xl font-semibold text-base text-black transition-all disabled:opacity-40"
-          style={{
+          className="h-14 rounded-xl font-semibold text-base transition-all disabled:opacity-40"
+          style={theme === 'dark' ? {
             background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+            color: '#000000',
+          } : {
+            background: '#3b82f6',
+            color: '#FFFFFF',
           }}
         >
           {loading ? 'Updating...' : 'Update Session'}

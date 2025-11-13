@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createSession } from '@/lib/actions/sessions';
 import { getAllMembers } from '@/lib/actions/members';
 import { toDatetimeLocalString } from '@/lib/utils';
+import { useTheme } from '@/hooks/useTheme';
 
 type Member = {
   id: string;
@@ -16,6 +17,7 @@ type Member = {
 
 export default function NewSessionPage() {
   const router = useRouter();
+  const theme = useTheme();
   const [name, setName] = useState('');
   const [note, setNote] = useState('');
   const [date, setDate] = useState(toDatetimeLocalString(new Date()));
@@ -138,7 +140,7 @@ export default function NewSessionPage() {
   if (loadingMembers) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-white/70">로딩 중...</p>
+        <p style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>로딩 중...</p>
       </div>
     );
   }
@@ -155,20 +157,21 @@ export default function NewSessionPage() {
       <div className="mb-8 relative">
         <button
           onClick={() => router.back()}
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center transition-colors"
+          style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}
           aria-label="뒤로가기"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <h1 className="text-xl font-bold text-center text-white">세션 생성</h1>
+        <h1 className="text-xl font-bold text-center" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>세션 생성</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {/* Session Name */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          <label htmlFor="name" className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
             세션 이름
           </label>
           <input
@@ -177,10 +180,15 @@ export default function NewSessionPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="h-[52px] px-4 rounded-xl text-white placeholder-white/40 transition-all focus:outline-none"
-            style={{
+            className="h-[52px] px-4 rounded-xl transition-all focus:outline-none"
+            style={theme === 'dark' ? {
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
+              color: '#FFFFFF',
+            } : {
+              background: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              color: '#000000',
             }}
             placeholder="주일 1부 예배"
           />
@@ -188,7 +196,7 @@ export default function NewSessionPage() {
 
         {/* Date & Time */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="date" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          <label htmlFor="date" className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
             날짜와 시간
           </label>
           <input
@@ -197,11 +205,17 @@ export default function NewSessionPage() {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
-            className="h-[52px] px-4 rounded-xl text-white transition-all focus:outline-none"
-            style={{
+            className="h-[52px] px-4 rounded-xl transition-all focus:outline-none"
+            style={theme === 'dark' ? {
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
+              color: '#FFFFFF',
               colorScheme: 'dark',
+            } : {
+              background: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              color: '#000000',
+              colorScheme: 'light',
             }}
           />
         </div>
@@ -209,10 +223,10 @@ export default function NewSessionPage() {
         {/* Member Selection */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+            <label className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
               멤버 선택
             </label>
-            <span className="text-sm font-medium text-white/60">
+            <span className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)' }}>
               {selectedMemberIds.length} / {members.length}
             </span>
           </div>
@@ -223,10 +237,15 @@ export default function NewSessionPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="이름으로 검색"
-            className="h-11 px-4 rounded-xl text-white placeholder-white/40 text-sm transition-all focus:outline-none"
-            style={{
+            className="h-11 px-4 rounded-xl text-sm transition-all focus:outline-none"
+            style={theme === 'dark' ? {
               background: 'rgba(255,255,255,0.06)',
               border: '1px solid rgba(255,255,255,0.12)',
+              color: '#FFFFFF',
+            } : {
+              background: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              color: '#000000',
             }}
           />
 
@@ -234,18 +253,21 @@ export default function NewSessionPage() {
           <button
             type="button"
             onClick={handleSelectAll}
-            className="h-12 px-4 rounded-xl text-left flex items-center justify-between transition-all hover:bg-white/5"
-            style={{
+            className="h-12 px-4 rounded-xl text-left flex items-center justify-between transition-all"
+            style={theme === 'dark' ? {
               background: 'rgba(255,255,255,0.06)',
               border: '1px solid rgba(255,255,255,0.12)',
+            } : {
+              background: '#FFFFFF',
+              border: '1px solid #e5e7eb',
             }}
           >
-            <span className="font-semibold text-sm text-white">전체 선택</span>
-            <div className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
-              selectedMemberIds.length === members.length
-                ? 'bg-white text-black'
-                : 'border border-white/30'
-            }`}>
+            <span className="font-semibold text-sm" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>전체 선택</span>
+            <div className={`w-5 h-5 rounded flex items-center justify-center transition-all`}
+              style={selectedMemberIds.length === members.length
+                ? (theme === 'dark' ? { background: '#FFFFFF', color: '#000000' } : { background: '#3b82f6', color: '#FFFFFF' })
+                : (theme === 'dark' ? { border: '1px solid rgba(255,255,255,0.3)' } : { border: '1px solid rgba(0,0,0,0.3)' })
+              }>
               {selectedMemberIds.length === members.length && (
                 <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M1 5L4 8L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -264,10 +286,13 @@ export default function NewSessionPage() {
                 <div
                   key={group}
                   className="rounded-[18px] overflow-hidden"
-                  style={{
+                  style={theme === 'dark' ? {
                     background: 'rgba(255,255,255,0.06)',
                     backdropFilter: 'blur(12px)',
                     border: '1px solid rgba(255,255,255,0.12)',
+                  } : {
+                    background: '#FFFFFF',
+                    border: '1px solid #e5e7eb',
                   }}
                 >
                   {/* Group Header */}
@@ -277,23 +302,23 @@ export default function NewSessionPage() {
                       onClick={() => toggleGroup(group)}
                       className="flex-1 flex items-center gap-2 text-left min-h-[44px]"
                     >
-                      <span className="text-white/40 text-sm">
+                      <span className="text-sm" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)' }}>
                         {isExpanded ? '▼' : '▶'}
                       </span>
                       <span className="text-lg">{groupEmoji[group]}</span>
-                      <span className="font-semibold text-white">{group}</span>
-                      <span className="text-xs text-white/50 ml-auto mr-3">
+                      <span className="font-semibold" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>{group}</span>
+                      <span className="text-xs ml-auto mr-3" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }}>
                         {selectedCount} / {totalCount}
                       </span>
                     </button>
                     <button
                       type="button"
                       onClick={() => handleSelectGroup(group)}
-                      className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
-                        allSelected
-                          ? 'bg-white text-black'
-                          : 'border border-white/30'
-                      }`}
+                      className={`w-5 h-5 rounded flex items-center justify-center transition-all`}
+                      style={allSelected
+                        ? (theme === 'dark' ? { background: '#FFFFFF', color: '#000000' } : { background: '#3b82f6', color: '#FFFFFF' })
+                        : (theme === 'dark' ? { border: '1px solid rgba(255,255,255,0.3)' } : { border: '1px solid rgba(0,0,0,0.3)' })
+                      }
                     >
                       {allSelected && (
                         <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -305,7 +330,7 @@ export default function NewSessionPage() {
 
                   {/* Group Members */}
                   {isExpanded && (
-                    <div className="max-h-[40vh] overflow-y-auto" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                    <div className="max-h-[40vh] overflow-y-auto" style={{ borderTop: theme === 'dark' ? '1px solid rgba(255,255,255,0.08)' : '1px solid #e5e7eb' }}>
                       {groupMembers.map((member) => {
                         const isSelected = selectedMemberIds.includes(member.id);
                         return (
@@ -313,14 +338,14 @@ export default function NewSessionPage() {
                             key={member.id}
                             type="button"
                             onClick={() => handleToggleMember(member.id)}
-                            className="w-full px-4 py-3 hover:bg-white/5 transition-colors flex items-center gap-3 min-h-[56px]"
-                            style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+                            className="w-full px-4 py-3 transition-colors flex items-center gap-3 min-h-[56px]"
+                            style={{ borderTop: theme === 'dark' ? '1px solid rgba(255,255,255,0.06)' : '1px solid #f3f4f6' }}
                           >
-                            <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 transition-all ${
-                              isSelected
-                                ? 'bg-white text-black'
-                                : 'border border-white/30'
-                            }`}>
+                            <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 transition-all`}
+                              style={isSelected
+                                ? (theme === 'dark' ? { background: '#FFFFFF', color: '#000000' } : { background: '#3b82f6', color: '#FFFFFF' })
+                                : (theme === 'dark' ? { border: '1px solid rgba(255,255,255,0.3)' } : { border: '1px solid rgba(0,0,0,0.3)' })
+                              }>
                               {isSelected && (
                                 <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                   <path d="M1 5L4 8L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -328,8 +353,8 @@ export default function NewSessionPage() {
                               )}
                             </div>
                             <div className="flex-1 text-left">
-                              <p className="text-sm font-semibold text-white">{member.name}</p>
-                              <p className="text-xs text-white/50 mt-0.5">{member.phone}</p>
+                              <p className="text-sm font-semibold" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>{member.name}</p>
+                              <p className="text-xs mt-0.5" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }}>{member.phone}</p>
                             </div>
                           </button>
                         );
@@ -344,7 +369,7 @@ export default function NewSessionPage() {
 
         {/* Note */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="note" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          <label htmlFor="note" className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
             세션 내용 (선택)
           </label>
           <textarea
@@ -352,10 +377,15 @@ export default function NewSessionPage() {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             rows={4}
-            className="px-4 py-3 rounded-xl text-white placeholder-white/40 resize-none transition-all focus:outline-none"
-            style={{
+            className="px-4 py-3 rounded-xl resize-none transition-all focus:outline-none"
+            style={theme === 'dark' ? {
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
+              color: '#FFFFFF',
+            } : {
+              background: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              color: '#000000',
             }}
             placeholder="세션 내용을 입력하세요"
           />
@@ -370,9 +400,13 @@ export default function NewSessionPage() {
         <button
           type="submit"
           disabled={loading}
-          className="h-14 rounded-xl font-semibold text-base text-black transition-all disabled:opacity-40"
-          style={{
+          className="h-14 rounded-xl font-semibold text-base transition-all disabled:opacity-40"
+          style={theme === 'dark' ? {
             background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+            color: '#000000',
+          } : {
+            background: '#3b82f6',
+            color: '#FFFFFF',
           }}
         >
           {loading ? '생성 중...' : '세션 생성'}
