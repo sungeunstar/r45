@@ -87,14 +87,18 @@ export default function CheckInForm({
           id="phone"
           type="tel"
           value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value.replace(/\D/g, '');
+            setPhoneNumber(value);
+          }}
           required
           autoFocus
+          maxLength={11}
           className="h-12 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors text-lg"
-          placeholder="010-1234-5678"
+          placeholder="01012345678"
         />
         <p className="text-xs text-gray-500">
-          등록된 전화번호를 입력해주세요
+          하이픈 없이 숫자만 입력 (예: 01012345678)
         </p>
       </div>
 

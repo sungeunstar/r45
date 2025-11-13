@@ -15,6 +15,18 @@ export default function NewMemberPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+
+    // Validate phone number format (no hyphens, numbers only, 11 digits)
+    if (phone.includes('-')) {
+      setError('전화번호에 하이픈(-)을 사용할 수 없습니다. 숫자만 입력해주세요.');
+      return;
+    }
+
+    if (!/^\d{11}$/.test(phone)) {
+      setError('전화번호는 11자리 숫자여야 합니다 (예: 01012345678)');
+      return;
+    }
+
     setLoading(true);
 
     const result = await createMember(name, phone, group);
@@ -58,17 +70,24 @@ export default function NewMemberPage() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="phone" className="text-sm font-medium">
-            Phone Number
+            전화번호
           </label>
           <input
             id="phone"
             type="tel"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+              setPhone(value);
+            }}
             required
+            maxLength={11}
             className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
-            placeholder="010-1234-5678"
+            placeholder="01012345678"
           />
+          <p className="text-xs text-gray-500">
+            하이픈 없이 숫자만 11자리 입력
+          </p>
         </div>
 
         <div className="flex flex-col gap-2">
