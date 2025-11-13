@@ -24,17 +24,18 @@ export default function ThemeToggle() {
     <button
       onClick={toggleTheme}
       aria-label="Toggle dark mode"
-      className="theme-toggle-button"
+      className="theme-toggle"
       style={{
-        position: 'relative',
-        width: '56px',
-        height: '30px',
-        borderRadius: '999px',
-        backgroundColor: theme === 'light' ? '#FFA52F' : '#3A3A3F',
+        width: '48px',
+        height: '26px',
+        background: theme === 'light' ? '#e3e3e3' : '#333333',
+        borderRadius: '30px',
+        padding: '3px',
+        display: 'flex',
+        alignItems: 'center',
+        transition: 'background 0.25s ease',
         border: 'none',
         cursor: 'pointer',
-        transition: 'background-color 0.25s ease',
-        padding: 0,
         outline: 'none',
       }}
       onKeyDown={(e) => {
@@ -44,87 +45,18 @@ export default function ThemeToggle() {
         }
       }}
     >
-      {/* 슬라이딩 핸들 (흰색 원) */}
-      <div
-        className="theme-toggle-handle"
+      {/* 심플한 원형 thumb */}
+      <span
+        className="toggle-thumb"
         style={{
-          position: 'absolute',
-          top: '3px',
-          left: theme === 'light' ? '3px' : 'calc(100% - 27px)',
-          width: '24px',
-          height: '24px',
+          width: '20px',
+          height: '20px',
+          background: '#ffffff',
           borderRadius: '50%',
-          backgroundColor: '#FFFFFF',
-          transition: 'left 0.25s ease',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden',
+          transition: 'transform 0.25s ease',
+          transform: theme === 'dark' ? 'translateX(22px)' : 'translateX(0)',
         }}
-      >
-        {/* 라이트 모드: 해 모양 */}
-        {theme === 'light' && (
-          <div
-            style={{
-              position: 'relative',
-              width: '10px',
-              height: '10px',
-              borderRadius: '50%',
-              backgroundColor: '#FFA52F',
-            }}
-          >
-            {/* 햇살 라인들 */}
-            {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
-              <div
-                key={angle}
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  width: '2px',
-                  height: '5px',
-                  backgroundColor: '#FFA52F',
-                  transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-7px)`,
-                  borderRadius: '1px',
-                }}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* 다크 모드: 달 모양 */}
-        {theme === 'dark' && (
-          <div
-            style={{
-              position: 'relative',
-              width: '14px',
-              height: '14px',
-            }}
-          >
-            {/* 흰 원 (달의 기본) */}
-            <div
-              style={{
-                position: 'absolute',
-                width: '14px',
-                height: '14px',
-                borderRadius: '50%',
-                backgroundColor: '#3A3A3F',
-              }}
-            />
-            {/* 겹친 원으로 초승달 만들기 */}
-            <div
-              style={{
-                position: 'absolute',
-                width: '14px',
-                height: '14px',
-                borderRadius: '50%',
-                backgroundColor: '#FFFFFF',
-                transform: 'translateX(-2px)',
-              }}
-            />
-          </div>
-        )}
-      </div>
+      />
     </button>
   );
 }
