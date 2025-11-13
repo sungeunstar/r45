@@ -12,8 +12,29 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* 다크 모드 (기본값) */
+html[data-theme="dark"],
+html:not([data-theme]) {
   background: #0B0B0B;
   color: #FFFFFF;
+}
+
+/* 라이트 모드 */
+html[data-theme="light"] {
+  background: #F9FAFB;
+  color: #111827;
+}
+
+/* 라이트 모드에서 텍스트 색상 조정 */
+html[data-theme="light"] h1,
+html[data-theme="light"] h2,
+html[data-theme="light"] h3,
+html[data-theme="light"] button,
+html[data-theme="light"] a {
+  color: #111827;
 }
 
 body {
