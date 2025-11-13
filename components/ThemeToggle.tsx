@@ -51,67 +51,40 @@ export default function ThemeToggle() {
               width: '28px',
               height: '28px',
               borderRadius: '50%',
-              background: '#ffffff',
               position: 'relative',
               transition: 'transform .25s ease',
               transform: isDark ? 'translateX(36px)' : 'translateX(0)',
+              overflow: 'hidden',
             }}
           >
-            {/* SUN 아이콘 */}
+            {/* SUN 아이콘 - 라이트 모드 */}
             <span
-              className="icon icon-sun"
               style={{
                 position: 'absolute',
                 inset: '0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 opacity: isDark ? 0 : 1,
                 transition: 'opacity .2s ease',
               }}
             >
-              <span
-                style={{
-                  width: '12px',
-                  height: '12px',
-                  borderRadius: '50%',
-                  background: '#ff962a',
-                  boxShadow: `
-                    0 -8px 0 0 #ff962a,
-                    0  8px 0 0 #ff962a,
-                    8px  0 0 0 #ff962a,
-                   -8px  0 0 0 #ff962a,
-                    6px  6px 0 0 #ff962a,
-                   -6px  6px 0 0 #ff962a,
-                    6px -6px 0 0 #ff962a,
-                   -6px -6px 0 0 #ff962a
-                  `,
-                }}
-              />
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="28" height="28" rx="14" fill="white"/>
+                <path d="M14.5 21H13.5V19H14.5V21ZM10.8184 17.8887L9.4043 19.3037L8.69727 18.5957L10.1113 17.1816L10.8184 17.8887ZM19.3037 18.5967L18.5967 19.3037L17.1826 17.8887L17.8896 17.1816L19.3037 18.5967ZM14 11C15.6569 11 17 12.3431 17 14C17 15.6569 15.6569 17 14 17C12.3431 17 11 15.6569 11 14C11 12.3431 12.3431 11 14 11ZM9 14.5H7V13.5H9V14.5ZM21 14.5H19V13.5H21V14.5ZM10.8184 10.1113L10.1113 10.8184L8.69727 9.4043L9.4043 8.69629L10.8184 10.1113ZM19.3037 9.40332L17.8896 10.8184L17.1826 10.1113L18.5967 8.69629L19.3037 9.40332ZM14.5 9H13.5V7H14.5V9Z" fill="#FF8D28"/>
+              </svg>
             </span>
 
-            {/* MOON 아이콘 */}
+            {/* MOON 아이콘 - 다크 모드 */}
             <span
-              className="icon icon-moon"
               style={{
                 position: 'absolute',
                 inset: '0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 opacity: isDark ? 1 : 0,
                 transition: 'opacity .2s ease',
               }}
             >
-              <span
-                style={{
-                  width: '16px',
-                  height: '16px',
-                  borderRadius: '50%',
-                  background: '#333333',
-                  boxShadow: '-5px 0 0 0 #ffffff',
-                }}
-              />
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="28" height="28" rx="14" fill="white"/>
+                <path d="M14.9717 7.5C17.8402 8.05777 20.001 10.5053 20.001 13.4404C20.001 16.7873 17.1913 19.5 13.7266 19.5C11.1755 19.4998 8.98137 18.0287 8.00098 15.917C8.40348 15.9953 8.8197 16.0381 9.24609 16.0381C12.7109 16.0381 15.5205 13.3244 15.5205 9.97754C15.5205 9.09464 15.3231 8.25652 14.9717 7.5Z" fill="#212123"/>
+              </svg>
             </span>
           </span>
         </span>
