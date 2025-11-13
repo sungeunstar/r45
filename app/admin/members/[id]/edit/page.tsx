@@ -87,12 +87,12 @@ export default function EditMemberPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-120px)] flex flex-col max-w-[420px] mx-auto w-full px-5">
+    <div className="min-h-[calc(100vh-120px)] flex flex-col max-w-[420px] mx-auto w-full px-5 py-6">
       {/* Header */}
-      <div className="mb-8 relative pt-6">
+      <div className="mb-8 relative flex items-center justify-center h-10">
         <button
           onClick={() => router.back()}
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center transition-colors"
+          className="absolute left-0 w-10 h-10 flex items-center justify-center transition-colors"
           style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}
           aria-label="뒤로가기"
         >
@@ -100,7 +100,7 @@ export default function EditMemberPage() {
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <h1 className="text-xl font-bold text-center" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>멤버 수정</h1>
+        <h1 className="text-xl font-bold" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>멤버 수정</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 flex-1 pb-6">
@@ -170,26 +170,30 @@ export default function EditMemberPage() {
             required
             className="h-[52px] px-4 rounded-xl transition-all appearance-none cursor-pointer focus:outline-none"
             style={theme === 'dark' ? {
-              background: 'rgba(255,255,255,0.08)',
+              backgroundColor: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
               color: '#FFFFFF',
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23fff' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1rem center',
+              backgroundSize: 'auto',
               paddingRight: '3rem',
+              colorScheme: 'dark',
             } : {
-              background: '#FFFFFF',
+              backgroundColor: '#FFFFFF',
               border: '1px solid #e5e7eb',
               color: '#000000',
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23000' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1rem center',
+              backgroundSize: 'auto',
               paddingRight: '3rem',
+              colorScheme: 'light',
             }}
           >
-            <option value="보컬">🎤 보컬</option>
-            <option value="악기">🎸 악기</option>
-            <option value="음향">🎚️ 음향</option>
+            <option value="보컬" style={theme === 'dark' ? { backgroundColor: '#1a1a1a', color: '#FFFFFF' } : { backgroundColor: '#FFFFFF', color: '#000000' }}>🎤 보컬</option>
+            <option value="악기" style={theme === 'dark' ? { backgroundColor: '#1a1a1a', color: '#FFFFFF' } : { backgroundColor: '#FFFFFF', color: '#000000' }}>🎸 악기</option>
+            <option value="음향" style={theme === 'dark' ? { backgroundColor: '#1a1a1a', color: '#FFFFFF' } : { backgroundColor: '#FFFFFF', color: '#000000' }}>🎚️ 음향</option>
           </select>
         </div>
 

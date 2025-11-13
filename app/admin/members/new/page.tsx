@@ -132,6 +132,7 @@ export default function NewMemberPage() {
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23fff' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1rem center',
+              backgroundSize: 'auto',
               paddingRight: '3rem',
               colorScheme: 'dark',
             } : {
@@ -141,13 +142,14 @@ export default function NewMemberPage() {
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23000' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1rem center',
+              backgroundSize: 'auto',
               paddingRight: '3rem',
               colorScheme: 'light',
             }}
           >
-            <option value="보컬" style={theme === 'dark' ? { background: '#1a1a1a', color: '#FFFFFF' } : { background: '#FFFFFF', color: '#000000' }}>🎤 보컬</option>
-            <option value="악기" style={theme === 'dark' ? { background: '#1a1a1a', color: '#FFFFFF' } : { background: '#FFFFFF', color: '#000000' }}>🎸 악기</option>
-            <option value="음향" style={theme === 'dark' ? { background: '#1a1a1a', color: '#FFFFFF' } : { background: '#FFFFFF', color: '#000000' }}>🎚️ 음향</option>
+            <option value="보컬" style={theme === 'dark' ? { backgroundColor: '#1a1a1a', color: '#FFFFFF' } : { backgroundColor: '#FFFFFF', color: '#000000' }}>🎤 보컬</option>
+            <option value="악기" style={theme === 'dark' ? { backgroundColor: '#1a1a1a', color: '#FFFFFF' } : { backgroundColor: '#FFFFFF', color: '#000000' }}>🎸 악기</option>
+            <option value="음향" style={theme === 'dark' ? { backgroundColor: '#1a1a1a', color: '#FFFFFF' } : { backgroundColor: '#FFFFFF', color: '#000000' }}>🎚️ 음향</option>
           </select>
         </div>
 
