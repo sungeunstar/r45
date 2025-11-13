@@ -153,9 +153,9 @@ export default function EditMemberPage() {
               paddingRight: '3rem',
             }}
           >
-            <option value="보컬">보컬</option>
-            <option value="악기">악기</option>
-            <option value="음향">음향</option>
+            <option value="보컬">🎤 보컬</option>
+            <option value="악기">🎸 악기</option>
+            <option value="음향">🎚️ 음향</option>
           </select>
         </div>
 

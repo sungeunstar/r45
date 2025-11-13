@@ -170,19 +170,25 @@ export default function NewSessionPage() {
 
           {/* Tabs */}
           <div className="flex gap-2 border-b-2 border-gray-200">
-            {(['전체', '보컬', '악기', '음향'] as GroupTab[]).map((tab) => (
+            {([
+              { name: '전체', emoji: '' },
+              { name: '보컬', emoji: '🎤' },
+              { name: '악기', emoji: '🎸' },
+              { name: '음향', emoji: '🎚️' },
+            ] as Array<{ name: GroupTab; emoji: string }>).map((tab) => (
               <button
-                key={tab}
+                key={tab.name}
                 type="button"
-                onClick={() => setActiveTab(tab)}
+                onClick={() => setActiveTab(tab.name)}
                 className={`px-4 py-3 font-semibold text-sm transition-all relative ${
-                  activeTab === tab
+                  activeTab === tab.name
                     ? 'text-black'
                     : 'text-gray-400 hover:text-gray-600'
                 }`}
               >
-                {tab}
-                {activeTab === tab && (
+                {tab.emoji && <span className="mr-1">{tab.emoji}</span>}
+                {tab.name}
+                {activeTab === tab.name && (
                   <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></div>
                 )}
               </button>
@@ -263,7 +269,7 @@ export default function NewSessionPage() {
         {/* Note */}
         <div className="flex flex-col gap-3">
           <label htmlFor="note" className="text-sm font-semibold text-gray-900">
-            예배 특이사항 메모 (선택)
+            세션 내용 (선택)
           </label>
           <textarea
             id="note"
@@ -271,7 +277,7 @@ export default function NewSessionPage() {
             onChange={(e) => setNote(e.target.value)}
             rows={4}
             className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all resize-none text-base"
-            placeholder="예배 특이사항을 입력하세요"
+            placeholder="세션 내용을 입력하세요"
           />
         </div>
 
