@@ -260,9 +260,8 @@ export default function EditMemberPage() {
             disabled={loading}
             className="h-14 rounded-xl font-semibold transition-all disabled:opacity-40 text-base"
             style={{
-              background: 'rgba(239,68,68,0.15)',
-              border: '1px solid rgba(239,68,68,0.3)',
-              color: 'rgba(239,68,68,1)',
+              background: '#FF5555',
+              color: '#FFFFFF',
             }}
           >
             멤버 삭제

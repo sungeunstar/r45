@@ -43,12 +43,12 @@ export default function NewMemberPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-120px)] flex flex-col max-w-[420px] mx-auto w-full px-5">
+    <div className="min-h-[calc(100vh-120px)] flex flex-col max-w-[420px] mx-auto w-full px-5 py-6">
       {/* Header */}
-      <div className="mb-8 relative pt-6">
+      <div className="mb-8 relative flex items-center justify-center h-10">
         <button
           onClick={() => router.back()}
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center transition-colors"
+          className="absolute left-0 w-10 h-10 flex items-center justify-center transition-colors"
           style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}
           aria-label="뒤로가기"
         >
@@ -56,7 +56,7 @@ export default function NewMemberPage() {
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <h1 className="text-xl font-bold text-center" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>멤버 등록</h1>
+        <h1 className="text-xl font-bold" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>멤버 등록</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 flex-1 pb-6">

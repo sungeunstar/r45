@@ -37,9 +37,8 @@ export default function DeleteButton({
       disabled={loading}
       className="h-11 px-4 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
       style={{
-        background: 'rgba(239,68,68,0.15)',
-        border: '1px solid rgba(239,68,68,0.3)',
-        color: 'rgba(239,68,68,1)',
+        background: '#FF5555',
+        color: '#FFFFFF',
       }}
     >
       {loading ? 'Deleting...' : 'Delete Session'}

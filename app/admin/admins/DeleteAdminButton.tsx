@@ -36,9 +36,8 @@ export default function DeleteAdminButton({
       disabled={loading}
       className="h-8 px-3 rounded-lg text-sm transition-colors disabled:opacity-50"
       style={{
-        background: 'rgba(239,68,68,0.15)',
-        border: '1px solid rgba(239,68,68,0.3)',
-        color: 'rgba(239,68,68,1)',
+        background: '#FF5555',
+        color: '#FFFFFF',
       }}
     >
       {loading ? 'Deleting...' : 'Delete'}
