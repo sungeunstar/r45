@@ -3,14 +3,17 @@
 import { useState, useEffect } from 'react';
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(true);
+  // SSR-safe 초기화: 클라이언트에서만 localStorage 읽기
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme === 'light' ? false : true;
+  });
 
   useEffect(() => {
-    // 초기 테마 설정 (로컬스토리지에서 가져오거나 기본값 dark)
+    // 초기 테마 설정
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     const initialTheme = savedTheme || 'dark';
-    const initialIsDark = initialTheme === 'dark';
-    setIsDark(initialIsDark);
     document.documentElement.setAttribute('data-theme', initialTheme);
   }, []);
 

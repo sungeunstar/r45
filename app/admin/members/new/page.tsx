@@ -133,6 +133,7 @@ export default function NewMemberPage() {
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1rem center',
               paddingRight: '3rem',
+              colorScheme: 'dark',
             } : {
               background: '#FFFFFF',
               border: '1px solid #e5e7eb',
@@ -141,11 +142,12 @@ export default function NewMemberPage() {
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'right 1rem center',
               paddingRight: '3rem',
+              colorScheme: 'light',
             }}
           >
-            <option value="보컬">🎤 보컬</option>
-            <option value="악기">🎸 악기</option>
-            <option value="음향">🎚️ 음향</option>
+            <option value="보컬" style={theme === 'dark' ? { background: '#1a1a1a', color: '#FFFFFF' } : { background: '#FFFFFF', color: '#000000' }}>🎤 보컬</option>
+            <option value="악기" style={theme === 'dark' ? { background: '#1a1a1a', color: '#FFFFFF' } : { background: '#FFFFFF', color: '#000000' }}>🎸 악기</option>
+            <option value="음향" style={theme === 'dark' ? { background: '#1a1a1a', color: '#FFFFFF' } : { background: '#FFFFFF', color: '#000000' }}>🎚️ 음향</option>
           </select>
         </div>
 
