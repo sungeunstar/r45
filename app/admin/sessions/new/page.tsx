@@ -144,169 +144,167 @@ export default function NewSessionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
-      <div className="max-w-[420px] mx-auto px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => router.back()}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            ← Back
-          </button>
-          <h2 className="text-lg font-semibold text-white">세션 생성</h2>
+    <div>
+      <div className="flex items-center gap-3 mb-6">
+        <button
+          onClick={() => router.back()}
+          className="text-gray-600 hover:text-black transition-colors"
+        >
+          ← Back
+        </button>
+        <h2 className="text-lg font-semibold">세션 생성</h2>
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {/* Session Name */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="name" className="text-sm font-medium">
+            세션 이름
+          </label>
+          <input
+            id="name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+            placeholder="주일 1부 예배"
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          {/* Session Name */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="name" className="text-sm font-medium text-white">
-              세션 이름
-            </label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="h-11 px-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl focus:outline-none focus:border-white/40 transition-colors text-white placeholder-gray-400"
-              placeholder="주일 1부 예배"
-            />
-          </div>
+        {/* Date & Time */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="date" className="text-sm font-medium">
+            날짜와 시간
+          </label>
+          <input
+            id="date"
+            type="datetime-local"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            required
+            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+          />
+        </div>
 
-          {/* Date & Time */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="date" className="text-sm font-medium text-white">
-              날짜와 시간
-            </label>
-            <input
-              id="date"
-              type="datetime-local"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              required
-              className="h-11 px-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl focus:outline-none focus:border-white/40 transition-colors text-white"
-            />
-          </div>
+        {/* Member Selection */}
+        <div className="flex flex-col gap-3">
+          <label className="text-sm font-medium">
+            맴버 선택 ({selectedMemberIds.length} / {members.length})
+          </label>
 
-          {/* Member Selection */}
-          <div className="flex flex-col gap-3">
-            <label className="text-sm font-medium text-white">
-              맴버 선택 ({selectedMemberIds.length} / {members.length})
-            </label>
+          {/* Search */}
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="이름으로 검색"
+            className="h-10 px-4 border border-gray-200 rounded-lg focus:outline-none focus:border-black transition-colors text-sm"
+          />
 
-            {/* Search */}
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="이름으로 검색"
-              className="h-10 px-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg focus:outline-none focus:border-white/40 transition-colors text-white placeholder-gray-500 text-sm"
-            />
-
-            {/* Global Select All */}
-            <button
-              type="button"
-              onClick={handleSelectAll}
-              className="h-11 px-4 bg-white/5 backdrop-blur-md border border-white/20 rounded-xl hover:bg-white/10 transition-colors text-left flex items-center gap-2 text-white"
-            >
-              <span className="text-lg">
-                {selectedMemberIds.length === members.length ? '☑' : '☐'}
-              </span>
-              <span className="font-medium">전체 선택</span>
-            </button>
-
-            {/* Groups */}
-            <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto pr-1 scrollbar-thin">
-              {Object.entries(filteredGroupedMembers).map(([group, groupMembers]) => {
-                const { selectedCount, totalCount, allSelected } = getGroupStats(group);
-                const isExpanded = expandedGroups.includes(group);
-
-                return (
-                  <div
-                    key={group}
-                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden"
-                  >
-                    {/* Group Header */}
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-                      <button
-                        type="button"
-                        onClick={() => toggleGroup(group)}
-                        className="flex-1 flex items-center gap-2 text-left"
-                      >
-                        <span className="text-white/50">
-                          {isExpanded ? '▼' : '▶'}
-                        </span>
-                        <span className="font-semibold text-white">{group}</span>
-                        <span className="text-xs text-gray-400 ml-auto mr-2">
-                          {selectedCount} / {totalCount}
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSelectGroup(group)}
-                        className="text-lg ml-2"
-                      >
-                        {allSelected ? '☑' : '☐'}
-                      </button>
-                    </div>
-
-                    {/* Group Members */}
-                    {isExpanded && (
-                      <div className="p-2">
-                        {groupMembers.map((member) => (
-                          <button
-                            key={member.id}
-                            type="button"
-                            onClick={() => handleToggleMember(member.id)}
-                            className="w-full px-3 py-2 hover:bg-white/5 rounded-lg transition-colors flex items-center gap-3"
-                          >
-                            <span className="text-lg">
-                              {selectedMemberIds.includes(member.id) ? '☑' : '☐'}
-                            </span>
-                            <div className="flex-1 text-left">
-                              <p className="text-white text-sm font-medium">{member.name}</p>
-                              <p className="text-gray-400 text-xs">{member.phone}</p>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Note */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="note" className="text-sm font-medium text-white">
-              예배 특이사항 메모 (선택)
-            </label>
-            <textarea
-              id="note"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              rows={4}
-              className="px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl focus:outline-none focus:border-white/40 transition-colors resize-none text-white placeholder-gray-400"
-              placeholder="예배 특이사항 메모"
-            />
-          </div>
-
-          {error && (
-            <div className="bg-red-500/20 border border-red-500/30 rounded-lg px-4 py-3">
-              <p className="text-sm text-red-200 text-center">{error}</p>
-            </div>
-          )}
-
+          {/* Global Select All */}
           <button
-            type="submit"
-            disabled={loading}
-            className="h-12 bg-white text-black rounded-xl font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50"
+            type="button"
+            onClick={handleSelectAll}
+            className="h-11 px-4 border border-gray-200 rounded-lg hover:border-black transition-colors text-left flex items-center justify-between"
           >
-            {loading ? '생성 중...' : '세션 생성'}
+            <span className="font-medium">전체 선택</span>
+            <span className="text-xl">
+              {selectedMemberIds.length === members.length ? '☑' : '☐'}
+            </span>
           </button>
-        </form>
-      </div>
+
+          {/* Groups - Scrollable Container */}
+          <div className="flex flex-col gap-2 max-h-[50vh] overflow-y-auto border border-gray-100 rounded-xl p-2">
+            {Object.entries(filteredGroupedMembers).map(([group, groupMembers]) => {
+              const { selectedCount, totalCount, allSelected } = getGroupStats(group);
+              const isExpanded = expandedGroups.includes(group);
+
+              return (
+                <div
+                  key={group}
+                  className="border border-gray-200 rounded-xl overflow-hidden"
+                >
+                  {/* Group Header */}
+                  <div className="bg-gray-50 px-4 py-3 flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={() => toggleGroup(group)}
+                      className="flex-1 flex items-center gap-2 text-left min-h-[44px]"
+                    >
+                      <span className="text-gray-400 text-sm">
+                        {isExpanded ? '▼' : '▶'}
+                      </span>
+                      <span className="font-semibold">{group}</span>
+                      <span className="text-xs text-gray-500 ml-auto mr-3">
+                        {selectedCount} / {totalCount}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSelectGroup(group)}
+                      className="text-xl min-w-[44px] min-h-[44px] flex items-center justify-center"
+                    >
+                      {allSelected ? '☑' : '☐'}
+                    </button>
+                  </div>
+
+                  {/* Group Members */}
+                  {isExpanded && (
+                    <div className="bg-white">
+                      {groupMembers.map((member) => (
+                        <button
+                          key={member.id}
+                          type="button"
+                          onClick={() => handleToggleMember(member.id)}
+                          className="w-full px-4 py-3 hover:bg-gray-50 transition-colors flex items-center gap-3 border-t border-gray-100 min-h-[56px]"
+                        >
+                          <span className="text-xl min-w-[24px]">
+                            {selectedMemberIds.includes(member.id) ? '☑' : '☐'}
+                          </span>
+                          <div className="flex-1 text-left">
+                            <p className="text-sm font-medium">{member.name}</p>
+                            <p className="text-xs text-gray-500">{member.phone}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Note */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="note" className="text-sm font-medium">
+            예배 특이사항 메모 (선택)
+          </label>
+          <textarea
+            id="note"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={4}
+            className="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors resize-none"
+            placeholder="예배 특이사항 메모"
+          />
+        </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+            <p className="text-sm text-red-600 text-center">{error}</p>
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="h-12 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+        >
+          {loading ? '생성 중...' : '세션 생성'}
+        </button>
+      </form>
     </div>
   );
 }
