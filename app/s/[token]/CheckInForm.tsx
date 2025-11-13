@@ -34,7 +34,7 @@ export default function CheckInForm({
     if (result.success) {
       setSuccess(true);
       setDuplicate(result.duplicate || false);
-      setCheckedAt(new Date(result.checkedAt));
+      setCheckedAt(result.checkedAt ? new Date(result.checkedAt) : null);
       setMemberName(result.memberName);
       setMemberGroup(result.memberGroup || '');
     } else {
