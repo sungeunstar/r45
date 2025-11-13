@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createMember } from '@/lib/actions/members';
 import { useTheme } from '@/hooks/useTheme';
+import CustomSelect from '@/components/CustomSelect';
 
 export default function NewMemberPage() {
   const router = useRouter();
@@ -42,6 +43,12 @@ export default function NewMemberPage() {
     }
   }
 
+  const groupOptions = [
+    { value: '보컬', label: '보컬', icon: '🎤' },
+    { value: '악기', label: '악기', icon: '🎸' },
+    { value: '음향', label: '음향', icon: '🎚️' },
+  ];
+
   return (
     <div className="min-h-[calc(100vh-120px)] flex flex-col max-w-[420px] mx-auto w-full px-5 py-6">
       {/* Header */}
@@ -77,8 +84,8 @@ export default function NewMemberPage() {
               color: '#FFFFFF',
             } : {
               background: '#FFFFFF',
-              border: '1px solid #e5e7eb',
-              color: '#000000',
+              border: '1px solid #D4D7DF',
+              color: '#1A1E27',
             }}
             placeholder="홍길동"
           />
@@ -105,8 +112,8 @@ export default function NewMemberPage() {
               color: '#FFFFFF',
             } : {
               background: '#FFFFFF',
-              border: '1px solid #e5e7eb',
-              color: '#000000',
+              border: '1px solid #D4D7DF',
+              color: '#1A1E27',
             }}
             placeholder="01012345678"
           />
@@ -119,38 +126,12 @@ export default function NewMemberPage() {
           <label htmlFor="group" className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
             그룹
           </label>
-          <select
-            id="group"
+          <CustomSelect
             value={group}
-            onChange={(e) => setGroup(e.target.value)}
-            required
-            className="h-[52px] px-4 rounded-xl transition-all appearance-none cursor-pointer focus:outline-none"
-            style={theme === 'dark' ? {
-              backgroundColor: 'rgba(255,255,255,0.08)',
-              border: '1px solid rgba(255,255,255,0.14)',
-              color: '#FFFFFF',
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23fff' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'right 1rem center',
-              backgroundSize: 'auto',
-              paddingRight: '3rem',
-              colorScheme: 'dark',
-            } : {
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #e5e7eb',
-              color: '#000000',
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23000' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'right 1rem center',
-              backgroundSize: 'auto',
-              paddingRight: '3rem',
-              colorScheme: 'light',
-            }}
-          >
-            <option value="보컬" style={theme === 'dark' ? { backgroundColor: '#1a1a1a', color: '#FFFFFF' } : { backgroundColor: '#FFFFFF', color: '#000000' }}>🎤 보컬</option>
-            <option value="악기" style={theme === 'dark' ? { backgroundColor: '#1a1a1a', color: '#FFFFFF' } : { backgroundColor: '#FFFFFF', color: '#000000' }}>🎸 악기</option>
-            <option value="음향" style={theme === 'dark' ? { backgroundColor: '#1a1a1a', color: '#FFFFFF' } : { backgroundColor: '#FFFFFF', color: '#000000' }}>🎚️ 음향</option>
-          </select>
+            onChange={setGroup}
+            options={groupOptions}
+            placeholder="그룹 선택"
+          />
         </div>
 
         {error && (
@@ -165,16 +146,28 @@ export default function NewMemberPage() {
           </div>
         )}
 
+        {/* Primary Action Button */}
         <button
           type="submit"
           disabled={loading}
-          className="h-14 rounded-xl font-semibold text-base transition-all disabled:opacity-40 mt-auto"
+          className="w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40 mt-auto"
           style={theme === 'dark' ? {
-            background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
-            color: '#000000',
-          } : {
-            background: '#000000',
+            background: '#353C49',
             color: '#FFFFFF',
+            padding: '16px 24px',
+            border: 'none',
+          } : {
+            background: '#1A1E27',
+            color: '#FFFFFF',
+            padding: '16px 24px',
+            border: 'none',
+            boxShadow: '0 8px 20px rgba(26, 30, 39, 0.18)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = theme === 'dark' ? '#2A303B' : '#151823';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = theme === 'dark' ? '#353C49' : '#1A1E27';
           }}
         >
           {loading ? '등록 중...' : '멤버 등록'}
