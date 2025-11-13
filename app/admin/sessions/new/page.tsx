@@ -265,7 +265,7 @@ export default function NewSessionPage() {
             <span className="font-semibold text-sm" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>전체 선택</span>
             <div className={`w-5 h-5 rounded flex items-center justify-center transition-all`}
               style={selectedMemberIds.length === members.length
-                ? (theme === 'dark' ? { background: '#FFFFFF', color: '#000000' } : { background: '#3b82f6', color: '#FFFFFF' })
+                ? (theme === 'dark' ? { background: '#FFFFFF', color: '#000000' } : { background: '#000000', color: '#FFFFFF' })
                 : (theme === 'dark' ? { border: '1px solid rgba(255,255,255,0.3)' } : { border: '1px solid rgba(0,0,0,0.3)' })
               }>
               {selectedMemberIds.length === members.length && (
@@ -316,7 +316,7 @@ export default function NewSessionPage() {
                       onClick={() => handleSelectGroup(group)}
                       className={`w-5 h-5 rounded flex items-center justify-center transition-all`}
                       style={allSelected
-                        ? (theme === 'dark' ? { background: '#FFFFFF', color: '#000000' } : { background: '#3b82f6', color: '#FFFFFF' })
+                        ? (theme === 'dark' ? { background: '#FFFFFF', color: '#000000' } : { background: '#000000', color: '#FFFFFF' })
                         : (theme === 'dark' ? { border: '1px solid rgba(255,255,255,0.3)' } : { border: '1px solid rgba(0,0,0,0.3)' })
                       }
                     >
@@ -343,7 +343,7 @@ export default function NewSessionPage() {
                           >
                             <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 transition-all`}
                               style={isSelected
-                                ? (theme === 'dark' ? { background: '#FFFFFF', color: '#000000' } : { background: '#3b82f6', color: '#FFFFFF' })
+                                ? (theme === 'dark' ? { background: '#FFFFFF', color: '#000000' } : { background: '#000000', color: '#FFFFFF' })
                                 : (theme === 'dark' ? { border: '1px solid rgba(255,255,255,0.3)' } : { border: '1px solid rgba(0,0,0,0.3)' })
                               }>
                               {isSelected && (
@@ -405,7 +405,7 @@ export default function NewSessionPage() {
             background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
             color: '#000000',
           } : {
-            background: '#3b82f6',
+            background: '#000000',
             color: '#FFFFFF',
           }}
         >

@@ -115,7 +115,7 @@ export default function NewAdminPage() {
             background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
             color: '#000000',
           } : {
-            background: '#3b82f6',
+            background: '#000000',
             color: '#FFFFFF',
           }}
         >

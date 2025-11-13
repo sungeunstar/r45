@@ -26,7 +26,7 @@ export default function ThemeToggle() {
   };
 
   return (
-    <div className="header-theme-toggle" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="header-theme-toggle" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} suppressHydrationWarning>
       <label className="theme-toggle" style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>
         <input
           type="checkbox"
@@ -62,6 +62,7 @@ export default function ThemeToggle() {
           >
             {/* SUN 아이콘 - 라이트 모드 */}
             <span
+              suppressHydrationWarning
               style={{
                 position: 'absolute',
                 inset: '0',
@@ -77,6 +78,7 @@ export default function ThemeToggle() {
 
             {/* MOON 아이콘 - 다크 모드 */}
             <span
+              suppressHydrationWarning
               style={{
                 position: 'absolute',
                 inset: '0',

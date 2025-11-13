@@ -211,7 +211,7 @@ export default function EditMemberPage() {
               background: isActive ? '#FFFFFF' : 'transparent',
               border: isActive ? 'none' : '1px solid rgba(255,255,255,0.3)',
             } : {
-              background: isActive ? '#3b82f6' : 'transparent',
+              background: isActive ? '#000000' : 'transparent',
               border: isActive ? 'none' : '1px solid rgba(0,0,0,0.3)',
             }}
           >
@@ -247,7 +247,7 @@ export default function EditMemberPage() {
               background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
               color: '#000000',
             } : {
-              background: '#3b82f6',
+              background: '#000000',
               color: '#FFFFFF',
             }}
           >

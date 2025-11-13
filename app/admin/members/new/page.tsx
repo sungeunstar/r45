@@ -126,7 +126,7 @@ export default function NewMemberPage() {
             required
             className="h-[52px] px-4 rounded-xl transition-all appearance-none cursor-pointer focus:outline-none"
             style={theme === 'dark' ? {
-              background: 'rgba(255,255,255,0.08)',
+              backgroundColor: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
               color: '#FFFFFF',
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23fff' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
@@ -135,7 +135,7 @@ export default function NewMemberPage() {
               paddingRight: '3rem',
               colorScheme: 'dark',
             } : {
-              background: '#FFFFFF',
+              backgroundColor: '#FFFFFF',
               border: '1px solid #e5e7eb',
               color: '#000000',
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23000' stroke-opacity='0.7' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
@@ -171,7 +171,7 @@ export default function NewMemberPage() {
             background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
             color: '#000000',
           } : {
-            background: '#3b82f6',
+            background: '#000000',
             color: '#FFFFFF',
           }}
         >
