@@ -34,7 +34,7 @@ export async function createSession(name: string, note: string, date: string, me
     }
 
     revalidatePath('/admin/sessions');
-    return { success: true };
+    return { success: true, sessionId: session.id };
   } catch (error) {
     console.error('Create session error:', error);
     return { success: false, error: 'Failed to create session' };
