@@ -24,21 +24,21 @@ async function main() {
 
   // Seed members
   const members = [
-    { name: '김하늘', group: '보컬' },
-    { name: '이가은', group: '보컬' },
-    { name: '박요한', group: '악기' },
-    { name: '최민수', group: '악기' },
-    { name: '정현우', group: '음향' },
+    { name: '김하늘', phone: '010-1234-5678', group: '보컬' },
+    { name: '이가은', phone: '010-2345-6789', group: '보컬' },
+    { name: '박요한', phone: '010-3456-7890', group: '악기' },
+    { name: '최민수', phone: '010-4567-8901', group: '악기' },
+    { name: '정현우', phone: '010-5678-9012', group: '음향' },
   ];
 
   for (const member of members) {
     const existing = await prisma.member.findFirst({
-      where: { name: member.name, group: member.group },
+      where: { name: member.name },
     });
 
     if (!existing) {
       await prisma.member.create({ data: member });
-      console.log(`✅ Member created: ${member.name} (${member.group})`);
+      console.log(`✅ Member created: ${member.name} (${member.group}) - ${member.phone}`);
     } else {
       console.log(`ℹ️  Member already exists: ${member.name}`);
     }

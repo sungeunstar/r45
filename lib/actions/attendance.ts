@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import { headers } from 'next/headers';
 
-export async function checkInAttendance(publicToken: string, memberId: string) {
+export async function checkInAttendance(publicToken: string, phoneNumber: string) {
   try {
     // Get session by token
     const session = await prisma.session.findUnique({
@@ -11,16 +11,30 @@ export async function checkInAttendance(publicToken: string, memberId: string) {
     });
 
     if (!session) {
-      return { success: false, error: 'Invalid session' };
+      return { success: false, error: '세션을 찾을 수 없습니다' };
     }
 
-    // Get member
-    const member = await prisma.member.findUnique({
-      where: { id: memberId },
+    // Find member by phone number
+    const member = await prisma.member.findFirst({
+      where: { phone: phoneNumber, isActive: true },
     });
 
     if (!member) {
-      return { success: false, error: 'Invalid member' };
+      return { success: false, error: '등록되지 않은 전화번호입니다' };
+    }
+
+    // Check if member is invited to this session
+    const invited = await prisma.sessionMember.findUnique({
+      where: {
+        sessionId_memberId: {
+          sessionId: session.id,
+          memberId: member.id,
+        },
+      },
+    });
+
+    if (!invited) {
+      return { success: false, error: '이 세션에 초대되지 않은 멤버입니다' };
     }
 
     // Check if already checked in
@@ -28,7 +42,7 @@ export async function checkInAttendance(publicToken: string, memberId: string) {
       where: {
         sessionId_memberId: {
           sessionId: session.id,
-          memberId: memberId,
+          memberId: member.id,
         },
       },
     });
@@ -39,6 +53,7 @@ export async function checkInAttendance(publicToken: string, memberId: string) {
         duplicate: true,
         checkedAt: existing.checkedAt,
         memberName: member.name,
+        memberGroup: member.group,
       };
     }
 
@@ -51,7 +66,7 @@ export async function checkInAttendance(publicToken: string, memberId: string) {
     const attendance = await prisma.attendance.create({
       data: {
         sessionId: session.id,
-        memberId: memberId,
+        memberId: member.id,
         ip,
         userAgent,
       },
@@ -62,10 +77,11 @@ export async function checkInAttendance(publicToken: string, memberId: string) {
       duplicate: false,
       checkedAt: attendance.checkedAt,
       memberName: member.name,
+      memberGroup: member.group,
     };
   } catch (error) {
     console.error('Check-in error:', error);
-    return { success: false, error: 'Failed to check in' };
+    return { success: false, error: '출석 처리 실패' };
   }
 }
 

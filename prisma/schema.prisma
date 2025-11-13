@@ -20,6 +20,7 @@ model AdminUser {
 model Member {
   id        String   @id @default(uuid())
   name      String
+  phone     String
   group     String
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -32,6 +33,15 @@ model Session {
   date        DateTime @default(now())
   publicToken String   @unique
   createdAt   DateTime @default(now())
+}
+
+model SessionMember {
+  id        String   @id @default(uuid())
+  sessionId String
+  memberId  String
+  createdAt DateTime @default(now())
+
+  @@unique([sessionId, memberId])
 }
 
 model Attendance {

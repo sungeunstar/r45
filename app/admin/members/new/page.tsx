@@ -7,6 +7,7 @@ import { createMember } from '@/lib/actions/members';
 export default function NewMemberPage() {
   const router = useRouter();
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [group, setGroup] = useState('보컬');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -16,7 +17,7 @@ export default function NewMemberPage() {
     setError('');
     setLoading(true);
 
-    const result = await createMember(name, group);
+    const result = await createMember(name, phone, group);
 
     if (result.success) {
       router.push('/admin/members');
@@ -52,6 +53,21 @@ export default function NewMemberPage() {
             required
             className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
             placeholder="홍길동"
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="phone" className="text-sm font-medium">
+            Phone Number
+          </label>
+          <input
+            id="phone"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+            placeholder="010-1234-5678"
           />
         </div>
 

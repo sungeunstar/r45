@@ -5,7 +5,7 @@ import { isAuthenticated } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-export async function createMember(name: string, group: string) {
+export async function createMember(name: string, phone: string, group: string) {
   const authenticated = await isAuthenticated();
   if (!authenticated) {
     redirect('/admin/login');
@@ -13,7 +13,7 @@ export async function createMember(name: string, group: string) {
 
   try {
     await prisma.member.create({
-      data: { name, group, isActive: true },
+      data: { name, phone, group, isActive: true },
     });
 
     revalidatePath('/admin/members');
@@ -24,7 +24,7 @@ export async function createMember(name: string, group: string) {
   }
 }
 
-export async function updateMember(id: string, name: string, group: string, isActive: boolean) {
+export async function updateMember(id: string, name: string, phone: string, group: string, isActive: boolean) {
   const authenticated = await isAuthenticated();
   if (!authenticated) {
     redirect('/admin/login');
@@ -33,7 +33,7 @@ export async function updateMember(id: string, name: string, group: string, isAc
   try {
     await prisma.member.update({
       where: { id },
-      data: { name, group, isActive },
+      data: { name, phone, group, isActive },
     });
 
     revalidatePath('/admin/members');
