@@ -3,60 +3,119 @@
 import { useState, useEffect } from 'react';
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
     // 초기 테마 설정 (로컬스토리지에서 가져오거나 기본값 dark)
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     const initialTheme = savedTheme || 'dark';
-    setTheme(initialTheme);
+    const initialIsDark = initialTheme === 'dark';
+    setIsDark(initialIsDark);
     document.documentElement.setAttribute('data-theme', initialTheme);
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
+    const newIsDark = !isDark;
+    const newTheme = newIsDark ? 'dark' : 'light';
+    setIsDark(newIsDark);
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
   };
 
   return (
-    <button
-      onClick={toggleTheme}
-      aria-label="Toggle dark mode"
-      className="theme-toggle"
-      style={{
-        width: '48px',
-        height: '26px',
-        background: theme === 'light' ? '#e3e3e3' : '#333333',
-        borderRadius: '30px',
-        padding: '3px',
-        display: 'flex',
-        alignItems: 'center',
-        transition: 'background 0.25s ease',
-        border: 'none',
-        cursor: 'pointer',
-        outline: 'none',
-      }}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggleTheme();
-        }
-      }}
-    >
-      {/* 심플한 원형 thumb */}
-      <span
-        className="toggle-thumb"
-        style={{
-          width: '20px',
-          height: '20px',
-          background: '#ffffff',
-          borderRadius: '50%',
-          transition: 'transform 0.25s ease',
-          transform: theme === 'dark' ? 'translateX(22px)' : 'translateX(0)',
-        }}
-      />
-    </button>
+    <div className="header-theme-toggle" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+      <label className="theme-toggle" style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>
+        <input
+          type="checkbox"
+          checked={isDark}
+          onChange={toggleTheme}
+          style={{ display: 'none' }}
+          aria-label="Toggle dark mode"
+        />
+        <span
+          className="track"
+          style={{
+            width: '72px',
+            height: '36px',
+            padding: '4px',
+            borderRadius: '999px',
+            background: isDark ? '#3b3c3f' : '#ff962a',
+            display: 'flex',
+            alignItems: 'center',
+            transition: 'background .25s ease',
+          }}
+        >
+          <span
+            className="knob"
+            style={{
+              width: '28px',
+              height: '28px',
+              borderRadius: '50%',
+              background: '#ffffff',
+              position: 'relative',
+              transition: 'transform .25s ease',
+              transform: isDark ? 'translateX(36px)' : 'translateX(0)',
+            }}
+          >
+            {/* SUN 아이콘 */}
+            <span
+              className="icon icon-sun"
+              style={{
+                position: 'absolute',
+                inset: '0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: isDark ? 0 : 1,
+                transition: 'opacity .2s ease',
+              }}
+            >
+              <span
+                style={{
+                  width: '12px',
+                  height: '12px',
+                  borderRadius: '50%',
+                  background: '#ff962a',
+                  boxShadow: `
+                    0 -8px 0 0 #ff962a,
+                    0  8px 0 0 #ff962a,
+                    8px  0 0 0 #ff962a,
+                   -8px  0 0 0 #ff962a,
+                    6px  6px 0 0 #ff962a,
+                   -6px  6px 0 0 #ff962a,
+                    6px -6px 0 0 #ff962a,
+                   -6px -6px 0 0 #ff962a
+                  `,
+                }}
+              />
+            </span>
+
+            {/* MOON 아이콘 */}
+            <span
+              className="icon icon-moon"
+              style={{
+                position: 'absolute',
+                inset: '0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: isDark ? 1 : 0,
+                transition: 'opacity .2s ease',
+              }}
+            >
+              <span
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: '#333333',
+                  boxShadow: '-5px 0 0 0 #ffffff',
+                }}
+              />
+            </span>
+          </span>
+        </span>
+      </label>
+    </div>
   );
 }

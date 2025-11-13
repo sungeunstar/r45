@@ -22,19 +22,88 @@ html:not([data-theme]) {
   color: #FFFFFF;
 }
 
-/* 라이트 모드 */
+/* 라이트 모드 - 원래의 화이트 배경 */
 html[data-theme="light"] {
-  background: #F9FAFB;
-  color: #111827;
+  background: #FFFFFF;
+  color: #000000;
 }
 
 /* 라이트 모드에서 텍스트 색상 조정 */
 html[data-theme="light"] h1,
 html[data-theme="light"] h2,
-html[data-theme="light"] h3,
-html[data-theme="light"] button,
-html[data-theme="light"] a {
-  color: #111827;
+html[data-theme="light"] h3 {
+  color: #000000;
+}
+
+html[data-theme="light"] p,
+html[data-theme="light"] span,
+html[data-theme="light"] label {
+  color: #000000;
+}
+
+/* AdminNav 스타일 - 다크 모드 */
+html[data-theme="dark"] .admin-nav-border,
+html:not([data-theme]) .admin-nav-border {
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+html[data-theme="dark"] .admin-nav-title,
+html:not([data-theme]) .admin-nav-title {
+  color: #FFFFFF;
+}
+
+html[data-theme="dark"] .admin-nav-logout,
+html:not([data-theme]) .admin-nav-logout {
+  color: rgba(255,255,255,0.6);
+}
+
+html[data-theme="dark"] .admin-nav-logout:hover,
+html:not([data-theme]) .admin-nav-logout:hover {
+  color: rgba(255,255,255,0.9);
+}
+
+html[data-theme="dark"] .admin-nav-tab[data-active="true"],
+html:not([data-theme]) .admin-nav-tab[data-active="true"] {
+  color: #FFFFFF;
+}
+
+html[data-theme="dark"] .admin-nav-tab[data-active="false"],
+html:not([data-theme]) .admin-nav-tab[data-active="false"] {
+  color: rgba(255,255,255,0.5);
+}
+
+html[data-theme="dark"] .admin-nav-indicator,
+html:not([data-theme]) .admin-nav-indicator {
+  background: #FFFFFF;
+}
+
+/* AdminNav 스타일 - 라이트 모드 */
+html[data-theme="light"] .admin-nav-border {
+  border-bottom: 1px solid rgba(0,0,0,0.12);
+}
+
+html[data-theme="light"] .admin-nav-title {
+  color: #000000;
+}
+
+html[data-theme="light"] .admin-nav-logout {
+  color: rgba(0,0,0,0.6);
+}
+
+html[data-theme="light"] .admin-nav-logout:hover {
+  color: rgba(0,0,0,0.9);
+}
+
+html[data-theme="light"] .admin-nav-tab[data-active="true"] {
+  color: #000000;
+}
+
+html[data-theme="light"] .admin-nav-tab[data-active="false"] {
+  color: rgba(0,0,0,0.5);
+}
+
+html[data-theme="light"] .admin-nav-indicator {
+  background: #000000;
 }
 
 body {
