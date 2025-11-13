@@ -22,11 +22,17 @@ export default function CopyLinkButton({ url }: { url: string }) {
       onClick={handleCopy}
       className="h-11 px-4 rounded-xl text-sm font-semibold transition-all"
       style={theme === 'dark' ? {
-        background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
-        color: '#000000',
-      } : {
-        background: '#000000',
+        background: '#353C49',
         color: '#FFFFFF',
+      } : {
+        background: '#1A1E27',
+        color: '#FFFFFF',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = theme === 'dark' ? '#2A303B' : '#151823';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = theme === 'dark' ? '#353C49' : '#1A1E27';
       }}
     >
       {copied ? 'Copied!' : 'Copy Check-in Link'}

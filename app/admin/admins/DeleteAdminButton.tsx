@@ -36,8 +36,14 @@ export default function DeleteAdminButton({
       disabled={loading}
       className="h-8 px-3 rounded-lg text-sm transition-colors disabled:opacity-50"
       style={{
-        background: '#FF5555',
+        background: '#FF5F5F',
         color: '#FFFFFF',
+      }}
+      onMouseEnter={(e) => {
+        if (!loading) e.currentTarget.style.background = '#E64B4B';
+      }}
+      onMouseLeave={(e) => {
+        if (!loading) e.currentTarget.style.background = '#FF5F5F';
       }}
     >
       {loading ? 'Deleting...' : 'Delete'}

@@ -47,8 +47,8 @@ export default function ExportCSVButton({ sessionId }: { sessionId: string }) {
         color: '#FFFFFF',
       } : {
         background: '#FFFFFF',
-        border: '1px solid #e5e7eb',
-        color: '#000000',
+        border: '1px solid #D4D7DF',
+        color: '#1A1E27',
       }}
     >
       {loading ? 'Exporting...' : 'Export CSV'}

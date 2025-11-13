@@ -187,8 +187,8 @@ export default function NewSessionPage() {
               color: '#FFFFFF',
             } : {
               background: '#FFFFFF',
-              border: '1px solid #e5e7eb',
-              color: '#000000',
+              border: '1px solid #D4D7DF',
+              color: '#1A1E27',
             }}
             placeholder="주일 1부 예배"
           />
@@ -213,8 +213,8 @@ export default function NewSessionPage() {
               colorScheme: 'dark',
             } : {
               background: '#FFFFFF',
-              border: '1px solid #e5e7eb',
-              color: '#000000',
+              border: '1px solid #D4D7DF',
+              color: '#1A1E27',
               colorScheme: 'light',
             }}
           />
@@ -244,8 +244,8 @@ export default function NewSessionPage() {
               color: '#FFFFFF',
             } : {
               background: '#FFFFFF',
-              border: '1px solid #e5e7eb',
-              color: '#000000',
+              border: '1px solid #D4D7DF',
+              color: '#1A1E27',
             }}
           />
 
@@ -384,8 +384,8 @@ export default function NewSessionPage() {
               color: '#FFFFFF',
             } : {
               background: '#FFFFFF',
-              border: '1px solid #e5e7eb',
-              color: '#000000',
+              border: '1px solid #D4D7DF',
+              color: '#1A1E27',
             }}
             placeholder="세션 내용을 입력하세요"
           />
@@ -400,13 +400,24 @@ export default function NewSessionPage() {
         <button
           type="submit"
           disabled={loading}
-          className="h-14 rounded-xl font-semibold text-base transition-all disabled:opacity-40"
+          className="w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40"
           style={theme === 'dark' ? {
-            background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
-            color: '#000000',
-          } : {
-            background: '#000000',
+            background: '#353C49',
             color: '#FFFFFF',
+            padding: '16px 24px',
+            border: 'none',
+          } : {
+            background: '#1A1E27',
+            color: '#FFFFFF',
+            padding: '16px 24px',
+            border: 'none',
+            boxShadow: '0 8px 20px rgba(26, 30, 39, 0.18)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = theme === 'dark' ? '#2A303B' : '#151823';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = theme === 'dark' ? '#353C49' : '#1A1E27';
           }}
         >
           {loading ? '생성 중...' : '세션 생성'}

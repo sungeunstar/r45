@@ -26,6 +26,13 @@ export default function ThemeToggle() {
     localStorage.setItem('theme', newTheme);
   };
 
+  // Don't render toggle until mounted to prevent jumping
+  if (!mounted) {
+    return (
+      <div className="header-theme-toggle" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '72px', height: '36px' }} />
+    );
+  }
+
   return (
     <div className="header-theme-toggle" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} suppressHydrationWarning>
       <label className="theme-toggle" style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>

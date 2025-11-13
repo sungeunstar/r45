@@ -37,8 +37,14 @@ export default function DeleteButton({
       disabled={loading}
       className="h-11 px-4 rounded-xl text-sm font-semibold transition-all disabled:opacity-40"
       style={{
-        background: '#FF5555',
+        background: '#FF5F5F',
         color: '#FFFFFF',
+      }}
+      onMouseEnter={(e) => {
+        if (!loading) e.currentTarget.style.background = '#E64B4B';
+      }}
+      onMouseLeave={(e) => {
+        if (!loading) e.currentTarget.style.background = '#FF5F5F';
       }}
     >
       {loading ? 'Deleting...' : 'Delete Session'}
