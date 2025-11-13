@@ -14,8 +14,6 @@ type Member = {
   isActive: boolean;
 };
 
-type GroupTab = '전체' | '보컬' | '악기' | '음향';
-
 export default function NewSessionPage() {
   const router = useRouter();
   const [name, setName] = useState('');
@@ -24,7 +22,7 @@ export default function NewSessionPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<GroupTab>('전체');
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['보컬', '악기', '음향']);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [loadingMembers, setLoadingMembers] = useState(true);
@@ -39,35 +37,64 @@ export default function NewSessionPage() {
     loadMembers();
   }, []);
 
-  // Filter members based on active tab and search term
-  const displayedMembers = useMemo(() => {
-    let filtered = members;
+  // Group members by team
+  const groupedMembers = useMemo(() => {
+    const groups: Record<string, Member[]> = {
+      '보컬': [],
+      '악기': [],
+      '음향': [],
+    };
 
-    // Filter by group tab
-    if (activeTab !== '전체') {
-      filtered = filtered.filter(m => m.group === activeTab);
-    }
+    members.forEach(member => {
+      if (groups[member.group]) {
+        groups[member.group].push(member);
+      }
+    });
 
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(m =>
+    return groups;
+  }, [members]);
+
+  // Filter members by search term
+  const filteredGroupedMembers = useMemo(() => {
+    if (!searchTerm) return groupedMembers;
+
+    const filtered: Record<string, Member[]> = {};
+    Object.entries(groupedMembers).forEach(([group, groupMembers]) => {
+      const matchedMembers = groupMembers.filter(m =>
         m.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-    }
+      if (matchedMembers.length > 0) {
+        filtered[group] = matchedMembers;
+      }
+    });
 
     return filtered;
-  }, [members, activeTab, searchTerm]);
+  }, [groupedMembers, searchTerm]);
+
+  function toggleGroup(group: string) {
+    setExpandedGroups(prev =>
+      prev.includes(group)
+        ? prev.filter(g => g !== group)
+        : [...prev, group]
+    );
+  }
 
   function handleSelectAll() {
-    const currentTabMemberIds = displayedMembers.map(m => m.id);
-    const allCurrentSelected = currentTabMemberIds.every(id => selectedMemberIds.includes(id));
-
-    if (allCurrentSelected) {
-      // Deselect all from current tab
-      setSelectedMemberIds(prev => prev.filter(id => !currentTabMemberIds.includes(id)));
+    if (selectedMemberIds.length === members.length) {
+      setSelectedMemberIds([]);
     } else {
-      // Select all from current tab
-      setSelectedMemberIds(prev => [...new Set([...prev, ...currentTabMemberIds])]);
+      setSelectedMemberIds(members.map(m => m.id));
+    }
+  }
+
+  function handleSelectGroup(group: string) {
+    const groupMemberIds = groupedMembers[group].map(m => m.id);
+    const allSelected = groupMemberIds.every(id => selectedMemberIds.includes(id));
+
+    if (allSelected) {
+      setSelectedMemberIds(prev => prev.filter(id => !groupMemberIds.includes(id)));
+    } else {
+      setSelectedMemberIds(prev => [...new Set([...prev, ...groupMemberIds])]);
     }
   }
 
@@ -79,7 +106,12 @@ export default function NewSessionPage() {
     }
   }
 
-  const isAllCurrentSelected = displayedMembers.length > 0 && displayedMembers.every(m => selectedMemberIds.includes(m.id));
+  function getGroupStats(group: string) {
+    const groupMemberIds = groupedMembers[group].map(m => m.id);
+    const selectedCount = groupMemberIds.filter(id => selectedMemberIds.includes(id)).length;
+    const totalCount = groupMemberIds.length;
+    return { selectedCount, totalCount, allSelected: selectedCount === totalCount && totalCount > 0 };
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -105,32 +137,38 @@ export default function NewSessionPage() {
 
   if (loadingMembers) {
     return (
-      <div className="min-h-[calc(100vh-120px)] flex items-center justify-center">
-        <p className="text-gray-500">로딩 중...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-white/70">로딩 중...</p>
       </div>
     );
   }
 
+  const groupEmoji: Record<string, string> = {
+    '보컬': '🎤',
+    '악기': '🎸',
+    '음향': '🎚️',
+  };
+
   return (
-    <div className="min-h-[calc(100vh-120px)] flex flex-col">
+    <div className="min-h-screen py-6">
       {/* Header */}
       <div className="mb-8 relative">
         <button
           onClick={() => router.back()}
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-600 hover:text-black transition-colors"
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
           aria-label="뒤로가기"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <h1 className="text-xl font-bold text-center">세션 생성</h1>
+        <h1 className="text-xl font-bold text-center text-white">세션 생성</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {/* Session Name */}
-        <div className="flex flex-col gap-3">
-          <label htmlFor="name" className="text-sm font-semibold text-gray-900">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="name" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
             세션 이름
           </label>
           <input
@@ -139,14 +177,18 @@ export default function NewSessionPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-base"
+            className="h-[52px] px-4 rounded-xl text-white placeholder-white/40 transition-all focus:outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.14)',
+            }}
             placeholder="주일 1부 예배"
           />
         </div>
 
         {/* Date & Time */}
-        <div className="flex flex-col gap-3">
-          <label htmlFor="date" className="text-sm font-semibold text-gray-900">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="date" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
             날짜와 시간
           </label>
           <input
@@ -155,46 +197,24 @@ export default function NewSessionPage() {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
-            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-base"
+            className="h-[52px] px-4 rounded-xl text-white transition-all focus:outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              colorScheme: 'dark',
+            }}
           />
         </div>
 
         {/* Member Selection */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-semibold text-gray-900">
+            <label className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
               멤버 선택
             </label>
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-sm font-medium text-white/60">
               {selectedMemberIds.length} / {members.length}
             </span>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex gap-2 border-b-2 border-gray-200">
-            {([
-              { name: '전체', emoji: '' },
-              { name: '보컬', emoji: '🎤' },
-              { name: '악기', emoji: '🎸' },
-              { name: '음향', emoji: '🎚️' },
-            ] as Array<{ name: GroupTab; emoji: string }>).map((tab) => (
-              <button
-                key={tab.name}
-                type="button"
-                onClick={() => setActiveTab(tab.name)}
-                className={`px-4 py-3 font-semibold text-sm transition-all relative ${
-                  activeTab === tab.name
-                    ? 'text-black'
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
-              >
-                {tab.emoji && <span className="mr-1">{tab.emoji}</span>}
-                {tab.name}
-                {activeTab === tab.name && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></div>
-                )}
-              </button>
-            ))}
           </div>
 
           {/* Search */}
@@ -203,74 +223,128 @@ export default function NewSessionPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="이름으로 검색"
-            className="h-11 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-sm"
+            className="h-11 px-4 rounded-xl text-white placeholder-white/40 text-sm transition-all focus:outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.12)',
+            }}
           />
 
-          {/* Select All Button */}
+          {/* Global Select All */}
           <button
             type="button"
             onClick={handleSelectAll}
-            className="h-12 px-4 border-2 border-gray-200 rounded-xl hover:border-black transition-all text-left flex items-center justify-between"
+            className="h-12 px-4 rounded-xl text-left flex items-center justify-between transition-all hover:bg-white/5"
+            style={{
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.12)',
+            }}
           >
-            <span className="font-semibold text-sm">
-              {activeTab === '전체' ? '전체 선택' : `${activeTab} 전체 선택`}
-            </span>
-            <div className={`w-6 h-6 rounded-md flex items-center justify-center transition-all ${
-              isAllCurrentSelected
-                ? 'bg-black text-white'
-                : 'border-2 border-gray-300'
+            <span className="font-semibold text-sm text-white">전체 선택</span>
+            <div className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
+              selectedMemberIds.length === members.length
+                ? 'bg-white text-black'
+                : 'border border-white/30'
             }`}>
-              {isAllCurrentSelected && (
-                <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 5.5L5 9.5L13 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              {selectedMemberIds.length === members.length && (
+                <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 5L4 8L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               )}
             </div>
           </button>
 
-          {/* Member List - Scrollable */}
-          <div className="border-2 border-gray-200 rounded-xl overflow-hidden">
-            <div className="max-h-[50vh] overflow-y-auto">
-              {displayedMembers.length === 0 ? (
-                <div className="py-12 text-center text-gray-400 text-sm">
-                  멤버가 없습니다
-                </div>
-              ) : (
-                displayedMembers.map((member) => {
-                  const isSelected = selectedMemberIds.includes(member.id);
-                  return (
+          {/* Groups - Accordion */}
+          <div className="flex flex-col gap-2">
+            {Object.entries(filteredGroupedMembers).map(([group, groupMembers]) => {
+              const { selectedCount, totalCount, allSelected } = getGroupStats(group);
+              const isExpanded = expandedGroups.includes(group);
+
+              return (
+                <div
+                  key={group}
+                  className="rounded-[18px] overflow-hidden"
+                  style={{
+                    background: 'rgba(255,255,255,0.06)',
+                    backdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                  }}
+                >
+                  {/* Group Header */}
+                  <div className="px-4 py-3 flex items-center justify-between">
                     <button
-                      key={member.id}
                       type="button"
-                      onClick={() => handleToggleMember(member.id)}
-                      className="w-full px-4 py-4 hover:bg-gray-50 transition-colors flex items-center gap-4 border-b border-gray-100 last:border-b-0 min-h-[64px]"
+                      onClick={() => toggleGroup(group)}
+                      className="flex-1 flex items-center gap-2 text-left min-h-[44px]"
                     >
-                      <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all ${
-                        isSelected
-                          ? 'bg-black text-white'
-                          : 'border-2 border-gray-300'
-                      }`}>
-                        {isSelected && (
-                          <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 5.5L5 9.5L13 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        )}
-                      </div>
-                      <div className="flex-1 text-left">
-                        <p className="text-sm font-semibold text-gray-900">{member.name}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">{member.phone}</p>
-                      </div>
+                      <span className="text-white/40 text-sm">
+                        {isExpanded ? '▼' : '▶'}
+                      </span>
+                      <span className="text-lg">{groupEmoji[group]}</span>
+                      <span className="font-semibold text-white">{group}</span>
+                      <span className="text-xs text-white/50 ml-auto mr-3">
+                        {selectedCount} / {totalCount}
+                      </span>
                     </button>
-                  );
-                })
-              )}
-            </div>
+                    <button
+                      type="button"
+                      onClick={() => handleSelectGroup(group)}
+                      className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
+                        allSelected
+                          ? 'bg-white text-black'
+                          : 'border border-white/30'
+                      }`}
+                    >
+                      {allSelected && (
+                        <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1 5L4 8L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Group Members */}
+                  {isExpanded && (
+                    <div className="max-h-[40vh] overflow-y-auto" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                      {groupMembers.map((member) => {
+                        const isSelected = selectedMemberIds.includes(member.id);
+                        return (
+                          <button
+                            key={member.id}
+                            type="button"
+                            onClick={() => handleToggleMember(member.id)}
+                            className="w-full px-4 py-3 hover:bg-white/5 transition-colors flex items-center gap-3 min-h-[56px]"
+                            style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+                          >
+                            <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 transition-all ${
+                              isSelected
+                                ? 'bg-white text-black'
+                                : 'border border-white/30'
+                            }`}>
+                              {isSelected && (
+                                <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1 5L4 8L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              )}
+                            </div>
+                            <div className="flex-1 text-left">
+                              <p className="text-sm font-semibold text-white">{member.name}</p>
+                              <p className="text-xs text-white/50 mt-0.5">{member.phone}</p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {/* Note */}
-        <div className="flex flex-col gap-3">
-          <label htmlFor="note" className="text-sm font-semibold text-gray-900">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="note" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
             세션 내용 (선택)
           </label>
           <textarea
@@ -278,21 +352,28 @@ export default function NewSessionPage() {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             rows={4}
-            className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all resize-none text-base"
+            className="px-4 py-3 rounded-xl text-white placeholder-white/40 resize-none transition-all focus:outline-none"
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.14)',
+            }}
             placeholder="세션 내용을 입력하세요"
           />
         </div>
 
         {error && (
-          <div className="bg-red-50 border-2 border-red-200 rounded-xl px-4 py-3">
-            <p className="text-sm text-red-600 text-center font-medium">{error}</p>
+          <div className="rounded-xl px-4 py-3" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)' }}>
+            <p className="text-sm text-red-400 text-center font-medium">{error}</p>
           </div>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="h-14 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 text-base mt-auto"
+          className="h-14 rounded-xl font-semibold text-base text-black transition-all disabled:opacity-40"
+          style={{
+            background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
+          }}
         >
           {loading ? '생성 중...' : '세션 생성'}
         </button>
