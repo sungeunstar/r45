@@ -44,17 +44,17 @@ export default function SessionsPage() {
           href="/admin/sessions/new"
           className="h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all"
           style={theme === 'dark' ? {
-            background: '#353C49',
-            color: '#FFFFFF',
+            background: '#FFFFFF',
+            color: '#0b0b0b',
           } : {
             background: '#1A1E27',
             color: '#FFFFFF',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? '#2A303B' : '#151823';
+            e.currentTarget.style.background = theme === 'dark' ? '#f5f5f5' : '#151823';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? '#353C49' : '#1A1E27';
+            e.currentTarget.style.background = theme === 'dark' ? '#FFFFFF' : '#1A1E27';
           }}
         >
           Create Session
