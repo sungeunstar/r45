@@ -14,6 +14,8 @@ type Member = {
   isActive: boolean;
 };
 
+type GroupTab = '전체' | '보컬' | '악기' | '음향';
+
 export default function NewSessionPage() {
   const router = useRouter();
   const [name, setName] = useState('');
@@ -22,7 +24,7 @@ export default function NewSessionPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['보컬', '악기', '음향']);
+  const [activeTab, setActiveTab] = useState<GroupTab>('전체');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [loadingMembers, setLoadingMembers] = useState(true);
@@ -37,64 +39,35 @@ export default function NewSessionPage() {
     loadMembers();
   }, []);
 
-  // Group members by team
-  const groupedMembers = useMemo(() => {
-    const groups: Record<string, Member[]> = {
-      '보컬': [],
-      '악기': [],
-      '음향': [],
-    };
+  // Filter members based on active tab and search term
+  const displayedMembers = useMemo(() => {
+    let filtered = members;
 
-    members.forEach(member => {
-      if (groups[member.group]) {
-        groups[member.group].push(member);
-      }
-    });
+    // Filter by group tab
+    if (activeTab !== '전체') {
+      filtered = filtered.filter(m => m.group === activeTab);
+    }
 
-    return groups;
-  }, [members]);
-
-  // Filter members by search term
-  const filteredGroupedMembers = useMemo(() => {
-    if (!searchTerm) return groupedMembers;
-
-    const filtered: Record<string, Member[]> = {};
-    Object.entries(groupedMembers).forEach(([group, groupMembers]) => {
-      const matchedMembers = groupMembers.filter(m =>
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(m =>
         m.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      if (matchedMembers.length > 0) {
-        filtered[group] = matchedMembers;
-      }
-    });
+    }
 
     return filtered;
-  }, [groupedMembers, searchTerm]);
-
-  function toggleGroup(group: string) {
-    setExpandedGroups(prev =>
-      prev.includes(group)
-        ? prev.filter(g => g !== group)
-        : [...prev, group]
-    );
-  }
+  }, [members, activeTab, searchTerm]);
 
   function handleSelectAll() {
-    if (selectedMemberIds.length === members.length) {
-      setSelectedMemberIds([]);
-    } else {
-      setSelectedMemberIds(members.map(m => m.id));
-    }
-  }
+    const currentTabMemberIds = displayedMembers.map(m => m.id);
+    const allCurrentSelected = currentTabMemberIds.every(id => selectedMemberIds.includes(id));
 
-  function handleSelectGroup(group: string) {
-    const groupMemberIds = groupedMembers[group].map(m => m.id);
-    const allSelected = groupMemberIds.every(id => selectedMemberIds.includes(id));
-
-    if (allSelected) {
-      setSelectedMemberIds(prev => prev.filter(id => !groupMemberIds.includes(id)));
+    if (allCurrentSelected) {
+      // Deselect all from current tab
+      setSelectedMemberIds(prev => prev.filter(id => !currentTabMemberIds.includes(id)));
     } else {
-      setSelectedMemberIds(prev => [...new Set([...prev, ...groupMemberIds])]);
+      // Select all from current tab
+      setSelectedMemberIds(prev => [...new Set([...prev, ...currentTabMemberIds])]);
     }
   }
 
@@ -106,12 +79,7 @@ export default function NewSessionPage() {
     }
   }
 
-  function getGroupStats(group: string) {
-    const groupMemberIds = groupedMembers[group].map(m => m.id);
-    const selectedCount = groupMemberIds.filter(id => selectedMemberIds.includes(id)).length;
-    const totalCount = groupMemberIds.length;
-    return { selectedCount, totalCount, allSelected: selectedCount === totalCount };
-  }
+  const isAllCurrentSelected = displayedMembers.length > 0 && displayedMembers.every(m => selectedMemberIds.includes(m.id));
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -193,6 +161,24 @@ export default function NewSessionPage() {
             맴버 선택 ({selectedMemberIds.length} / {members.length})
           </label>
 
+          {/* Tabs */}
+          <div className="flex gap-2 border-b border-gray-200">
+            {(['전체', '보컬', '악기', '음향'] as GroupTab[]).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-2 font-medium text-sm transition-colors ${
+                  activeTab === tab
+                    ? 'text-black border-b-2 border-black'
+                    : 'text-gray-400 hover:text-gray-600'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
           {/* Search */}
           <input
             type="text"
@@ -202,77 +188,46 @@ export default function NewSessionPage() {
             className="h-10 px-4 border border-gray-200 rounded-lg focus:outline-none focus:border-black transition-colors text-sm"
           />
 
-          {/* Global Select All */}
+          {/* Select All Button */}
           <button
             type="button"
             onClick={handleSelectAll}
             className="h-11 px-4 border border-gray-200 rounded-lg hover:border-black transition-colors text-left flex items-center justify-between"
           >
-            <span className="font-medium">전체 선택</span>
+            <span className="font-medium">
+              {activeTab === '전체' ? '전체 선택' : `${activeTab} 전체 선택`}
+            </span>
             <span className="text-xl">
-              {selectedMemberIds.length === members.length ? '☑' : '☐'}
+              {isAllCurrentSelected ? '☑' : '☐'}
             </span>
           </button>
 
-          {/* Groups - Scrollable Container */}
-          <div className="flex flex-col gap-2 max-h-[50vh] overflow-y-auto border border-gray-100 rounded-xl p-2">
-            {Object.entries(filteredGroupedMembers).map(([group, groupMembers]) => {
-              const { selectedCount, totalCount, allSelected } = getGroupStats(group);
-              const isExpanded = expandedGroups.includes(group);
-
-              return (
-                <div
-                  key={group}
-                  className="border border-gray-200 rounded-xl overflow-hidden"
-                >
-                  {/* Group Header */}
-                  <div className="bg-gray-50 px-4 py-3 flex items-center justify-between">
-                    <button
-                      type="button"
-                      onClick={() => toggleGroup(group)}
-                      className="flex-1 flex items-center gap-2 text-left min-h-[44px]"
-                    >
-                      <span className="text-gray-400 text-sm">
-                        {isExpanded ? '▼' : '▶'}
-                      </span>
-                      <span className="font-semibold">{group}</span>
-                      <span className="text-xs text-gray-500 ml-auto mr-3">
-                        {selectedCount} / {totalCount}
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSelectGroup(group)}
-                      className="text-xl min-w-[44px] min-h-[44px] flex items-center justify-center"
-                    >
-                      {allSelected ? '☑' : '☐'}
-                    </button>
-                  </div>
-
-                  {/* Group Members */}
-                  {isExpanded && (
-                    <div className="bg-white">
-                      {groupMembers.map((member) => (
-                        <button
-                          key={member.id}
-                          type="button"
-                          onClick={() => handleToggleMember(member.id)}
-                          className="w-full px-4 py-3 hover:bg-gray-50 transition-colors flex items-center gap-3 border-t border-gray-100 min-h-[56px]"
-                        >
-                          <span className="text-xl min-w-[24px]">
-                            {selectedMemberIds.includes(member.id) ? '☑' : '☐'}
-                          </span>
-                          <div className="flex-1 text-left">
-                            <p className="text-sm font-medium">{member.name}</p>
-                            <p className="text-xs text-gray-500">{member.phone}</p>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+          {/* Member List - Scrollable */}
+          <div className="border border-gray-200 rounded-xl overflow-hidden">
+            <div className="max-h-[50vh] overflow-y-auto">
+              {displayedMembers.length === 0 ? (
+                <div className="py-8 text-center text-gray-400 text-sm">
+                  멤버가 없습니다
                 </div>
-              );
-            })}
+              ) : (
+                displayedMembers.map((member) => (
+                  <button
+                    key={member.id}
+                    type="button"
+                    onClick={() => handleToggleMember(member.id)}
+                    className="w-full px-4 py-3 hover:bg-gray-50 transition-colors flex items-center gap-3 border-b border-gray-100 last:border-b-0 min-h-[56px]"
+                  >
+                    <span className="text-xl min-w-[24px]">
+                      {selectedMemberIds.includes(member.id) ? '☑' : '☐'}
+                    </span>
+                    <div className="flex-1 text-left">
+                      <p className="text-sm font-medium">{member.name}</p>
+                      <p className="text-xs text-gray-500">{member.phone}</p>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
           </div>
         </div>
 
