@@ -105,28 +105,30 @@ export default function NewSessionPage() {
 
   if (loadingMembers) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">Loading...</p>
+      <div className="min-h-[calc(100vh-120px)] flex items-center justify-center">
+        <p className="text-gray-500">로딩 중...</p>
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="flex items-center gap-3 mb-6">
+    <div className="min-h-[calc(100vh-120px)] flex flex-col">
+      {/* Header */}
+      <div className="mb-8">
         <button
           onClick={() => router.back()}
-          className="text-gray-600 hover:text-black transition-colors"
+          className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors mb-4 text-sm"
         >
-          ← Back
+          <span>←</span>
+          <span>돌아가기</span>
         </button>
-        <h2 className="text-lg font-semibold">세션 생성</h2>
+        <h1 className="text-2xl font-bold">세션 생성</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1">
         {/* Session Name */}
-        <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="text-sm font-medium">
+        <div className="flex flex-col gap-3">
+          <label htmlFor="name" className="text-sm font-semibold text-gray-900">
             세션 이름
           </label>
           <input
@@ -135,14 +137,14 @@ export default function NewSessionPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-base"
             placeholder="주일 1부 예배"
           />
         </div>
 
         {/* Date & Time */}
-        <div className="flex flex-col gap-2">
-          <label htmlFor="date" className="text-sm font-medium">
+        <div className="flex flex-col gap-3">
+          <label htmlFor="date" className="text-sm font-semibold text-gray-900">
             날짜와 시간
           </label>
           <input
@@ -151,30 +153,38 @@ export default function NewSessionPage() {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
-            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-base"
           />
         </div>
 
         {/* Member Selection */}
-        <div className="flex flex-col gap-3">
-          <label className="text-sm font-medium">
-            맴버 선택 ({selectedMemberIds.length} / {members.length})
-          </label>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-semibold text-gray-900">
+              멤버 선택
+            </label>
+            <span className="text-sm font-medium text-gray-600">
+              {selectedMemberIds.length} / {members.length}
+            </span>
+          </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 border-b border-gray-200">
+          <div className="flex gap-2 border-b-2 border-gray-200">
             {(['전체', '보컬', '악기', '음향'] as GroupTab[]).map((tab) => (
               <button
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 font-medium text-sm transition-colors ${
+                className={`px-4 py-3 font-semibold text-sm transition-all relative ${
                   activeTab === tab
-                    ? 'text-black border-b-2 border-black'
+                    ? 'text-black'
                     : 'text-gray-400 hover:text-gray-600'
                 }`}
               >
                 {tab}
+                {activeTab === tab && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></div>
+                )}
               </button>
             ))}
           </div>
@@ -185,55 +195,74 @@ export default function NewSessionPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="이름으로 검색"
-            className="h-10 px-4 border border-gray-200 rounded-lg focus:outline-none focus:border-black transition-colors text-sm"
+            className="h-11 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-sm"
           />
 
           {/* Select All Button */}
           <button
             type="button"
             onClick={handleSelectAll}
-            className="h-11 px-4 border border-gray-200 rounded-lg hover:border-black transition-colors text-left flex items-center justify-between"
+            className="h-12 px-4 border-2 border-gray-200 rounded-xl hover:border-black transition-all text-left flex items-center justify-between"
           >
-            <span className="font-medium">
+            <span className="font-semibold text-sm">
               {activeTab === '전체' ? '전체 선택' : `${activeTab} 전체 선택`}
             </span>
-            <span className="text-xl">
-              {isAllCurrentSelected ? '☑' : '☐'}
-            </span>
+            <div className={`w-6 h-6 rounded-md flex items-center justify-center transition-all ${
+              isAllCurrentSelected
+                ? 'bg-black text-white'
+                : 'border-2 border-gray-300'
+            }`}>
+              {isAllCurrentSelected && (
+                <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 5.5L5 9.5L13 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </div>
           </button>
 
           {/* Member List - Scrollable */}
-          <div className="border border-gray-200 rounded-xl overflow-hidden">
+          <div className="border-2 border-gray-200 rounded-xl overflow-hidden">
             <div className="max-h-[50vh] overflow-y-auto">
               {displayedMembers.length === 0 ? (
-                <div className="py-8 text-center text-gray-400 text-sm">
+                <div className="py-12 text-center text-gray-400 text-sm">
                   멤버가 없습니다
                 </div>
               ) : (
-                displayedMembers.map((member) => (
-                  <button
-                    key={member.id}
-                    type="button"
-                    onClick={() => handleToggleMember(member.id)}
-                    className="w-full px-4 py-3 hover:bg-gray-50 transition-colors flex items-center gap-3 border-b border-gray-100 last:border-b-0 min-h-[56px]"
-                  >
-                    <span className="text-xl min-w-[24px]">
-                      {selectedMemberIds.includes(member.id) ? '☑' : '☐'}
-                    </span>
-                    <div className="flex-1 text-left">
-                      <p className="text-sm font-medium">{member.name}</p>
-                      <p className="text-xs text-gray-500">{member.phone}</p>
-                    </div>
-                  </button>
-                ))
+                displayedMembers.map((member) => {
+                  const isSelected = selectedMemberIds.includes(member.id);
+                  return (
+                    <button
+                      key={member.id}
+                      type="button"
+                      onClick={() => handleToggleMember(member.id)}
+                      className="w-full px-4 py-4 hover:bg-gray-50 transition-colors flex items-center gap-4 border-b border-gray-100 last:border-b-0 min-h-[64px]"
+                    >
+                      <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all ${
+                        isSelected
+                          ? 'bg-black text-white'
+                          : 'border-2 border-gray-300'
+                      }`}>
+                        {isSelected && (
+                          <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 5.5L5 9.5L13 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="text-sm font-semibold text-gray-900">{member.name}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{member.phone}</p>
+                      </div>
+                    </button>
+                  );
+                })
               )}
             </div>
           </div>
         </div>
 
         {/* Note */}
-        <div className="flex flex-col gap-2">
-          <label htmlFor="note" className="text-sm font-medium">
+        <div className="flex flex-col gap-3">
+          <label htmlFor="note" className="text-sm font-semibold text-gray-900">
             예배 특이사항 메모 (선택)
           </label>
           <textarea
@@ -241,21 +270,21 @@ export default function NewSessionPage() {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             rows={4}
-            className="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors resize-none"
-            placeholder="예배 특이사항 메모"
+            className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all resize-none text-base"
+            placeholder="예배 특이사항을 입력하세요"
           />
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-            <p className="text-sm text-red-600 text-center">{error}</p>
+          <div className="bg-red-50 border-2 border-red-200 rounded-xl px-4 py-3">
+            <p className="text-sm text-red-600 text-center font-medium">{error}</p>
           </div>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="h-12 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+          className="h-14 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 text-base mt-auto"
         >
           {loading ? '생성 중...' : '세션 생성'}
         </button>

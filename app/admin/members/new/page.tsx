@@ -41,21 +41,23 @@ export default function NewMemberPage() {
   }
 
   return (
-    <div>
-      <div className="flex items-center gap-3 mb-6">
+    <div className="min-h-[calc(100vh-120px)] flex flex-col">
+      {/* Header */}
+      <div className="mb-8">
         <button
           onClick={() => router.back()}
-          className="text-gray-600 hover:text-black transition-colors"
+          className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors mb-4 text-sm"
         >
-          ← Back
+          <span>←</span>
+          <span>돌아가기</span>
         </button>
-        <h2 className="text-lg font-semibold">Add Member</h2>
+        <h1 className="text-2xl font-bold">멤버 등록</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="text-sm font-medium">
-            Name
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1">
+        <div className="flex flex-col gap-3">
+          <label htmlFor="name" className="text-sm font-semibold text-gray-900">
+            이름
           </label>
           <input
             id="name"
@@ -63,13 +65,13 @@ export default function NewMemberPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-base"
             placeholder="홍길동"
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="phone" className="text-sm font-medium">
+        <div className="flex flex-col gap-3">
+          <label htmlFor="phone" className="text-sm font-semibold text-gray-900">
             전화번호
           </label>
           <input
@@ -82,24 +84,30 @@ export default function NewMemberPage() {
             }}
             required
             maxLength={11}
-            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-base"
             placeholder="01012345678"
           />
           <p className="text-xs text-gray-500">
-            하이픈 없이 숫자만 11자리 입력
+            하이픈 없이 숫자만 11자리 입력해주세요
           </p>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="group" className="text-sm font-medium">
-            Group
+        <div className="flex flex-col gap-3">
+          <label htmlFor="group" className="text-sm font-semibold text-gray-900">
+            그룹
           </label>
           <select
             id="group"
             value={group}
             onChange={(e) => setGroup(e.target.value)}
             required
-            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors bg-white"
+            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all bg-white text-base appearance-none cursor-pointer"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 1rem center',
+              paddingRight: '3rem',
+            }}
           >
             <option value="보컬">보컬</option>
             <option value="악기">악기</option>
@@ -107,14 +115,18 @@ export default function NewMemberPage() {
           </select>
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && (
+          <div className="bg-red-50 border-2 border-red-200 rounded-xl px-4 py-3">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
 
         <button
           type="submit"
           disabled={loading}
-          className="h-11 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
+          className="h-14 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 text-base mt-auto"
         >
-          {loading ? 'Creating...' : 'Add Member'}
+          {loading ? '등록 중...' : '멤버 등록'}
         </button>
       </form>
     </div>

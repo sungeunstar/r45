@@ -60,7 +60,7 @@ export default function EditMemberPage() {
   }
 
   async function handleDelete() {
-    if (!confirm(`Are you sure you want to delete ${name}?`)) {
+    if (!confirm(`정말 ${name} 멤버를 삭제하시겠습니까?`)) {
       return;
     }
 
@@ -71,35 +71,37 @@ export default function EditMemberPage() {
       router.push('/admin/members');
       router.refresh();
     } else {
-      alert(result.error || 'Failed to delete member');
+      alert(result.error || '멤버 삭제에 실패했습니다');
       setLoading(false);
     }
   }
 
   if (loadingData) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">Loading...</p>
+      <div className="min-h-[calc(100vh-120px)] flex items-center justify-center">
+        <p className="text-gray-500">로딩 중...</p>
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="flex items-center gap-3 mb-6">
+    <div className="min-h-[calc(100vh-120px)] flex flex-col">
+      {/* Header */}
+      <div className="mb-8">
         <button
           onClick={() => router.back()}
-          className="text-gray-600 hover:text-black transition-colors"
+          className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors mb-4 text-sm"
         >
-          ← Back
+          <span>←</span>
+          <span>돌아가기</span>
         </button>
-        <h2 className="text-lg font-semibold">Edit Member</h2>
+        <h1 className="text-2xl font-bold">멤버 수정</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="text-sm font-medium">
-            Name
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1">
+        <div className="flex flex-col gap-3">
+          <label htmlFor="name" className="text-sm font-semibold text-gray-900">
+            이름
           </label>
           <input
             id="name"
@@ -107,12 +109,13 @@ export default function EditMemberPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-base"
+            placeholder="홍길동"
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="phone" className="text-sm font-medium">
+        <div className="flex flex-col gap-3">
+          <label htmlFor="phone" className="text-sm font-semibold text-gray-900">
             전화번호
           </label>
           <input
@@ -125,24 +128,30 @@ export default function EditMemberPage() {
             }}
             required
             maxLength={11}
-            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all text-base"
             placeholder="01012345678"
           />
           <p className="text-xs text-gray-500">
-            하이픈 없이 숫자만 11자리 입력
+            하이픈 없이 숫자만 11자리 입력해주세요
           </p>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="group" className="text-sm font-medium">
-            Group
+        <div className="flex flex-col gap-3">
+          <label htmlFor="group" className="text-sm font-semibold text-gray-900">
+            그룹
           </label>
           <select
             id="group"
             value={group}
             onChange={(e) => setGroup(e.target.value)}
             required
-            className="h-11 px-4 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors bg-white"
+            className="h-12 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-black transition-all bg-white text-base appearance-none cursor-pointer"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 1rem center',
+              paddingRight: '3rem',
+            }}
           >
             <option value="보컬">보컬</option>
             <option value="악기">악기</option>
@@ -150,37 +159,51 @@ export default function EditMemberPage() {
           </select>
         </div>
 
-        <div className="flex items-center gap-3">
-          <input
-            id="isActive"
-            type="checkbox"
-            checked={isActive}
-            onChange={(e) => setIsActive(e.target.checked)}
-            className="w-4 h-4"
-          />
-          <label htmlFor="isActive" className="text-sm font-medium">
-            Active Member
+        <div className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl">
+          <button
+            type="button"
+            onClick={() => setIsActive(!isActive)}
+            className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all ${
+              isActive
+                ? 'bg-black text-white'
+                : 'border-2 border-gray-300'
+            }`}
+          >
+            {isActive && (
+              <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 5.5L5 9.5L13 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+          </button>
+          <label htmlFor="isActive" className="text-sm font-semibold text-gray-900">
+            활성 멤버
           </label>
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && (
+          <div className="bg-red-50 border-2 border-red-200 rounded-xl px-4 py-3">
+            <p className="text-sm text-red-600 font-medium">{error}</p>
+          </div>
+        )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="h-11 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50"
-        >
-          {loading ? 'Updating...' : 'Update Member'}
-        </button>
+        <div className="flex flex-col gap-3 mt-auto">
+          <button
+            type="submit"
+            disabled={loading}
+            className="h-14 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 text-base"
+          >
+            {loading ? '수정 중...' : '멤버 수정'}
+          </button>
 
-        <button
-          type="button"
-          onClick={handleDelete}
-          disabled={loading}
-          className="h-11 border border-red-600 text-red-600 rounded-lg font-medium hover:bg-red-50 transition-colors disabled:opacity-50"
-        >
-          Delete Member
-        </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={loading}
+            className="h-14 border-2 border-red-600 text-red-600 rounded-xl font-semibold hover:bg-red-50 transition-colors disabled:opacity-50 text-base"
+          >
+            멤버 삭제
+          </button>
+        </div>
       </form>
     </div>
   );
