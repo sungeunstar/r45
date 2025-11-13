@@ -67,12 +67,8 @@ export default function SessionSuccessPage() {
       <div className="max-w-[420px] w-full">
         {/* Success Icon */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-black rounded-full mb-4">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 20L16 28L32 12" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold mb-2">✨ 세션 생성 완료!</h1>
+          <div className="text-6xl mb-4">🎉</div>
+          <h1 className="text-2xl font-bold mb-2">세션 생성 완료!</h1>
           <p className="text-gray-600 text-sm">
             세션이 성공적으로 생성되었습니다
           </p>
