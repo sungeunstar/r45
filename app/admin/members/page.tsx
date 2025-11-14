@@ -22,7 +22,7 @@ export default async function MembersPage({
     <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold" style={{ color: '#FFFFFF' }}>
-          Members
+          멤버
         </h2>
         <Link
           href="/admin/members/new"
@@ -32,7 +32,7 @@ export default async function MembersPage({
             color: '#FFFFFF',
           }}
         >
-          Add Member
+          멤버 추가
         </Link>
       </div>
 
@@ -42,7 +42,7 @@ export default async function MembersPage({
         <div className="text-center py-12" style={{
           color: 'rgba(255,255,255,0.5)'
         }}>
-          <p>No members found</p>
+          <p>멤버가 없습니다</p>
         </div>
       ) : (
         <div className="flex flex-col gap-3">

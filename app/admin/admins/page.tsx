@@ -29,7 +29,7 @@ export default function AdminUsersPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold" style={{ color: '#FFFFFF' }}>
-          Admin Users
+          관리자
         </h2>
         <Link
           href="/admin/admins/new"
@@ -45,7 +45,7 @@ export default function AdminUsersPage() {
             e.currentTarget.style.background = '#353C49';
           }}
         >
-          Add Admin
+          관리자 추가
         </Link>
       </div>
 
@@ -53,13 +53,13 @@ export default function AdminUsersPage() {
         <div className="text-center py-12" style={{
           color: 'rgba(255,255,255,0.5)'
         }}>
-          <p>Loading...</p>
+          <p>로딩 중...</p>
         </div>
       ) : admins.length === 0 ? (
         <div className="text-center py-12" style={{
           color: 'rgba(255,255,255,0.5)'
         }}>
-          <p>No admin users</p>
+          <p>관리자가 없습니다</p>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
@@ -81,7 +81,7 @@ export default function AdminUsersPage() {
                   <p className="text-sm" style={{
                     color: 'rgba(255,255,255,0.6)'
                   }}>
-                    Created {formatDate(admin.createdAt)}
+                    생성일 {formatDate(admin.createdAt)}
                   </p>
                 </div>
               </div>

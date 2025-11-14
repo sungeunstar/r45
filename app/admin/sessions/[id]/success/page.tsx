@@ -153,8 +153,8 @@ export default function SessionSuccessPage() {
               onClick={handleCopyLink}
               className="h-11 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 text-sm"
               style={{
-                background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
-                color: '#000000',
+                background: 'rgb(53, 60, 73)',
+                color: '#FFFFFF',
               }}
             >
               {copied ? (

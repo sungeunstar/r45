@@ -13,7 +13,7 @@ export default function ExportCSVButton({ sessionId }: { sessionId: string }) {
       const csv = await exportAttendanceCSV(sessionId);
 
       if (!csv) {
-        alert('Failed to export CSV');
+        alert('CSV 내보내기에 실패했습니다');
         return;
       }
 
@@ -28,7 +28,7 @@ export default function ExportCSVButton({ sessionId }: { sessionId: string }) {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      alert('Failed to export CSV');
+      alert('CSV 내보내기에 실패했습니다');
     } finally {
       setLoading(false);
     }
@@ -45,7 +45,7 @@ export default function ExportCSVButton({ sessionId }: { sessionId: string }) {
         color: '#FFFFFF',
       }}
     >
-      {loading ? 'Exporting...' : 'Export CSV'}
+      {loading ? '내보내는 중...' : 'CSV 내보내기'}
     </button>
   );
 }

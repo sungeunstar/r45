@@ -15,7 +15,7 @@ export default function DeleteButton({
   const [loading, setLoading] = useState(false);
 
   async function handleDelete() {
-    if (!confirm(`Are you sure you want to delete "${sessionName}"?`)) {
+    if (!confirm(`정말 "${sessionName}" 세션을 삭제하시겠습니까?`)) {
       return;
     }
 
@@ -26,7 +26,7 @@ export default function DeleteButton({
       router.push('/admin/sessions');
       router.refresh();
     } else {
-      alert(result.error || 'Failed to delete session');
+      alert(result.error || '세션 삭제에 실패했습니다');
       setLoading(false);
     }
   }
@@ -47,7 +47,7 @@ export default function DeleteButton({
         if (!loading) e.currentTarget.style.background = '#FF5F5F';
       }}
     >
-      {loading ? 'Deleting...' : 'Delete Session'}
+      {loading ? '삭제 중...' : '세션 삭제'}
     </button>
   );
 }

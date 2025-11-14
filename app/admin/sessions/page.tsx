@@ -24,7 +24,7 @@ export default async function SessionsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold" style={{ color: '#FFFFFF' }}>
-          Sessions
+          세션
         </h2>
         <Link
           href="/admin/sessions/new"
@@ -34,7 +34,7 @@ export default async function SessionsPage() {
             color: '#0b0b0b',
           }}
         >
-          Create Session
+          세션 생성
         </Link>
       </div>
 

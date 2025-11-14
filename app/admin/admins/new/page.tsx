@@ -22,7 +22,7 @@ export default function NewAdminPage() {
       router.push('/admin/admins');
       router.refresh();
     } else {
-      setError(result.error || 'Failed to create admin');
+      setError(result.error || '관리자 생성에 실패했습니다');
       setLoading(false);
     }
   }
@@ -40,13 +40,13 @@ export default function NewAdminPage() {
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <h1 className="text-xl font-bold" style={{ color: '#FFFFFF' }}>Add Admin</h1>
+        <h1 className="text-xl font-bold" style={{ color: '#FFFFFF' }}>관리자 추가</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
           <label htmlFor="email" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Email
+            이메일
           </label>
           <input
             id="email"
@@ -66,7 +66,7 @@ export default function NewAdminPage() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="password" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Password
+            비밀번호
           </label>
           <input
             id="password"
@@ -81,7 +81,7 @@ export default function NewAdminPage() {
               border: '1px solid rgba(255,255,255,0.14)',
               color: '#FFFFFF',
             }}
-            placeholder="Min. 6 characters"
+            placeholder="최소 6자"
           />
         </div>
 
@@ -113,7 +113,7 @@ export default function NewAdminPage() {
             e.currentTarget.style.background = '#353C49';
           }}
         >
-          {loading ? 'Creating...' : 'Create Admin'}
+          {loading ? '생성 중...' : '관리자 생성'}
         </button>
       </form>
     </div>

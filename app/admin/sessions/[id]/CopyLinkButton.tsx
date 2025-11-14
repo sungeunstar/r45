@@ -28,7 +28,7 @@ export default function CopyLinkButton({ url }: { url: string }) {
         timeoutRef.current = null;
       }, 2000);
     } catch (err) {
-      alert('Failed to copy link');
+      alert('링크 복사에 실패했습니다');
     }
   }
 
@@ -41,7 +41,7 @@ export default function CopyLinkButton({ url }: { url: string }) {
         color: '#FFFFFF',
       }}
     >
-      {copied ? 'Copied!' : 'Copy Check-in Link'}
+      {copied ? '복사됨!' : '출석 링크 복사'}
     </button>
   );
 }

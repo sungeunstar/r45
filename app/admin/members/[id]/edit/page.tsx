@@ -59,7 +59,7 @@ export default function EditMemberPage() {
       router.push('/admin/members');
       router.refresh();
     } else {
-      setError(result.error || 'Failed to update member');
+      setError(result.error || '멤버 수정에 실패했습니다');
       setLoading(false);
     }
   }

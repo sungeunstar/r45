@@ -46,7 +46,7 @@ export default function EditSessionPage() {
       router.push(`/admin/sessions/${sessionId}`);
       router.refresh();
     } else {
-      setError(result.error || 'Failed to update session');
+      setError(result.error || '세션 수정에 실패했습니다');
       setLoading(false);
     }
   }
@@ -54,7 +54,7 @@ export default function EditSessionPage() {
   if (loadingData) {
     return (
       <div className="text-center py-12">
-        <p style={{ color: 'rgba(255,255,255,0.5)' }}>Loading...</p>
+        <p style={{ color: 'rgba(255,255,255,0.5)' }}>로딩 중...</p>
       </div>
     );
   }
@@ -72,13 +72,13 @@ export default function EditSessionPage() {
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <h1 className="text-xl font-bold" style={{ color: '#FFFFFF' }}>Edit Session</h1>
+        <h1 className="text-xl font-bold" style={{ color: '#FFFFFF' }}>세션 수정</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
           <label htmlFor="name" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Session Name
+            세션 이름
           </label>
           <input
             id="name"
@@ -97,7 +97,7 @@ export default function EditSessionPage() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="date" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Date & Time
+            날짜 및 시간
           </label>
           <input
             id="date"
@@ -117,7 +117,7 @@ export default function EditSessionPage() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="note" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Note (Optional)
+            메모 (선택사항)
           </label>
           <textarea
             id="note"
@@ -161,7 +161,7 @@ export default function EditSessionPage() {
             e.currentTarget.style.background = '#353C49';
           }}
         >
-          {loading ? 'Updating...' : 'Update Session'}
+          {loading ? '수정 중...' : '세션 수정'}
         </button>
       </form>
     </div>

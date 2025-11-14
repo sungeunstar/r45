@@ -79,7 +79,7 @@ export default async function SessionDetailPage({
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </Link>
-        <h1 className="text-xl font-bold text-center" style={{ color: '#FFFFFF' }}>Session Detail</h1>
+        <h1 className="text-xl font-bold text-center" style={{ color: '#FFFFFF' }}>세션 상세</h1>
       </div>
 
       <div
@@ -108,7 +108,7 @@ export default async function SessionDetailPage({
               color: '#FFFFFF',
             }}
           >
-            Edit Session
+            세션 수정
           </Link>
           <DeleteButton sessionId={params.id} sessionName={session.name} />
         </div>
