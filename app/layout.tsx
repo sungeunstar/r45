@@ -1,12 +1,5 @@
 import type { Metadata } from 'next';
-import { Montserrat } from 'next/font/google';
 import './globals.css';
-
-const montserrat = Montserrat({
-  subsets: ['latin'],
-  variable: '--font-montserrat',
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: 'Joyful Church - R45 Worship Team',
@@ -19,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className={montserrat.variable}>
+    <html lang="ko">
       <head>
         <link
           rel="stylesheet"
