@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { getSessionById, updateSession } from '@/lib/actions/sessions';
+import { getSessionById, updateSession, getSessionMembers } from '@/lib/actions/sessions';
 import { toDatetimeLocalString } from '@/lib/utils';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -15,6 +15,7 @@ export default function EditSessionPage() {
   const [name, setName] = useState('');
   const [note, setNote] = useState('');
   const [date, setDate] = useState('');
+  const [memberIds, setMemberIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [loadingData, setLoadingData] = useState(true);
@@ -27,6 +28,10 @@ export default function EditSessionPage() {
         setNote(session.note || '');
         setDate(toDatetimeLocalString(session.date));
       }
+
+      const members = await getSessionMembers(sessionId);
+      setMemberIds(members.map(m => m.id));
+
       setLoadingData(false);
     }
     loadSession();
@@ -37,7 +42,7 @@ export default function EditSessionPage() {
     setError('');
     setLoading(true);
 
-    const result = await updateSession(sessionId, name, note, date);
+    const result = await updateSession(sessionId, name, note, date, memberIds);
 
     if (result.success) {
       router.push(`/admin/sessions/${sessionId}`);

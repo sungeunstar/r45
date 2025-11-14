@@ -35,7 +35,7 @@ export default function CheckInForm({
       setSuccess(true);
       setDuplicate(result.duplicate || false);
       setCheckedAt(result.checkedAt ? new Date(result.checkedAt) : null);
-      setMemberName(result.memberName);
+      setMemberName(result.memberName || '');
       setMemberGroup(result.memberGroup || '');
     } else {
       setError(result.error || '출석 체크 실패');
