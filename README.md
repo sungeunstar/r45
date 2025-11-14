@@ -15,7 +15,7 @@ A mobile-first attendance check-in web application for the R45 Worship Team at J
 
 - **Framework**: Next.js 14 (App Router) + TypeScript
 - **Styling**: TailwindCSS
-- **Database**: Prisma + SQLite
+- **Database**: Supabase (PostgreSQL)
 - **Authentication**: Iron Session + bcrypt
 - **Server Actions**: Next.js Server Actions for all API operations
 
@@ -27,25 +27,26 @@ A mobile-first attendance check-in web application for the R45 Worship Team at J
 npm install
 ```
 
-### 2. Set Up Database
+### 2. Set Up Environment Variables
 
-Generate Prisma client and create database:
+Create a `.env.local` file in the root directory:
 
-```bash
-npx prisma generate
-npx prisma db push
+```env
+NEXT_PUBLIC_SUPABASE_URL="your-supabase-project-url"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
+NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+SESSION_SECRET="your-secret-key-minimum-32-characters"
 ```
 
-### 3. Seed Database
+### 3. Initialize Database
 
-Seed with default admin and sample members:
-
-```bash
-npm run db:seed
-```
+1. Go to your Supabase project's SQL Editor
+2. Copy the entire contents of `schema.sql`
+3. Paste and run it in the SQL Editor
 
 This creates:
-- Default admin: `admin@joyful.app` / `admin1234`
+- All required tables with proper indexes and constraints
+- Default admin: `admin@joyful.app` / `admin123`
 - Sample members: 김하늘, 이가은, 박요한, 최민수, 정현우
 
 ### 4. Run Development Server
@@ -65,9 +66,9 @@ npm start
 
 ## Default Credentials
 
-After seeding, login with:
+After database initialization, login with:
 - **Email**: `admin@joyful.app`
-- **Password**: `admin1234`
+- **Password**: `admin123`
 
 ⚠️ **Important**: Change the default password immediately after first login!
 
@@ -98,9 +99,10 @@ After seeding, login with:
 ### Team Member Check-In
 
 1. Open the public check-in link (e.g., `/s/abc123xyz`)
-2. Search and select your name
-3. Click "출석하기"
-4. See confirmation message
+2. Enter the last 4 digits of your phone number
+3. Select "참석" or "불참"
+4. If absent, provide a reason
+5. See confirmation message
 
 ### Managing Members
 
@@ -118,13 +120,21 @@ After seeding, login with:
 
 ## Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env.local` file in the root directory:
 
 ```env
-DATABASE_URL="file:./dev.db"
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key-here"
+
+# Application Configuration
 NEXT_PUBLIC_BASE_URL="http://localhost:3000"
-SESSION_SECRET="your-secret-key-minimum-32-characters"
+
+# Session Secret (minimum 32 characters)
+SESSION_SECRET="your-secret-key-minimum-32-characters-long"
 ```
+
+Get your Supabase credentials from: **Supabase Dashboard → Project Settings → API**
 
 ## Design Guidelines
 
@@ -144,31 +154,28 @@ SESSION_SECRET="your-secret-key-minimum-32-characters"
 
 ## Troubleshooting
 
-### Prisma Issues
+### Database Issues
 
-If you encounter Prisma binary download issues:
+If you encounter database errors:
 
-```bash
-# Clear Prisma cache
-rm -rf node_modules/.prisma
-rm -rf node_modules/@prisma
+1. **Check your Supabase connection:**
+   - Verify `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are correct
+   - Check if your Supabase project is active
 
-# Reinstall
-npm install
+2. **Reset the database:**
+   - Run `db-verify-and-clear.sql` in Supabase SQL Editor to completely reset
+   - Or run `schema.sql` to reinitialize from scratch
 
-# Try again
-npx prisma generate
-```
+3. **Check table names:**
+   - All tables use PascalCase: `Session`, `Member`, `Attendance`
+   - All columns use snake_case: `public_token`, `phone_last4`
 
-### Database Reset
+### Quick Database Check
 
-To reset the database:
-
-```bash
-rm prisma/dev.db
-npx prisma db push
-npm run db:seed
-```
+Run `db-quick-check.sql` in Supabase SQL Editor to verify current database state:
+- Shows all existing tables
+- Displays record counts
+- Lists current sessions
 
 ## License
 

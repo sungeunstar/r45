@@ -10,7 +10,7 @@ export async function submitAttendance(
 ) {
   try {
     const { data, error } = await supabase
-      .from('attendance')
+      .from('Attendance')
       .insert({
         session_id: sessionId,
         phone_last4: phoneLast4,

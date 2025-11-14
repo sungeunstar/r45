@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { revalidateTag } from 'next/cache';
 
 export async function POST(request: NextRequest) {
   try {
@@ -70,6 +71,10 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      // Invalidate caches
+      revalidateTag('sessions');
+      revalidateTag(`session-${session.id}-attendance`);
+
       return NextResponse.json({
         success: true,
         data,
@@ -91,6 +96,10 @@ export async function POST(request: NextRequest) {
           { status: 500 }
         );
       }
+
+      // Invalidate caches
+      revalidateTag('sessions');
+      revalidateTag(`session-${session.id}-attendance`);
 
       return NextResponse.json({
         success: true,

@@ -46,8 +46,11 @@ export interface SessionMember {
 export interface Attendance {
   id: string;
   session_id: string;
-  member_id: string;
+  phone_last4: string;
+  member_id: string | null;  // Nullable - user might not be in Member table
+  status: 'attend' | 'absent' | 'late';
+  reason: string | null;
   checked_at: string;
-  ip: string | null;
-  user_agent: string | null;
+  ip?: string | null;
+  user_agent?: string | null;
 }

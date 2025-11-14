@@ -111,40 +111,51 @@ export async function exportAttendanceCSV(sessionId: string) {
     if (error) throw error;
     if (!attendance || attendance.length === 0) return '';
 
-    // Get all unique member IDs
-    const memberIds = [...new Set(attendance.map((att: any) => att.member_id))];
+    // Get all unique member IDs (filter out nulls)
+    const memberIds = [...new Set(
+      attendance
+        .map((att: any) => att.member_id)
+        .filter((id: any) => id != null)
+    )];
 
-    // Fetch all members in one query
-    const { data: members, error: memberError } = await supabase
-      .from('Member')
-      .select('*')
-      .in('id', memberIds);
+    // Fetch all members in one query (only if there are member IDs)
+    let memberMap = new Map();
+    if (memberIds.length > 0) {
+      const { data: members, error: memberError } = await supabase
+        .from('Member')
+        .select('*')
+        .in('id', memberIds);
 
-    if (memberError) throw memberError;
+      if (memberError) throw memberError;
 
-    // Create member map for quick lookup
-    const memberMap = new Map();
-    (members || []).forEach((member: any) => {
-      memberMap.set(member.id, member);
-    });
+      // Create member map for quick lookup
+      (members || []).forEach((member: any) => {
+        memberMap.set(member.id, member);
+      });
+    }
 
     // Generate rows
     const rows = attendance.map((att: any) => {
-      const member = memberMap.get(att.member_id);
+      const member = att.member_id ? memberMap.get(att.member_id) : null;
       return {
-        name: member?.name || 'Unknown',
-        group: member?.group || 'Unknown',
+        name: member?.name || `User-${att.phone_last4}`,
+        group: member?.group || 'N/A',
+        status: att.status || 'attend',
+        reason: att.reason || '',
+        phone_last4: att.phone_last4 || '',
         checkedAt: att.checked_at,
         ip: att.ip || '',
       };
     });
 
-    // Generate CSV
-    const csvHeaders = ['Name', 'Group', 'Checked At', 'IP'];
+    // Generate CSV with new fields
+    const csvHeaders = ['Name', 'Group', 'Status', 'Reason', 'Phone Last 4', 'Checked At', 'IP'];
     const csvRows = [
       csvHeaders.join(','),
       ...rows.map((row) =>
-        [row.name, row.group, row.checkedAt, row.ip].join(',')
+        [row.name, row.group, row.status, row.reason, row.phone_last4, row.checkedAt, row.ip]
+          .map(field => `"${field}"`)  // Quote fields to handle commas
+          .join(',')
       ),
     ];
 
