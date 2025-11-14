@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { isAuthenticated } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -12,9 +12,11 @@ export async function createMember(name: string, phone: string, group: string) {
   }
 
   try {
-    await prisma.member.create({
-      data: { name, phone, group, isActive: true },
-    });
+    const { error } = await supabase
+      .from('Member')
+      .insert({ name, phone, group, is_active: true });
+
+    if (error) throw error;
 
     revalidatePath('/admin/members');
     return { success: true };
@@ -31,10 +33,12 @@ export async function updateMember(id: string, name: string, phone: string, grou
   }
 
   try {
-    await prisma.member.update({
-      where: { id },
-      data: { name, phone, group, isActive },
-    });
+    const { error } = await supabase
+      .from('Member')
+      .update({ name, phone, group, is_active: isActive })
+      .eq('id', id);
+
+    if (error) throw error;
 
     revalidatePath('/admin/members');
     return { success: true };
@@ -51,9 +55,12 @@ export async function deleteMember(id: string) {
   }
 
   try {
-    await prisma.member.delete({
-      where: { id },
-    });
+    const { error } = await supabase
+      .from('Member')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
 
     revalidatePath('/admin/members');
     return { success: true };
@@ -64,21 +71,40 @@ export async function deleteMember(id: string) {
 }
 
 export async function getAllMembers(groupFilter?: string) {
-  return await prisma.member.findMany({
-    where: groupFilter ? { group: groupFilter } : undefined,
-    orderBy: [{ group: 'asc' }, { name: 'asc' }],
-  });
+  let query = supabase
+    .from('Member')
+    .select('*')
+    .order('group', { ascending: true })
+    .order('name', { ascending: true });
+
+  if (groupFilter) {
+    query = query.eq('group', groupFilter);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data || [];
 }
 
 export async function getMemberById(id: string) {
-  return await prisma.member.findUnique({
-    where: { id },
-  });
+  const { data, error } = await supabase
+    .from('Member')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function getActiveMembers() {
-  return await prisma.member.findMany({
-    where: { isActive: true },
-    orderBy: [{ group: 'asc' }, { name: 'asc' }],
-  });
+  const { data, error } = await supabase
+    .from('Member')
+    .select('*')
+    .eq('is_active', true)
+    .order('group', { ascending: true })
+    .order('name', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
 }
