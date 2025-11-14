@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import {
   getSessionById,
   getSessionAttendance,
@@ -49,7 +50,11 @@ export default async function SessionDetailPage({
     redirect('/admin/sessions');
   }
 
-  const publicUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/s/${session.public_token}`;
+  // Get current host from request headers
+  const headersList = await headers();
+  const host = headersList.get('host') || 'localhost:3000';
+  const protocol = host.includes('localhost') ? 'http' : 'https';
+  const publicUrl = `${protocol}://${host}/s/${session.public_token}`;
 
   const groupEmojis: { [key: string]: string } = {
     '보컬': '🎤',
