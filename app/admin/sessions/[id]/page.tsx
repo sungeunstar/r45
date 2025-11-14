@@ -15,7 +15,7 @@ type Session = {
   name: string;
   date: Date;
   note: string | null;
-  publicToken: string;
+  public_token: string;
 };
 
 type Attendance = {
@@ -46,7 +46,7 @@ export default async function SessionDetailPage({
     redirect('/admin/sessions');
   }
 
-  const publicUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/s/${session.publicToken}`;
+  const publicUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/s/${session.public_token}`;
 
   const groupEmojis: { [key: string]: string } = {
     '보컬': '🎤',
