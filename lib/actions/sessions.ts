@@ -46,7 +46,8 @@ export async function createSession(name: string, note: string, date: string, me
     return { success: true, sessionId: session.id };
   } catch (error) {
     console.error('Create session error:', error);
-    return { success: false, error: 'Failed to create session' };
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create session';
+    return { success: false, error: errorMessage };
   }
 }
 
