@@ -27,7 +27,7 @@ export async function createMember(name: string, phone: string, group: string) {
   }
 }
 
-export async function updateMember(id: string, name: string, phone: string, group: string, isActive: boolean) {
+export async function updateMember(id: string, name: string, phone: string, group: string) {
   const authenticated = await isAuthenticated();
   if (!authenticated) {
     redirect('/admin/login');
@@ -36,7 +36,7 @@ export async function updateMember(id: string, name: string, phone: string, grou
   try {
     const { error } = await supabase
       .from('Member')
-      .update({ name, phone, group, is_active: isActive })
+      .update({ name, phone, group, is_active: true })
       .eq('id', id);
 
     if (error) throw error;
@@ -109,16 +109,4 @@ export async function getMemberById(id: string) {
 
   if (error) throw error;
   return data;
-}
-
-export async function getActiveMembers() {
-  const { data, error } = await supabase
-    .from('Member')
-    .select('*')
-    .eq('is_active', true)
-    .order('group', { ascending: true })
-    .order('name', { ascending: true });
-
-  if (error) throw error;
-  return data || [];
 }

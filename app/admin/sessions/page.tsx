@@ -18,7 +18,7 @@ export default async function SessionsPage() {
   ]);
 
   const sessions = sessionsData;
-  const totalMembers = membersData.filter((m: any) => m.isActive).length;
+  const totalMembers = membersData.length;
 
   return (
     <div>

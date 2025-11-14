@@ -1,8 +1,6 @@
-'use client';
-
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
 import { getAllMembers } from '@/lib/actions/members';
+import MemberFilter from '@/components/MemberFilter';
 
 type Member = {
   id: string;
@@ -12,28 +10,13 @@ type Member = {
   createdAt: Date;
 };
 
-export default function MembersPage() {
-  const [members, setMembers] = useState<Member[]>([]);
-  const [filter, setFilter] = useState<string>('all');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadMembers() {
-      setLoading(true);
-      const data = await getAllMembers(filter === 'all' ? undefined : filter);
-      setMembers(data);
-      setLoading(false);
-    }
-    loadMembers();
-  }, [filter]);
-
-  const groups = ['all', '보컬', '악기', '음향'];
-  const groupEmojis: { [key: string]: string } = {
-    'all': '👥',
-    '보컬': '🎤',
-    '악기': '🎸',
-    '음향': '🎚️'
-  };
+export default async function MembersPage({
+  searchParams,
+}: {
+  searchParams: { filter?: string };
+}) {
+  const filter = searchParams.filter;
+  const members = await getAllMembers(filter);
 
   return (
     <div>
@@ -53,36 +36,9 @@ export default function MembersPage() {
         </Link>
       </div>
 
-      <div className="flex gap-2 mb-6" style={{
-        borderBottom: '1px solid rgba(255,255,255,0.12)'
-      }}>
-        {groups.map((group) => (
-          <button
-            key={group}
-            onClick={() => setFilter(group)}
-            className="pb-3 px-3 text-sm font-medium transition-colors relative"
-            style={{
-              color: filter === group ? '#FFFFFF' : 'rgba(255,255,255,0.5)'
-            }}
-          >
-            {groupEmojis[group]} {group === 'all' ? 'All' : group}
-            {filter === group && (
-              <div
-                className="absolute bottom-0 left-0 right-0 h-0.5"
-                style={{ background: '#FFFFFF' }}
-              />
-            )}
-          </button>
-        ))}
-      </div>
+      <MemberFilter />
 
-      {loading ? (
-        <div className="text-center py-12" style={{
-          color: 'rgba(255,255,255,0.5)'
-        }}>
-          <p>Loading...</p>
-        </div>
-      ) : members.length === 0 ? (
+      {members.length === 0 ? (
         <div className="text-center py-12" style={{
           color: 'rgba(255,255,255,0.5)'
         }}>
@@ -121,14 +77,6 @@ export default function MembersPage() {
                       </p>
                     </div>
                   </div>
-                  {!member.isActive && (
-                    <span className="text-xs px-2 py-1 rounded" style={{
-                      background: 'rgba(255,255,255,0.1)',
-                      color: 'rgba(255,255,255,0.5)'
-                    }}>
-                      Inactive
-                    </span>
-                  )}
                 </div>
               </Link>
             );

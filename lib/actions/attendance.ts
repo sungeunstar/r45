@@ -2,6 +2,7 @@
 
 import { supabase } from '@/lib/supabase';
 import { headers } from 'next/headers';
+import { revalidateTag } from 'next/cache';
 
 export async function checkInAttendance(publicToken: string, phoneNumber: string) {
   try {
@@ -19,7 +20,6 @@ export async function checkInAttendance(publicToken: string, phoneNumber: string
         .from('Member')
         .select('*')
         .eq('phone', phoneNumber)
-        .eq('is_active', true)
         .single()
     ]);
 
@@ -82,6 +82,9 @@ export async function checkInAttendance(publicToken: string, phoneNumber: string
       .single();
 
     if (attendanceError) throw attendanceError;
+
+    // Invalidate session attendance cache
+    revalidateTag(`session-${session.id}-attendance`);
 
     return {
       success: true,
