@@ -18,7 +18,7 @@ type Session = {
   id: string;
   name: string;
   date: Date;
-  note?: string;
+  note: string | null;
   publicToken: string;
 };
 

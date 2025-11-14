@@ -32,7 +32,7 @@ export default function NewSessionPage() {
   useEffect(() => {
     async function loadMembers() {
       const data = await getAllMembers();
-      const activeMembers = data.filter(m => m.isActive);
+      const activeMembers = data.filter((m: Member) => m.isActive);
       setMembers(activeMembers);
       setLoadingMembers(false);
     }
