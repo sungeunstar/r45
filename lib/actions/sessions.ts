@@ -249,13 +249,19 @@ const getSessionAttendanceCached = (sessionId: string) =>
         });
       }
 
-      // Combine results
+      // Combine results and map snake_case to camelCase
       return attendance.map((att: any) => {
         const member = att.member_id ? memberMap.get(att.member_id) : null;
         return {
-          ...att,
-          memberName: member?.name || 'Unknown',
-          memberGroup: member?.group || 'Unknown',
+          id: att.id,
+          session_id: att.session_id,
+          phone_last4: att.phone_last4,
+          member_id: att.member_id,
+          status: att.status,
+          reason: att.reason,
+          checkedAt: att.checked_at,  // Map to camelCase
+          memberName: member?.name || `User-${att.phone_last4}`,
+          memberGroup: member?.group || 'N/A',
         };
       });
     },
