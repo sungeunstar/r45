@@ -215,11 +215,10 @@ export default function EditMemberPage() {
           <div
             className="rounded-xl px-4 py-3"
             style={{
-              background: 'rgba(239,68,68,0.1)',
-              border: '1px solid rgba(239,68,68,0.3)',
+              background: 'rgb(255, 95, 95)',
             }}
           >
-            <p className="text-sm font-medium" style={{ color: 'rgba(239,68,68,1)' }}>{error}</p>
+            <p className="text-sm font-medium" style={{ color: 'white' }}>{error}</p>
           </div>
         )}
 

@@ -392,8 +392,8 @@ export default function NewSessionPage() {
         </div>
 
         {error && (
-          <div className="rounded-xl px-4 py-3" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)' }}>
-            <p className="text-sm text-red-400 text-center font-medium">{error}</p>
+          <div className="rounded-xl px-4 py-3" style={{ background: 'rgb(255, 95, 95)' }}>
+            <p className="text-sm text-center font-medium" style={{ color: 'white' }}>{error}</p>
           </div>
         )}
 
