@@ -87,12 +87,10 @@ CREATE POLICY "Allow all for anon" ON "Session" FOR ALL USING (true) WITH CHECK 
 CREATE POLICY "Allow all for anon" ON "SessionMember" FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all for anon" ON "Attendance" FOR ALL USING (true) WITH CHECK (true);
 
--- 샘플 데이터 삽입 (선택사항)
+-- 샘플 데이터 삽입
 -- 기본 관리자 계정: admin@joyful.app / admin1234
 INSERT INTO "AdminUser" (email, password) VALUES
-  ('admin@joyful.app', '$2a$10$YourHashedPasswordHere');
--- 비밀번호 해시는 애플리케이션에서 생성 후 수동으로 업데이트하거나
--- 애플리케이션의 회원가입 기능을 통해 생성하세요.
+  ('admin@joyful.app', '$2a$10$HeoPaGRGiHEldTiTdwRv4OGYqUsGAc8kQiFvx3c/lqlOQaYWNT58m');
 
 -- 샘플 멤버 데이터
 INSERT INTO "Member" (name, phone, "group") VALUES
