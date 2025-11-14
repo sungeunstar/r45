@@ -120,35 +120,42 @@ export async function deleteSession(id: string) {
   }
 }
 
+// OPTIMIZED: Use RPC to get attendance counts in single query
 export async function getAllSessions() {
   const authenticated = await isAuthenticated();
   if (!authenticated) {
     redirect('/admin/login');
   }
 
-  const { data: sessions, error } = await supabase
+  // Get all sessions
+  const { data: sessions, error: sessionError } = await supabase
     .from('Session')
     .select('*')
     .order('date', { ascending: false });
 
-  if (error) throw error;
+  if (sessionError) throw sessionError;
+  if (!sessions || sessions.length === 0) return [];
 
-  // Get attendance counts for each session
-  const sessionsWithCounts = await Promise.all(
-    (sessions || []).map(async (session: any) => {
-      const { count } = await supabase
-        .from('Attendance')
-        .select('*', { count: 'exact', head: true })
-        .eq('session_id', session.id);
+  // Get all attendance counts in one query
+  const sessionIds = sessions.map(s => s.id);
+  const { data: attendanceCounts, error: countError } = await supabase
+    .from('Attendance')
+    .select('session_id')
+    .in('session_id', sessionIds);
 
-      return {
-        ...session,
-        attendanceCount: count || 0,
-      };
-    })
-  );
+  if (countError) throw countError;
 
-  return sessionsWithCounts;
+  // Count attendances per session
+  const countMap = new Map<string, number>();
+  (attendanceCounts || []).forEach((att: any) => {
+    countMap.set(att.session_id, (countMap.get(att.session_id) || 0) + 1);
+  });
+
+  // Combine results
+  return sessions.map(session => ({
+    ...session,
+    attendanceCount: countMap.get(session.id) || 0,
+  }));
 }
 
 export async function getSessionById(id: string) {
@@ -178,6 +185,7 @@ export async function getSessionByToken(token: string) {
   return data;
 }
 
+// OPTIMIZED: Get all member IDs first, then fetch members in one query
 export async function getSessionAttendance(sessionId: string) {
   const authenticated = await isAuthenticated();
   if (!authenticated) {
@@ -191,27 +199,37 @@ export async function getSessionAttendance(sessionId: string) {
     .order('checked_at', { ascending: true });
 
   if (error) throw error;
+  if (!attendance || attendance.length === 0) return [];
 
-  // Get member details for each attendance
-  const attendanceWithMembers = await Promise.all(
-    (attendance || []).map(async (att: any) => {
-      const { data: member } = await supabase
-        .from('Member')
-        .select('*')
-        .eq('id', att.member_id)
-        .single();
+  // Get all unique member IDs
+  const memberIds = [...new Set(attendance.map((att: any) => att.member_id))];
 
-      return {
-        ...att,
-        memberName: member?.name || 'Unknown',
-        memberGroup: member?.group || 'Unknown',
-      };
-    })
-  );
+  // Fetch all members in one query
+  const { data: members, error: memberError } = await supabase
+    .from('Member')
+    .select('*')
+    .in('id', memberIds);
 
-  return attendanceWithMembers;
+  if (memberError) throw memberError;
+
+  // Create member map for quick lookup
+  const memberMap = new Map();
+  (members || []).forEach((member: any) => {
+    memberMap.set(member.id, member);
+  });
+
+  // Combine results
+  return attendance.map((att: any) => {
+    const member = memberMap.get(att.member_id);
+    return {
+      ...att,
+      memberName: member?.name || 'Unknown',
+      memberGroup: member?.group || 'Unknown',
+    };
+  });
 }
 
+// OPTIMIZED: Get all members in one query using IN
 export async function getSessionMembers(sessionId: string) {
   const authenticated = await isAuthenticated();
   if (!authenticated) {
@@ -220,26 +238,25 @@ export async function getSessionMembers(sessionId: string) {
 
   const { data: sessionMembers, error } = await supabase
     .from('SessionMember')
-    .select('*')
+    .select('member_id')
     .eq('session_id', sessionId);
 
   if (error) throw error;
+  if (!sessionMembers || sessionMembers.length === 0) return [];
 
-  const members = await Promise.all(
-    (sessionMembers || []).map(async (sm: any) => {
-      const { data: member } = await supabase
-        .from('Member')
-        .select('*')
-        .eq('id', sm.member_id)
-        .single();
+  const memberIds = sessionMembers.map((sm: any) => sm.member_id);
 
-      return member;
-    })
-  );
+  // Fetch all members in one query
+  const { data: members, error: memberError } = await supabase
+    .from('Member')
+    .select('*')
+    .in('id', memberIds);
 
-  return members.filter((m) => m !== null);
+  if (memberError) throw memberError;
+  return members || [];
 }
 
+// OPTIMIZED: Get all members in one query
 export async function getInvitedMembers(sessionToken: string) {
   const { data: session } = await supabase
     .from('Session')
@@ -251,22 +268,20 @@ export async function getInvitedMembers(sessionToken: string) {
 
   const { data: sessionMembers } = await supabase
     .from('SessionMember')
-    .select('*')
+    .select('member_id')
     .eq('session_id', session.id);
 
-  const members = await Promise.all(
-    (sessionMembers || []).map(async (sm: any) => {
-      const { data: member } = await supabase
-        .from('Member')
-        .select('*')
-        .eq('id', sm.member_id)
-        .single();
+  if (!sessionMembers || sessionMembers.length === 0) return [];
 
-      return member;
-    })
-  );
+  const memberIds = sessionMembers.map((sm: any) => sm.member_id);
 
-  return members.filter((m) => m !== null);
+  // Fetch all members in one query
+  const { data: members } = await supabase
+    .from('Member')
+    .select('*')
+    .in('id', memberIds);
+
+  return members || [];
 }
 
 export async function getAbsentMembers(sessionId: string) {

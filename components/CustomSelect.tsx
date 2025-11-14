@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useTheme } from '@/hooks/useTheme';
 
 type Option = {
   value: string;
@@ -17,7 +16,6 @@ type CustomSelectProps = {
 };
 
 export default function CustomSelect({ value, onChange, options, placeholder }: CustomSelectProps) {
-  const theme = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -46,14 +44,10 @@ export default function CustomSelect({ value, onChange, options, placeholder }: 
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="w-full h-[52px] px-4 rounded-xl transition-all focus:outline-none flex items-center justify-between"
-        style={theme === 'dark' ? {
+        style={{
           backgroundColor: 'rgba(255,255,255,0.08)',
           border: '1px solid rgba(255,255,255,0.14)',
           color: '#FFFFFF',
-        } : {
-          backgroundColor: '#FFFFFF',
-          border: '1px solid #D4D7DF',
-          color: '#1A1E27',
         }}
       >
         <span className="text-base">
@@ -89,15 +83,9 @@ export default function CustomSelect({ value, onChange, options, placeholder }: 
             top: '100%',
             zIndex: 1000,
             borderRadius: '12px',
-            ...(theme === 'dark' ? {
-              backgroundColor: '#1a1a1a',
-              border: '1px solid rgba(255,255,255,0.14)',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
-            } : {
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #D4D7DF',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
-            }),
+            backgroundColor: '#1a1a1a',
+            border: '1px solid rgba(255,255,255,0.14)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
           }}
         >
           {options.map((option) => (
@@ -107,26 +95,17 @@ export default function CustomSelect({ value, onChange, options, placeholder }: 
               onClick={() => handleSelect(option.value)}
               className="w-full px-4 py-3.5 text-left transition-colors flex items-center gap-2"
               style={{
-                ...(theme === 'dark' ? {
-                  color: '#FFFFFF',
-                  backgroundColor: value === option.value ? 'rgba(255,255,255,0.08)' : 'transparent',
-                } : {
-                  color: '#1A1E27',
-                  backgroundColor: value === option.value ? '#F6F7FA' : 'transparent',
-                }),
-                ...(theme === 'dark'
-                  ? { ':hover': { backgroundColor: 'rgba(255,255,255,0.06)' } }
-                  : { ':hover': { backgroundColor: '#F6F7FA' } }
-                ),
+                color: '#FFFFFF',
+                backgroundColor: value === option.value ? 'rgba(255,255,255,0.08)' : 'transparent',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(255,255,255,0.06)' : '#F6F7FA';
+                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)';
               }}
               onMouseLeave={(e) => {
                 if (value !== option.value) {
                   e.currentTarget.style.backgroundColor = 'transparent';
                 } else {
-                  e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(255,255,255,0.08)' : '#F6F7FA';
+                  e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.08)';
                 }
               }}
             >
