@@ -134,12 +134,12 @@ export default function CheckInForm({
                 className="flex-1 h-14 rounded-xl font-semibold text-base transition-all"
                 style={{
                   background: status === 'attend'
-                    ? 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)'
+                    ? 'rgb(53, 60, 73)'
                     : 'rgba(255,255,255,0.08)',
                   border: status === 'attend'
                     ? 'none'
                     : '1px solid rgba(255,255,255,0.14)',
-                  color: status === 'attend' ? '#000000' : '#FFFFFF',
+                  color: '#FFFFFF',
                 }}
               >
                 참석
@@ -149,12 +149,12 @@ export default function CheckInForm({
                 className="flex-1 h-14 rounded-xl font-semibold text-base transition-all"
                 style={{
                   background: status === 'absent'
-                    ? 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)'
+                    ? 'rgb(53, 60, 73)'
                     : 'rgba(255,255,255,0.08)',
                   border: status === 'absent'
                     ? 'none'
                     : '1px solid rgba(255,255,255,0.14)',
-                  color: status === 'absent' ? '#000000' : '#FFFFFF',
+                  color: '#FFFFFF',
                 }}
               >
                 불참
