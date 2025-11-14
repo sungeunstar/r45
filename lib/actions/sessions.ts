@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { isAuthenticated } from '@/lib/auth';
 import { generateToken } from '@/lib/utils';
 import { revalidatePath } from 'next/cache';
@@ -14,23 +14,31 @@ export async function createSession(name: string, note: string, date: string, me
 
   try {
     const publicToken = generateToken(12);
-    const session = await prisma.session.create({
-      data: {
+    const { data: session, error } = await supabase
+      .from('Session')
+      .insert({
         name,
         note: note || null,
-        date: new Date(date),
-        publicToken,
-      },
-    });
+        date: new Date(date).toISOString(),
+        public_token: publicToken,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
 
     // Add selected members to session
     if (memberIds.length > 0) {
-      await prisma.sessionMember.createMany({
-        data: memberIds.map(memberId => ({
-          sessionId: session.id,
-          memberId,
-        })),
-      });
+      const { error: memberError } = await supabase
+        .from('SessionMember')
+        .insert(
+          memberIds.map(memberId => ({
+            session_id: session.id,
+            member_id: memberId,
+          }))
+        );
+
+      if (memberError) throw memberError;
     }
 
     revalidatePath('/admin/sessions');
@@ -48,27 +56,36 @@ export async function updateSession(id: string, name: string, note: string, date
   }
 
   try {
-    await prisma.session.update({
-      where: { id },
-      data: {
+    const { error } = await supabase
+      .from('Session')
+      .update({
         name,
         note: note || null,
-        date: new Date(date),
-      },
-    });
+        date: new Date(date).toISOString(),
+      })
+      .eq('id', id);
+
+    if (error) throw error;
 
     // Update session members
-    await prisma.sessionMember.deleteMany({
-      where: { sessionId: id },
-    });
+    const { error: deleteError } = await supabase
+      .from('SessionMember')
+      .delete()
+      .eq('session_id', id);
+
+    if (deleteError) throw deleteError;
 
     if (memberIds.length > 0) {
-      await prisma.sessionMember.createMany({
-        data: memberIds.map(memberId => ({
-          sessionId: id,
-          memberId,
-        })),
-      });
+      const { error: memberError } = await supabase
+        .from('SessionMember')
+        .insert(
+          memberIds.map(memberId => ({
+            session_id: id,
+            member_id: memberId,
+          }))
+        );
+
+      if (memberError) throw memberError;
     }
 
     revalidatePath('/admin/sessions');
@@ -87,18 +104,13 @@ export async function deleteSession(id: string) {
   }
 
   try {
-    // Delete all related records first
-    await prisma.attendance.deleteMany({
-      where: { sessionId: id },
-    });
+    // Supabase CASCADE will handle deletion of related records
+    const { error } = await supabase
+      .from('Session')
+      .delete()
+      .eq('id', id);
 
-    await prisma.sessionMember.deleteMany({
-      where: { sessionId: id },
-    });
-
-    await prisma.session.delete({
-      where: { id },
-    });
+    if (error) throw error;
 
     revalidatePath('/admin/sessions');
     return { success: true };
@@ -114,19 +126,24 @@ export async function getAllSessions() {
     redirect('/admin/login');
   }
 
-  const sessions = await prisma.session.findMany({
-    orderBy: { date: 'desc' },
-  });
+  const { data: sessions, error } = await supabase
+    .from('Session')
+    .select('*')
+    .order('date', { ascending: false });
+
+  if (error) throw error;
 
   // Get attendance counts for each session
   const sessionsWithCounts = await Promise.all(
-    sessions.map(async (session: any) => {
-      const attendanceCount = await prisma.attendance.count({
-        where: { sessionId: session.id },
-      });
+    (sessions || []).map(async (session: any) => {
+      const { count } = await supabase
+        .from('Attendance')
+        .select('*', { count: 'exact', head: true })
+        .eq('session_id', session.id);
+
       return {
         ...session,
-        attendanceCount,
+        attendanceCount: count || 0,
       };
     })
   );
@@ -140,15 +157,25 @@ export async function getSessionById(id: string) {
     redirect('/admin/login');
   }
 
-  return await prisma.session.findUnique({
-    where: { id },
-  });
+  const { data, error } = await supabase
+    .from('Session')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function getSessionByToken(token: string) {
-  return await prisma.session.findUnique({
-    where: { publicToken: token },
-  });
+  const { data, error } = await supabase
+    .from('Session')
+    .select('*')
+    .eq('public_token', token)
+    .single();
+
+  if (error) return null;
+  return data;
 }
 
 export async function getSessionAttendance(sessionId: string) {
@@ -157,17 +184,23 @@ export async function getSessionAttendance(sessionId: string) {
     redirect('/admin/login');
   }
 
-  const attendance = await prisma.attendance.findMany({
-    where: { sessionId },
-    orderBy: { checkedAt: 'asc' },
-  });
+  const { data: attendance, error } = await supabase
+    .from('Attendance')
+    .select('*')
+    .eq('session_id', sessionId)
+    .order('checked_at', { ascending: true });
+
+  if (error) throw error;
 
   // Get member details for each attendance
   const attendanceWithMembers = await Promise.all(
-    attendance.map(async (att: any) => {
-      const member = await prisma.member.findUnique({
-        where: { id: att.memberId },
-      });
+    (attendance || []).map(async (att: any) => {
+      const { data: member } = await supabase
+        .from('Member')
+        .select('*')
+        .eq('id', att.member_id)
+        .single();
+
       return {
         ...att,
         memberName: member?.name || 'Unknown',
@@ -185,15 +218,21 @@ export async function getSessionMembers(sessionId: string) {
     redirect('/admin/login');
   }
 
-  const sessionMembers = await prisma.sessionMember.findMany({
-    where: { sessionId },
-  });
+  const { data: sessionMembers, error } = await supabase
+    .from('SessionMember')
+    .select('*')
+    .eq('session_id', sessionId);
+
+  if (error) throw error;
 
   const members = await Promise.all(
-    sessionMembers.map(async (sm: any) => {
-      const member = await prisma.member.findUnique({
-        where: { id: sm.memberId },
-      });
+    (sessionMembers || []).map(async (sm: any) => {
+      const { data: member } = await supabase
+        .from('Member')
+        .select('*')
+        .eq('id', sm.member_id)
+        .single();
+
       return member;
     })
   );
@@ -202,21 +241,27 @@ export async function getSessionMembers(sessionId: string) {
 }
 
 export async function getInvitedMembers(sessionToken: string) {
-  const session = await prisma.session.findUnique({
-    where: { publicToken: sessionToken },
-  });
+  const { data: session } = await supabase
+    .from('Session')
+    .select('*')
+    .eq('public_token', sessionToken)
+    .single();
 
   if (!session) return [];
 
-  const sessionMembers = await prisma.sessionMember.findMany({
-    where: { sessionId: session.id },
-  });
+  const { data: sessionMembers } = await supabase
+    .from('SessionMember')
+    .select('*')
+    .eq('session_id', session.id);
 
   const members = await Promise.all(
-    sessionMembers.map(async (sm: any) => {
-      const member = await prisma.member.findUnique({
-        where: { id: sm.memberId },
-      });
+    (sessionMembers || []).map(async (sm: any) => {
+      const { data: member } = await supabase
+        .from('Member')
+        .select('*')
+        .eq('id', sm.member_id)
+        .single();
+
       return member;
     })
   );
@@ -233,11 +278,11 @@ export async function getAbsentMembers(sessionId: string) {
   // Get invited members for this session
   const invitedMembers = await getSessionMembers(sessionId);
 
-  const attendance = await prisma.attendance.findMany({
-    where: { sessionId },
-    select: { memberId: true },
-  });
+  const { data: attendance } = await supabase
+    .from('Attendance')
+    .select('member_id')
+    .eq('session_id', sessionId);
 
-  const attendedMemberIds = new Set(attendance.map((a: any) => a.memberId));
+  const attendedMemberIds = new Set((attendance || []).map((a: any) => a.member_id));
   return invitedMembers.filter((m) => !attendedMemberIds.has(m.id));
 }

@@ -1,17 +1,19 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { getSession } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
 
 export async function loginAdmin(email: string, password: string) {
   try {
-    const admin = await prisma.adminUser.findUnique({
-      where: { email },
-    });
+    const { data: admin, error } = await supabase
+      .from('AdminUser')
+      .select('*')
+      .eq('email', email)
+      .single();
 
-    if (!admin) {
+    if (error || !admin) {
       return { success: false, error: 'Invalid credentials' };
     }
 
