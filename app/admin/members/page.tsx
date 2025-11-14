@@ -43,7 +43,7 @@ export default function MembersPage() {
         </h2>
         <Link
           href="/admin/members/new"
-          className="add-member-btn h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all"
+          className="h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all hover:bg-[#2A303B]"
           style={{
             background: '#353C49',
             color: '#FFFFFF',
@@ -96,7 +96,7 @@ export default function MembersPage() {
               <Link
                 key={member.id}
                 href={`/admin/members/${member.id}/edit`}
-                className="member-card rounded-lg px-5 py-4 transition-all"
+                className="rounded-lg px-5 py-4 transition-all hover:bg-[rgba(255,255,255,0.08)]"
                 style={{
                   background: 'rgba(255,255,255,0.06)',
                   backdropFilter: 'blur(12px)',
@@ -135,15 +135,6 @@ export default function MembersPage() {
           })}
         </div>
       )}
-
-      <style jsx>{`
-        .add-member-btn:hover {
-          background: #2A303B !important;
-        }
-        .member-card:hover {
-          background: rgba(255,255,255,0.08) !important;
-        }
-      `}</style>
     </div>
   );
 }

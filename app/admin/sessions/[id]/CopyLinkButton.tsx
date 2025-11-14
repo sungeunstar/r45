@@ -33,23 +33,15 @@ export default function CopyLinkButton({ url }: { url: string }) {
   }
 
   return (
-    <>
-      <button
-        onClick={handleCopy}
-        className="copy-link-btn h-11 px-4 rounded-xl text-sm font-semibold transition-all"
-        style={{
-          background: '#353C49',
-          color: '#FFFFFF',
-        }}
-      >
-        {copied ? 'Copied!' : 'Copy Check-in Link'}
-      </button>
-
-      <style jsx>{`
-        .copy-link-btn:hover {
-          background: #2A303B !important;
-        }
-      `}</style>
-    </>
+    <button
+      onClick={handleCopy}
+      className="h-11 px-4 rounded-xl text-sm font-semibold transition-all hover:bg-[#2A303B]"
+      style={{
+        background: '#353C49',
+        color: '#FFFFFF',
+      }}
+    >
+      {copied ? 'Copied!' : 'Copy Check-in Link'}
+    </button>
   );
 }

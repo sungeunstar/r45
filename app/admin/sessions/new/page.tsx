@@ -378,7 +378,7 @@ export default function NewSessionPage() {
         <button
           type="submit"
           disabled={loading}
-          className="submit-btn w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40"
+          className="w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40 hover:enabled:bg-[#2A303B]"
           style={{
             background: '#353C49',
             color: '#FFFFFF',
@@ -389,12 +389,6 @@ export default function NewSessionPage() {
           {loading ? '생성 중...' : '세션 생성'}
         </button>
       </form>
-
-      <style jsx>{`
-        .submit-btn:hover:not(:disabled) {
-          background: #2A303B !important;
-        }
-      `}</style>
     </div>
   );
 }

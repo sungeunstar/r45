@@ -28,7 +28,7 @@ export default async function SessionsPage() {
         </h2>
         <Link
           href="/admin/sessions/new"
-          className="create-session-btn h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all"
+          className="h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all hover:bg-[#f5f5f5]"
           style={{
             background: '#FFFFFF',
             color: '#0b0b0b',
@@ -51,7 +51,7 @@ export default async function SessionsPage() {
             <Link
               key={session.id}
               href={`/admin/sessions/${session.id}`}
-              className="session-card rounded-lg px-5 py-4 transition-all"
+              className="rounded-lg px-5 py-4 transition-all hover:bg-[rgba(255,255,255,0.08)]"
               style={{
                 background: 'rgba(255,255,255,0.06)',
                 backdropFilter: 'blur(12px)',
@@ -85,15 +85,6 @@ export default async function SessionsPage() {
           ))}
         </div>
       )}
-
-      <style jsx>{`
-        .create-session-btn:hover {
-          background: #f5f5f5 !important;
-        }
-        .session-card:hover {
-          background: rgba(255,255,255,0.08) !important;
-        }
-      `}</style>
     </div>
   );
 }
