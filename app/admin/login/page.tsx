@@ -30,22 +30,25 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-5">
       <div className="w-full max-w-[420px]">
-        <div className="text-center mb-12">
+        <div className="text-center" style={{ marginBottom: '48px' }}>
           <h1
-            className="font-bold text-white m-0"
+            className="text-white"
             style={{
               fontSize: '28px',
+              fontWeight: 700,
               letterSpacing: '-0.3px',
+              color: '#FFFFFF',
+              margin: 0,
               lineHeight: '1.3'
             }}
           >
             Joyful Church Admin
           </h1>
           <p
-            className="font-normal"
             style={{
               marginTop: '10px',
               fontSize: '15px',
+              fontWeight: 400,
               color: 'rgba(255, 255, 255, 0.55)',
               lineHeight: '1.5'
             }}
