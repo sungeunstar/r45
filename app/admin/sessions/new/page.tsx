@@ -150,7 +150,7 @@ export default function NewSessionPage() {
       {/* Header */}
       <div className="mb-8 relative flex items-center justify-center h-10">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push('/admin/sessions')}
           className="absolute left-0 w-10 h-10 flex items-center justify-center transition-colors"
           style={{ color: 'rgba(255,255,255,0.7)' }}
           aria-label="뒤로가기"
