@@ -1,8 +1,5 @@
-'use client';
-
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { redirect } from 'next/navigation';
 import {
   getSessionById,
   getSessionAttendance,
@@ -18,7 +15,7 @@ type Session = {
   name: string;
   date: Date;
   note: string | null;
-  publicToken: string;
+  public_token: string;
 };
 
 type Attendance = {
@@ -34,50 +31,22 @@ type Member = {
   group: string;
 };
 
-export default function SessionDetailPage({
+export default async function SessionDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const router = useRouter();
-  const [session, setSession] = useState<Session | null>(null);
-  const [attendance, setAttendance] = useState<Attendance[]>([]);
-  const [absentMembers, setAbsentMembers] = useState<Member[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadData() {
-      const sessionData = await getSessionById(params.id);
-
-      if (!sessionData) {
-        router.push('/admin/sessions');
-        return;
-      }
-
-      const attendanceData = await getSessionAttendance(params.id);
-      const absentData = await getAbsentMembers(params.id);
-
-      setSession(sessionData);
-      setAttendance(attendanceData);
-      setAbsentMembers(absentData);
-      setLoading(false);
-    }
-    loadData();
-  }, [params.id, router]);
-
-  if (loading) {
-    return (
-      <div className="max-w-[420px] mx-auto min-h-screen flex items-center justify-center">
-        <p style={{ color: 'rgba(255,255,255,0.7)' }}>로딩 중...</p>
-      </div>
-    );
-  }
+  const [session, attendance, absentMembers] = await Promise.all([
+    getSessionById(params.id),
+    getSessionAttendance(params.id),
+    getAbsentMembers(params.id),
+  ]);
 
   if (!session) {
-    return null;
+    redirect('/admin/sessions');
   }
 
-  const publicUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/s/${session.publicToken}`;
+  const publicUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/s/${session.public_token}`;
 
   const groupEmojis: { [key: string]: string } = {
     '보컬': '🎤',

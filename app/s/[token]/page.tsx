@@ -17,7 +17,7 @@ export default async function PublicCheckInPage({
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#0B0B0B]">
       <div className="max-w-[420px] mx-auto px-5 py-12">
         <div className="text-center mb-10">
           <h1 className="text-2xl font-bold mb-3 text-white">{session.name}</h1>

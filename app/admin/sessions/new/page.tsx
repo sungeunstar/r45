@@ -30,8 +30,7 @@ export default function NewSessionPage() {
   useEffect(() => {
     async function loadMembers() {
       const data = await getAllMembers();
-      const activeMembers = data.filter((m: Member) => m.isActive);
-      setMembers(activeMembers);
+      setMembers(data);
       setLoadingMembers(false);
     }
     loadMembers();
@@ -106,12 +105,15 @@ export default function NewSessionPage() {
     }
   }
 
-  function getGroupStats(group: string) {
-    const groupMemberIds = groupedMembers[group].map(m => m.id);
-    const selectedCount = groupMemberIds.filter(id => selectedMemberIds.includes(id)).length;
-    const totalCount = groupMemberIds.length;
-    return { selectedCount, totalCount, allSelected: selectedCount === totalCount && totalCount > 0 };
-  }
+  const getGroupStats = useMemo(() => {
+    const selectedSet = new Set(selectedMemberIds);
+    return (group: string) => {
+      const groupMemberIds = groupedMembers[group].map(m => m.id);
+      const selectedCount = groupMemberIds.filter(id => selectedSet.has(id)).length;
+      const totalCount = groupMemberIds.length;
+      return { selectedCount, totalCount, allSelected: selectedCount === totalCount && totalCount > 0 };
+    };
+  }, [groupedMembers, selectedMemberIds]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -375,18 +377,12 @@ export default function NewSessionPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40"
+          className="w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40 hover:enabled:bg-[#2A303B]"
           style={{
             background: '#353C49',
             color: '#FFFFFF',
             padding: '16px 24px',
             border: 'none',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#2A303B';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#353C49';
           }}
         >
           {loading ? '생성 중...' : '세션 생성'}

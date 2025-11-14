@@ -2,51 +2,57 @@
 
 import { supabase } from '@/lib/supabase';
 import { headers } from 'next/headers';
+import { revalidateTag } from 'next/cache';
 
 export async function checkInAttendance(publicToken: string, phoneNumber: string) {
   try {
-    // Get session by token
-    const { data: session, error: sessionError } = await supabase
-      .from('Session')
-      .select('*')
-      .eq('public_token', publicToken)
-      .single();
+    // Parallel fetch: session and member
+    const [
+      { data: session, error: sessionError },
+      { data: member, error: memberError }
+    ] = await Promise.all([
+      supabase
+        .from('Session')
+        .select('*')
+        .eq('public_token', publicToken)
+        .single(),
+      supabase
+        .from('Member')
+        .select('*')
+        .eq('phone', phoneNumber)
+        .single()
+    ]);
 
     if (sessionError || !session) {
       return { success: false, error: '세션을 찾을 수 없습니다' };
     }
 
-    // Find member by phone number
-    const { data: member, error: memberError } = await supabase
-      .from('Member')
-      .select('*')
-      .eq('phone', phoneNumber)
-      .eq('is_active', true)
-      .single();
-
     if (memberError || !member) {
       return { success: false, error: '등록되지 않은 전화번호입니다' };
     }
 
-    // Check if member is invited to this session
-    const { data: invited } = await supabase
-      .from('SessionMember')
-      .select('*')
-      .eq('session_id', session.id)
-      .eq('member_id', member.id)
-      .single();
+    // Parallel check: invitation and existing attendance
+    const [
+      { data: invited },
+      { data: existing }
+    ] = await Promise.all([
+      supabase
+        .from('SessionMember')
+        .select('*')
+        .eq('session_id', session.id)
+        .eq('member_id', member.id)
+        .single(),
+      supabase
+        .from('Attendance')
+        .select('*')
+        .eq('session_id', session.id)
+        .eq('member_id', member.id)
+        .single()
+    ]);
 
     if (!invited) {
       return { success: false, error: '이 세션에 초대되지 않은 멤버입니다' };
     }
-
-    // Check if already checked in
-    const { data: existing } = await supabase
-      .from('Attendance')
-      .select('*')
-      .eq('session_id', session.id)
-      .eq('member_id', member.id)
-      .single();
 
     if (existing) {
       return {
@@ -76,6 +82,9 @@ export async function checkInAttendance(publicToken: string, phoneNumber: string
       .single();
 
     if (attendanceError) throw attendanceError;
+
+    // Invalidate session attendance cache
+    revalidateTag(`session-${session.id}-attendance`);
 
     return {
       success: true,

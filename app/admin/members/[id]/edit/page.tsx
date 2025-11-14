@@ -13,7 +13,6 @@ export default function EditMemberPage() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [group, setGroup] = useState('보컬');
-  const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [loadingData, setLoadingData] = useState(true);
@@ -31,7 +30,6 @@ export default function EditMemberPage() {
         setName(member.name);
         setPhone(member.phone);
         setGroup(member.group);
-        setIsActive(member.isActive);
       }
       setLoadingData(false);
     }
@@ -55,7 +53,7 @@ export default function EditMemberPage() {
 
     setLoading(true);
 
-    const result = await updateMember(memberId, name, phone, group, isActive);
+    const result = await updateMember(memberId, name, phone, group);
 
     if (result.success) {
       router.push('/admin/members');
@@ -168,33 +166,6 @@ export default function EditMemberPage() {
           />
         </div>
 
-        <div
-          className="flex items-center gap-3 p-4 rounded-xl"
-          style={{
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.12)',
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => setIsActive(!isActive)}
-            className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-all"
-            style={{
-              background: isActive ? '#FFFFFF' : 'transparent',
-              border: isActive ? 'none' : '1px solid rgba(255,255,255,0.3)',
-            }}
-          >
-            {isActive && (
-              <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 5.5L5 9.5L13 1.5" stroke="#0B0B0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            )}
-          </button>
-          <label htmlFor="isActive" className="text-sm font-semibold" style={{ color: '#FFFFFF' }}>
-            활성 멤버
-          </label>
-        </div>
-
         {error && (
           <div
             className="rounded-xl px-4 py-3"
@@ -211,18 +182,12 @@ export default function EditMemberPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40"
+            className="w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40 hover:enabled:bg-[#2A303B]"
             style={{
               background: '#353C49',
               color: '#FFFFFF',
               padding: '16px 24px',
               border: 'none',
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) e.currentTarget.style.background = '#2A303B';
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) e.currentTarget.style.background = '#353C49';
             }}
           >
             {loading ? '수정 중...' : '멤버 수정'}
@@ -233,18 +198,12 @@ export default function EditMemberPage() {
             type="button"
             onClick={handleDelete}
             disabled={loading}
-            className="w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40"
+            className="w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40 hover:enabled:bg-[#E64B4B]"
             style={{
               background: '#FF5F5F',
               color: '#FFFFFF',
               padding: '16px 24px',
               border: 'none',
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) e.currentTarget.style.background = '#E64B4B';
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) e.currentTarget.style.background = '#FF5F5F';
             }}
           >
             멤버 삭제

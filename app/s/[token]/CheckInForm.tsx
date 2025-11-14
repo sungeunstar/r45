@@ -1,194 +1,204 @@
 'use client';
 
 import { useState } from 'react';
-import { checkInAttendance } from '@/lib/actions/attendance';
-import { formatDate } from '@/lib/utils';
+
+type Step = 'phone' | 'status' | 'complete';
+type Status = 'attend' | 'absent' | null;
 
 export default function CheckInForm({
   sessionToken,
 }: {
   sessionToken: string;
 }) {
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [step, setStep] = useState<Step>('phone');
+  const [phoneLast4, setPhoneLast4] = useState('');
+  const [status, setStatus] = useState<Status>(null);
+  const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [duplicate, setDuplicate] = useState(false);
-  const [checkedAt, setCheckedAt] = useState<Date | null>(null);
-  const [memberName, setMemberName] = useState('');
-  const [memberGroup, setMemberGroup] = useState('');
-  const [error, setError] = useState('');
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    if (!phoneNumber.trim()) {
-      setError('전화번호를 입력해주세요');
-      return;
+  // 핸드폰 번호 입력 (숫자만 4자리)
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 4) {
+      setPhoneLast4(value);
     }
+  };
 
-    setError('');
+  // Step 1 → Step 2
+  const handlePhoneSubmit = () => {
+    if (phoneLast4.length === 4) {
+      setStep('status');
+    }
+  };
+
+  // 최종 제출
+  const handleSubmit = async () => {
+    if (!status) return;
+
     setLoading(true);
 
-    const result = await checkInAttendance(sessionToken, phoneNumber);
+    try {
+      const response = await fetch('/api/attendance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionToken,
+          phoneLast4,
+          status,
+          reason: status === 'absent' ? reason : undefined,
+        }),
+      });
 
-    if (result.success) {
-      setSuccess(true);
-      setDuplicate(result.duplicate || false);
-      setCheckedAt(result.checkedAt ? new Date(result.checkedAt) : null);
-      setMemberName(result.memberName || '');
-      setMemberGroup(result.memberGroup || '');
-    } else {
-      setError(result.error || '출석 체크 실패');
+      const result = await response.json();
+
+      if (result.success) {
+        setStep('complete');
+      } else {
+        alert(result.error || '출석 체크에 실패했습니다');
+      }
+    } catch (error) {
+      alert('출석 체크에 실패했습니다');
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
-  function handleReset() {
-    setSuccess(false);
-    setDuplicate(false);
-    setPhoneNumber('');
-    setError('');
-    setLoading(false);
-  }
-
-  // Success State - Dark Glassmorphism Design
-  if (success) {
-    const groupEmoji = memberGroup === '보컬' ? '🎤' : memberGroup === '악기' ? '🎸' : memberGroup === '음향' ? '🎚️' : '👤';
-
-    return (
-      <div className="py-6">
-        {/* Success Icon */}
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">
-            {duplicate ? '✋' : '✅'}
-          </div>
-        </div>
-
-        {/* Status Card */}
-        <div
-          className="rounded-[18px] p-6 mb-6"
-          style={{
-            background: 'rgba(255,255,255,0.06)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255,255,255,0.12)',
-          }}
-        >
-          <div className="text-center mb-5">
-            <h2 className="text-2xl font-bold mb-2 text-white">
-              {duplicate ? '이미 출석 처리됨' : '출석 완료!'}
-            </h2>
-            {duplicate && (
-              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                이미 출석 체크가 완료된 상태입니다
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-4 pt-5" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{groupEmoji}</span>
-              <div>
-                <p className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>이름</p>
-                <p className="text-base font-bold text-white">{memberName}</p>
-              </div>
-            </div>
-
-            {memberGroup && (
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🏷️</span>
-                <div>
-                  <p className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>그룹</p>
-                  <p className="text-base font-semibold text-white">{memberGroup}</p>
-                </div>
-              </div>
-            )}
-
-            {checkedAt && (
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">⏰</span>
-                <div>
-                  <p className="text-xs font-medium mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>출석 시간</p>
-                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                    {new Date(checkedAt).toLocaleString('ko-KR', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Action Button */}
-        <button
-          onClick={handleReset}
-          className="w-full h-14 rounded-xl font-semibold transition-all text-white"
-          style={{
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.14)',
-          }}
-        >
-          다른 사람 출석하기
-        </button>
-      </div>
-    );
-  }
-
-  // Form State - Dark Glassmorphism
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <div className="flex flex-col gap-2">
-        <label htmlFor="phone" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
-          전화번호 입력
-        </label>
-        <input
-          id="phone"
-          type="tel"
-          value={phoneNumber}
-          onChange={(e) => {
-            const value = e.target.value.replace(/\D/g, '');
-            setPhoneNumber(value);
-          }}
-          required
-          autoFocus
-          maxLength={11}
-          className="h-[52px] px-4 rounded-xl text-white placeholder-white/40 transition-all focus:outline-none"
-          style={{
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.14)',
-          }}
-          placeholder="01012345678"
-        />
-        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          하이픈 없이 숫자만 입력 (예: 01012345678)
-        </p>
-      </div>
+    <div>
+      {/* Step 1: 핸드폰 번호 입력 */}
+      {step === 'phone' && (
+        <div className="space-y-6">
+          <div className="relative">
+            <input
+              type="text"
+              inputMode="numeric"
+              value={phoneLast4}
+              onChange={handlePhoneChange}
+              placeholder="0000"
+              maxLength={4}
+              autoFocus
+              className="w-full h-16 px-6 text-center text-2xl font-semibold rounded-2xl bg-white/8 border border-white/14 text-white placeholder:text-white/30 focus:outline-none focus:border-white/30 transition-colors"
+            />
+            {phoneLast4.length === 4 && (
+              <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                <svg
+                  className="w-6 h-6 text-green-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+            )}
+          </div>
 
-      {error && (
-        <div
-          className="rounded-xl px-4 py-3"
-          style={{
-            background: 'rgb(255, 95, 95)',
-          }}
-        >
-          <p className="text-sm text-center font-medium" style={{ color: 'white' }}>{error}</p>
+          <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            핸드폰 번호 뒷자리 4자리를 입력해주세요
+          </p>
+
+          <button
+            onClick={handlePhoneSubmit}
+            disabled={phoneLast4.length !== 4}
+            className="w-full h-14 rounded-2xl font-semibold text-base transition-all disabled:opacity-40"
+            style={{
+              background: phoneLast4.length === 4 ? '#353C49' : '#1A1D23',
+              color: '#FFFFFF',
+            }}
+          >
+            계속하기
+          </button>
         </div>
       )}
 
-      <button
-        type="submit"
-        disabled={loading || !phoneNumber.trim()}
-        className="h-14 rounded-xl font-semibold text-base text-black transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-        style={{
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
-        }}
-      >
-        {loading ? '처리중...' : '출석하기'}
-      </button>
-    </form>
+      {/* Step 2: 참석/불참 선택 */}
+      {step === 'status' && (
+        <div className="space-y-6">
+          {/* Pill-style 라디오 버튼 */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => setStatus('attend')}
+              className={`flex-1 h-14 rounded-full font-semibold transition-all ${
+                status === 'attend'
+                  ? 'bg-white text-black'
+                  : 'bg-white/8 text-white/70 border border-white/14'
+              }`}
+            >
+              참석
+            </button>
+            <button
+              onClick={() => setStatus('absent')}
+              className={`flex-1 h-14 rounded-full font-semibold transition-all ${
+                status === 'absent'
+                  ? 'bg-white text-black'
+                  : 'bg-white/8 text-white/70 border border-white/14'
+              }`}
+            >
+              불참
+            </button>
+          </div>
+
+          {/* 불참 사유 입력 (슬라이드다운 애니메이션) */}
+          <div
+            className={`transition-all duration-300 ease-in-out overflow-hidden ${
+              status === 'absent'
+                ? 'max-h-40 opacity-100'
+                : 'max-h-0 opacity-0'
+            }`}
+          >
+            <textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="불참 사유를 입력해주세요 (선택)"
+              rows={4}
+              className="w-full px-4 py-3 rounded-2xl bg-white/8 border border-white/14 text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 transition-colors resize-none"
+            />
+          </div>
+
+          {/* 보내기 버튼 */}
+          <button
+            onClick={handleSubmit}
+            disabled={!status || loading}
+            className="w-full h-14 rounded-2xl font-semibold text-base transition-all disabled:opacity-40"
+            style={{
+              background: status ? '#353C49' : '#1A1D23',
+              color: '#FFFFFF',
+            }}
+          >
+            {loading ? '처리 중...' : '보내기'}
+          </button>
+
+          {/* 뒤로가기 */}
+          <button
+            onClick={() => {
+              setStep('phone');
+              setStatus(null);
+              setReason('');
+            }}
+            className="w-full text-white/50 text-sm hover:text-white/70 transition-colors"
+          >
+            ← 뒤로가기
+          </button>
+        </div>
+      )}
+
+      {/* Step 3: 완료 화면 */}
+      {step === 'complete' && (
+        <div className="text-center space-y-6 py-12">
+          <div className="text-6xl">🙌</div>
+          <h2 className="text-2xl font-bold text-white">
+            출석이 기록되었습니다
+          </h2>
+          <p className="text-white/60">
+            {status === 'attend' ? '참석' : '불참'} 처리가 완료되었습니다
+          </p>
+        </div>
+      )}
+    </div>
   );
 }

@@ -9,7 +9,7 @@ type Session = {
   name: string;
   note: string | null;
   date: Date;
-  publicToken: string;
+  public_token: string;
 };
 
 export default function SessionSuccessPage() {
@@ -33,7 +33,7 @@ export default function SessionSuccessPage() {
   }, [sessionId]);
 
   const checkInUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/s/${session?.publicToken}`
+    ? `${window.location.origin}/s/${session?.public_token}`
     : '';
 
   async function handleCopyLink() {
