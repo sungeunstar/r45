@@ -118,12 +118,6 @@ export default function NewSessionPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
-
-    if (selectedMemberIds.length === 0) {
-      setError('최소 1명 이상의 멤버를 선택해주세요');
-      return;
-    }
-
     setLoading(true);
 
     const result = await createSession(name, note, date, selectedMemberIds);
