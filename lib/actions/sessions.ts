@@ -124,48 +124,51 @@ export async function deleteSession(id: string) {
 }
 
 // OPTIMIZED: Use RPC to get attendance counts in single query
-const getAllSessionsUncached = async () => {
+// Cached data fetching (no auth check - must be called from authenticated context)
+const getAllSessionsCached = unstable_cache(
+  async () => {
+    // Get all sessions
+    const { data: sessions, error: sessionError } = await supabase
+      .from('Session')
+      .select('*')
+      .order('date', { ascending: false });
+
+    if (sessionError) throw sessionError;
+    if (!sessions || sessions.length === 0) return [];
+
+    // Get all attendance counts in one query
+    const sessionIds = sessions.map(s => s.id);
+    const { data: attendanceCounts, error: countError } = await supabase
+      .from('Attendance')
+      .select('session_id')
+      .in('session_id', sessionIds);
+
+    if (countError) throw countError;
+
+    // Count attendances per session
+    const countMap = new Map<string, number>();
+    (attendanceCounts || []).forEach((att: any) => {
+      countMap.set(att.session_id, (countMap.get(att.session_id) || 0) + 1);
+    });
+
+    // Combine results
+    return sessions.map(session => ({
+      ...session,
+      attendanceCount: countMap.get(session.id) || 0,
+    }));
+  },
+  ['sessions'],
+  { revalidate: 60, tags: ['sessions'] }
+);
+
+// Wrapper with auth check
+export async function getAllSessions() {
   const authenticated = await isAuthenticated();
   if (!authenticated) {
     redirect('/admin/login');
   }
-
-  // Get all sessions
-  const { data: sessions, error: sessionError } = await supabase
-    .from('Session')
-    .select('*')
-    .order('date', { ascending: false });
-
-  if (sessionError) throw sessionError;
-  if (!sessions || sessions.length === 0) return [];
-
-  // Get all attendance counts in one query
-  const sessionIds = sessions.map(s => s.id);
-  const { data: attendanceCounts, error: countError } = await supabase
-    .from('Attendance')
-    .select('session_id')
-    .in('session_id', sessionIds);
-
-  if (countError) throw countError;
-
-  // Count attendances per session
-  const countMap = new Map<string, number>();
-  (attendanceCounts || []).forEach((att: any) => {
-    countMap.set(att.session_id, (countMap.get(att.session_id) || 0) + 1);
-  });
-
-  // Combine results
-  return sessions.map(session => ({
-    ...session,
-    attendanceCount: countMap.get(session.id) || 0,
-  }));
-};
-
-export const getAllSessions = unstable_cache(
-  getAllSessionsUncached,
-  ['sessions'],
-  { revalidate: 60, tags: ['sessions'] }
-);
+  return getAllSessionsCached();
+}
 
 export async function getSessionById(id: string) {
   const authenticated = await isAuthenticated();

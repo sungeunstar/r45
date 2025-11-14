@@ -73,27 +73,32 @@ export async function deleteMember(id: string) {
   }
 }
 
-const getAllMembersUncached = async (groupFilter?: string) => {
-  let query = supabase
-    .from('Member')
-    .select('*')
-    .order('group', { ascending: true })
-    .order('name', { ascending: true });
+// Cached data fetching (no dynamic data sources)
+const getAllMembersCached = (groupFilter?: string) =>
+  unstable_cache(
+    async () => {
+      let query = supabase
+        .from('Member')
+        .select('*')
+        .order('group', { ascending: true })
+        .order('name', { ascending: true });
 
-  if (groupFilter) {
-    query = query.eq('group', groupFilter);
-  }
+      if (groupFilter) {
+        query = query.eq('group', groupFilter);
+      }
 
-  const { data, error } = await query;
-  if (error) throw error;
-  return data || [];
-};
+      const { data, error } = await query;
+      if (error) throw error;
+      return data || [];
+    },
+    ['members', groupFilter || 'all'],
+    { revalidate: 60, tags: ['members'] }
+  )();
 
-export const getAllMembers = unstable_cache(
-  getAllMembersUncached,
-  ['members'],
-  { revalidate: 60, tags: ['members'] }
-);
+// Public export - can be called without auth for some use cases
+export async function getAllMembers(groupFilter?: string) {
+  return getAllMembersCached(groupFilter);
+}
 
 export async function getMemberById(id: string) {
   const { data, error } = await supabase
