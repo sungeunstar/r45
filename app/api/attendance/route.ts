@@ -35,7 +35,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2. 기존 출석 기록 확인
+    // 2. phone_last4로 멤버 찾기 (자동 매칭)
+    const { data: allMembers } = await supabase
+      .from('Member')
+      .select('*')
+      .eq('is_active', true);
+
+    // 전화번호 뒷자리로 멤버 매칭 (하이픈 제거 후 비교)
+    let matchedMemberId: string | null = null;
+    if (allMembers && allMembers.length > 0) {
+      const matchedMembers = allMembers.filter((member: any) => {
+        const cleanPhone = member.phone.replace(/-/g, ''); // 하이픈 제거
+        return cleanPhone.slice(-4) === phoneLast4; // 뒷자리 4자리 비교
+      });
+
+      // 정확히 1명일 때만 자동 매칭
+      if (matchedMembers.length === 1) {
+        matchedMemberId = matchedMembers[0].id;
+      }
+    }
+
+    // 3. 기존 출석 기록 확인
     const { data: existingAttendance } = await supabase
       .from('Attendance')
       .select('*')
@@ -43,10 +63,11 @@ export async function POST(request: NextRequest) {
       .eq('phone_last4', phoneLast4)
       .single();
 
-    // 3. UPSERT (있으면 UPDATE, 없으면 INSERT)
+    // 4. UPSERT (있으면 UPDATE, 없으면 INSERT)
     const attendanceData = {
       session_id: session.id,
       phone_last4: phoneLast4,
+      member_id: matchedMemberId, // 자동 매칭된 멤버 ID
       status,
       reason: reason || null,
     };
@@ -56,6 +77,7 @@ export async function POST(request: NextRequest) {
       const { data, error } = await supabase
         .from('Attendance')
         .update({
+          member_id: matchedMemberId, // 멤버 ID도 업데이트
           status,
           reason: reason || null,
         })
