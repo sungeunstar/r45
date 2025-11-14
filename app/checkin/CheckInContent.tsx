@@ -18,6 +18,7 @@ export default function CheckInContent() {
   const [loading, setLoading] = useState(false);
   const [sessionName, setSessionName] = useState('');
 
+  // 세션 정보 로드
   useEffect(() => {
     if (sessionId) {
       getSessionInfo(sessionId).then((res) => {
@@ -28,7 +29,7 @@ export default function CheckInContent() {
     }
   }, [sessionId]);
 
-  // 핸드폰 번호 입력 핸들러
+  // 핸드폰 번호 입력 (숫자만 4자리)
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, '');
     if (value.length <= 4) {
@@ -36,31 +37,29 @@ export default function CheckInContent() {
     }
   };
 
-  // 다음 단계로
+  // Step 1 → Step 2
   const handlePhoneSubmit = () => {
     if (phoneLast4.length === 4) {
       setStep('status');
     }
   };
 
-  // 출석 체크 제출
+  // 최종 제출
   const handleSubmit = async () => {
     if (!status || !sessionId) return;
 
     setLoading(true);
-
     const result = await submitAttendance(
       sessionId,
       phoneLast4,
       status,
       status === 'absent' ? reason : undefined
     );
-
     setLoading(false);
 
     if (result.success) {
       setStep('complete');
-      // 1.2초 후 자동 종료 (선택사항)
+      // 1.2초 후 페이지 종료 (선택)
       // setTimeout(() => window.close(), 1200);
     } else {
       alert(result.error || '출석 체크에 실패했습니다');
@@ -139,7 +138,7 @@ export default function CheckInContent() {
         {/* Step 2: 참석/불참 선택 */}
         {step === 'status' && (
           <div className="space-y-6">
-            {/* 라디오 버튼 (Pill Style) */}
+            {/* Pill-style 라디오 버튼 */}
             <div className="flex gap-3">
               <button
                 onClick={() => setStatus('attend')}
@@ -163,7 +162,7 @@ export default function CheckInContent() {
               </button>
             </div>
 
-            {/* 불참 사유 입력 (슬라이드다운) */}
+            {/* 불참 사유 입력 (슬라이드다운 애니메이션) */}
             <div
               className={`transition-all duration-300 ease-in-out overflow-hidden ${
                 status === 'absent'
@@ -180,7 +179,7 @@ export default function CheckInContent() {
               />
             </div>
 
-            {/* 보내기 버튼 */}
+            {/* 보내기 버튼 (opacity transition) */}
             <button
               onClick={handleSubmit}
               disabled={!status || loading}
@@ -207,7 +206,7 @@ export default function CheckInContent() {
           </div>
         )}
 
-        {/* Step 3: 완료 */}
+        {/* Step 3: 완료 화면 */}
         {step === 'complete' && (
           <div className="text-center space-y-6 py-12">
             <div className="text-6xl">🙌</div>
