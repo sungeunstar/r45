@@ -90,6 +90,7 @@ export async function checkInAttendance(publicToken: string, phoneNumber: string
   }
 }
 
+// OPTIMIZED: Batch fetch members
 export async function exportAttendanceCSV(sessionId: string) {
   try {
     const { data: attendance, error } = await supabase
@@ -99,24 +100,35 @@ export async function exportAttendanceCSV(sessionId: string) {
       .order('checked_at', { ascending: true });
 
     if (error) throw error;
+    if (!attendance || attendance.length === 0) return '';
 
-    // Get member details for each attendance
-    const rows = await Promise.all(
-      (attendance || []).map(async (att: any) => {
-        const { data: member } = await supabase
-          .from('Member')
-          .select('*')
-          .eq('id', att.member_id)
-          .single();
+    // Get all unique member IDs
+    const memberIds = [...new Set(attendance.map((att: any) => att.member_id))];
 
-        return {
-          name: member?.name || 'Unknown',
-          group: member?.group || 'Unknown',
-          checkedAt: att.checked_at,
-          ip: att.ip || '',
-        };
-      })
-    );
+    // Fetch all members in one query
+    const { data: members, error: memberError } = await supabase
+      .from('Member')
+      .select('*')
+      .in('id', memberIds);
+
+    if (memberError) throw memberError;
+
+    // Create member map for quick lookup
+    const memberMap = new Map();
+    (members || []).forEach((member: any) => {
+      memberMap.set(member.id, member);
+    });
+
+    // Generate rows
+    const rows = attendance.map((att: any) => {
+      const member = memberMap.get(att.member_id);
+      return {
+        name: member?.name || 'Unknown',
+        group: member?.group || 'Unknown',
+        checkedAt: att.checked_at,
+        ip: att.ip || '',
+      };
+    });
 
     // Generate CSV
     const csvHeaders = ['Name', 'Group', 'Checked At', 'IP'];
