@@ -25,7 +25,10 @@ export async function createSession(name: string, note: string, date: string, me
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Session insert error:', JSON.stringify(error, null, 2));
+      throw error;
+    }
 
     // Add selected members to session
     if (memberIds.length > 0) {
@@ -38,15 +41,18 @@ export async function createSession(name: string, note: string, date: string, me
           }))
         );
 
-      if (memberError) throw memberError;
+      if (memberError) {
+        console.error('SessionMember insert error:', JSON.stringify(memberError, null, 2));
+        throw memberError;
+      }
     }
 
     revalidatePath('/admin/sessions');
     revalidateTag('sessions');
     return { success: true, sessionId: session.id };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Create session error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Failed to create session';
+    const errorMessage = error?.message || error?.msg || JSON.stringify(error) || 'Failed to create session';
     return { success: false, error: errorMessage };
   }
 }
