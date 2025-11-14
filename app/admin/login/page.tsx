@@ -30,7 +30,29 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-5">
       <div className="w-full max-w-[420px]">
-        <h1 className="text-2xl font-bold mb-10 text-center text-white">관리자 로그인</h1>
+        <div className="text-center mb-12">
+          <h1
+            className="font-bold text-white m-0"
+            style={{
+              fontSize: '28px',
+              letterSpacing: '-0.3px',
+              lineHeight: '1.3'
+            }}
+          >
+            Joyful Church Admin
+          </h1>
+          <p
+            className="font-normal"
+            style={{
+              marginTop: '10px',
+              fontSize: '15px',
+              color: 'rgba(255, 255, 255, 0.55)',
+              lineHeight: '1.5'
+            }}
+          >
+            Joyful Church 예배팀 세션 관리 페이지입니다.
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
