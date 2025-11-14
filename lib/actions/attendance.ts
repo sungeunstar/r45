@@ -1,81 +1,86 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { headers } from 'next/headers';
 
 export async function checkInAttendance(publicToken: string, phoneNumber: string) {
   try {
     // Get session by token
-    const session = await prisma.session.findUnique({
-      where: { publicToken },
-    });
+    const { data: session, error: sessionError } = await supabase
+      .from('Session')
+      .select('*')
+      .eq('public_token', publicToken)
+      .single();
 
-    if (!session) {
+    if (sessionError || !session) {
       return { success: false, error: '세션을 찾을 수 없습니다' };
     }
 
     // Find member by phone number
-    const member = await prisma.member.findFirst({
-      where: { phone: phoneNumber, isActive: true },
-    });
+    const { data: member, error: memberError } = await supabase
+      .from('Member')
+      .select('*')
+      .eq('phone', phoneNumber)
+      .eq('is_active', true)
+      .single();
 
-    if (!member) {
+    if (memberError || !member) {
       return { success: false, error: '등록되지 않은 전화번호입니다' };
     }
 
     // Check if member is invited to this session
-    const invited = await prisma.sessionMember.findUnique({
-      where: {
-        sessionId_memberId: {
-          sessionId: session.id,
-          memberId: member.id,
-        },
-      },
-    });
+    const { data: invited } = await supabase
+      .from('SessionMember')
+      .select('*')
+      .eq('session_id', session.id)
+      .eq('member_id', member.id)
+      .single();
 
     if (!invited) {
       return { success: false, error: '이 세션에 초대되지 않은 멤버입니다' };
     }
 
     // Check if already checked in
-    const existing = await prisma.attendance.findUnique({
-      where: {
-        sessionId_memberId: {
-          sessionId: session.id,
-          memberId: member.id,
-        },
-      },
-    });
+    const { data: existing } = await supabase
+      .from('Attendance')
+      .select('*')
+      .eq('session_id', session.id)
+      .eq('member_id', member.id)
+      .single();
 
     if (existing) {
       return {
         success: true,
         duplicate: true,
-        checkedAt: existing.checkedAt,
+        checkedAt: existing.checked_at,
         memberName: member.name,
         memberGroup: member.group,
       };
     }
 
     // Get IP and User Agent
-    const headersList = headers();
+    const headersList = await headers();
     const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || 'unknown';
     const userAgent = headersList.get('user-agent') || 'unknown';
 
     // Create attendance record
-    const attendance = await prisma.attendance.create({
-      data: {
-        sessionId: session.id,
-        memberId: member.id,
+    const { data: attendance, error: attendanceError } = await supabase
+      .from('Attendance')
+      .insert({
+        session_id: session.id,
+        member_id: member.id,
         ip,
-        userAgent,
-      },
-    });
+        user_agent: userAgent,
+      })
+      .select()
+      .single();
+
+    if (attendanceError) throw attendanceError;
 
     return {
       success: true,
       duplicate: false,
-      checkedAt: attendance.checkedAt,
+      checkedAt: attendance.checked_at,
       memberName: member.name,
       memberGroup: member.group,
     };
@@ -85,32 +90,50 @@ export async function checkInAttendance(publicToken: string, phoneNumber: string
   }
 }
 
+// OPTIMIZED: Batch fetch members
 export async function exportAttendanceCSV(sessionId: string) {
   try {
-    const attendance = await prisma.attendance.findMany({
-      where: { sessionId },
-      orderBy: { checkedAt: 'asc' },
+    const { data: attendance, error } = await supabase
+      .from('Attendance')
+      .select('*')
+      .eq('session_id', sessionId)
+      .order('checked_at', { ascending: true });
+
+    if (error) throw error;
+    if (!attendance || attendance.length === 0) return '';
+
+    // Get all unique member IDs
+    const memberIds = [...new Set(attendance.map((att: any) => att.member_id))];
+
+    // Fetch all members in one query
+    const { data: members, error: memberError } = await supabase
+      .from('Member')
+      .select('*')
+      .in('id', memberIds);
+
+    if (memberError) throw memberError;
+
+    // Create member map for quick lookup
+    const memberMap = new Map();
+    (members || []).forEach((member: any) => {
+      memberMap.set(member.id, member);
     });
 
-    // Get member details for each attendance
-    const rows = await Promise.all(
-      attendance.map(async (att: any) => {
-        const member = await prisma.member.findUnique({
-          where: { id: att.memberId },
-        });
-        return {
-          name: member?.name || 'Unknown',
-          group: member?.group || 'Unknown',
-          checkedAt: att.checkedAt.toISOString(),
-          ip: att.ip || '',
-        };
-      })
-    );
+    // Generate rows
+    const rows = attendance.map((att: any) => {
+      const member = memberMap.get(att.member_id);
+      return {
+        name: member?.name || 'Unknown',
+        group: member?.group || 'Unknown',
+        checkedAt: att.checked_at,
+        ip: att.ip || '',
+      };
+    });
 
     // Generate CSV
-    const headers = ['Name', 'Group', 'Checked At', 'IP'];
+    const csvHeaders = ['Name', 'Group', 'Checked At', 'IP'];
     const csvRows = [
-      headers.join(','),
+      csvHeaders.join(','),
       ...rows.map((row) =>
         [row.name, row.group, row.checkedAt, row.ip].join(',')
       ),

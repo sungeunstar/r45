@@ -1,10 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useTheme } from '@/hooks/useTheme';
 
 export default function CopyLinkButton({ url }: { url: string }) {
-  const theme = useTheme();
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
@@ -21,18 +19,15 @@ export default function CopyLinkButton({ url }: { url: string }) {
     <button
       onClick={handleCopy}
       className="h-11 px-4 rounded-xl text-sm font-semibold transition-all"
-      style={theme === 'dark' ? {
+      style={{
         background: '#353C49',
-        color: '#FFFFFF',
-      } : {
-        background: '#1A1E27',
         color: '#FFFFFF',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = theme === 'dark' ? '#2A303B' : '#151823';
+        e.currentTarget.style.background = '#2A303B';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = theme === 'dark' ? '#353C49' : '#1A1E27';
+        e.currentTarget.style.background = '#353C49';
       }}
     >
       {copied ? 'Copied!' : 'Copy Check-in Link'}

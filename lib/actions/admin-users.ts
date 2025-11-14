@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { isAuthenticated } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
@@ -14,12 +14,14 @@ export async function createAdminUser(email: string, password: string) {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    await prisma.adminUser.create({
-      data: {
+    const { error } = await supabase
+      .from('AdminUser')
+      .insert({
         email,
         password: hashedPassword,
-      },
-    });
+      });
+
+    if (error) throw error;
 
     revalidatePath('/admin/admins');
     return { success: true };
@@ -37,10 +39,12 @@ export async function updateAdminPassword(id: string, newPassword: string) {
 
   try {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await prisma.adminUser.update({
-      where: { id },
-      data: { password: hashedPassword },
-    });
+    const { error } = await supabase
+      .from('AdminUser')
+      .update({ password: hashedPassword })
+      .eq('id', id);
+
+    if (error) throw error;
 
     revalidatePath('/admin/admins');
     return { success: true };
@@ -57,9 +61,12 @@ export async function deleteAdminUser(id: string) {
   }
 
   try {
-    await prisma.adminUser.delete({
-      where: { id },
-    });
+    const { error } = await supabase
+      .from('AdminUser')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
 
     revalidatePath('/admin/admins');
     return { success: true };
@@ -75,12 +82,17 @@ export async function getAllAdmins() {
     redirect('/admin/login');
   }
 
-  return await prisma.adminUser.findMany({
-    select: {
-      id: true,
-      email: true,
-      createdAt: true,
-    },
-    orderBy: { createdAt: 'desc' },
-  });
+  const { data, error } = await supabase
+    .from('AdminUser')
+    .select('id, email, created_at')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+
+  // Convert snake_case to camelCase
+  return (data || []).map(admin => ({
+    id: admin.id,
+    email: admin.email,
+    createdAt: admin.created_at,
+  }));
 }

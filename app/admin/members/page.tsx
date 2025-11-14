@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { getAllMembers } from '@/lib/actions/members';
-import { useTheme } from '@/hooks/useTheme';
 
 type Member = {
   id: string;
@@ -14,7 +13,6 @@ type Member = {
 };
 
 export default function MembersPage() {
-  const theme = useTheme();
   const [members, setMembers] = useState<Member[]>([]);
   const [filter, setFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
@@ -40,24 +38,21 @@ export default function MembersPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>
+        <h2 className="text-lg font-semibold" style={{ color: '#FFFFFF' }}>
           Members
         </h2>
         <Link
           href="/admin/members/new"
           className="h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all"
-          style={theme === 'dark' ? {
+          style={{
             background: '#353C49',
-            color: '#FFFFFF',
-          } : {
-            background: '#1A1E27',
             color: '#FFFFFF',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? '#2A303B' : '#151823';
+            e.currentTarget.style.background = '#2A303B';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? '#353C49' : '#1A1E27';
+            e.currentTarget.style.background = '#353C49';
           }}
         >
           Add Member
@@ -65,7 +60,7 @@ export default function MembersPage() {
       </div>
 
       <div className="flex gap-2 mb-6" style={{
-        borderBottom: theme === 'dark' ? '1px solid rgba(255,255,255,0.12)' : '1px solid #e5e7eb'
+        borderBottom: '1px solid rgba(255,255,255,0.12)'
       }}>
         {groups.map((group) => (
           <button
@@ -73,16 +68,14 @@ export default function MembersPage() {
             onClick={() => setFilter(group)}
             className="pb-3 px-3 text-sm font-medium transition-colors relative"
             style={{
-              color: filter === group
-                ? (theme === 'dark' ? '#FFFFFF' : '#000000')
-                : (theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)')
+              color: filter === group ? '#FFFFFF' : 'rgba(255,255,255,0.5)'
             }}
           >
             {groupEmojis[group]} {group === 'all' ? 'All' : group}
             {filter === group && (
               <div
                 className="absolute bottom-0 left-0 right-0 h-0.5"
-                style={{ background: theme === 'dark' ? '#FFFFFF' : '#000000' }}
+                style={{ background: '#FFFFFF' }}
               />
             )}
           </button>
@@ -91,13 +84,13 @@ export default function MembersPage() {
 
       {loading ? (
         <div className="text-center py-12" style={{
-          color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)'
+          color: 'rgba(255,255,255,0.5)'
         }}>
           <p>Loading...</p>
         </div>
       ) : members.length === 0 ? (
         <div className="text-center py-12" style={{
-          color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)'
+          color: 'rgba(255,255,255,0.5)'
         }}>
           <p>No members found</p>
         </div>
@@ -110,13 +103,10 @@ export default function MembersPage() {
                 key={member.id}
                 href={`/admin/members/${member.id}/edit`}
                 className="rounded-lg px-5 py-4 transition-all"
-                style={theme === 'dark' ? {
+                style={{
                   background: 'rgba(255,255,255,0.06)',
                   backdropFilter: 'blur(12px)',
                   border: '1px solid rgba(255,255,255,0.12)',
-                } : {
-                  background: '#FFFFFF',
-                  border: '1px solid #e5e7eb',
                 }}
               >
                 <div className="flex items-center justify-between">
@@ -125,25 +115,22 @@ export default function MembersPage() {
                     <div>
                       <h3
                         className="font-semibold"
-                        style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}
+                        style={{ color: '#FFFFFF' }}
                       >
                         {member.name}
                       </h3>
                       <p
                         className="text-sm"
-                        style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)' }}
+                        style={{ color: 'rgba(255,255,255,0.6)' }}
                       >
                         {member.group}
                       </p>
                     </div>
                   </div>
                   {!member.isActive && (
-                    <span className="text-xs px-2 py-1 rounded" style={theme === 'dark' ? {
+                    <span className="text-xs px-2 py-1 rounded" style={{
                       background: 'rgba(255,255,255,0.1)',
                       color: 'rgba(255,255,255,0.5)'
-                    } : {
-                      background: 'rgba(0,0,0,0.05)',
-                      color: 'rgba(0,0,0,0.5)'
                     }}>
                       Inactive
                     </span>

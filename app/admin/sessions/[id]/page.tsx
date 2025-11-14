@@ -9,7 +9,6 @@ import {
   getAbsentMembers,
 } from '@/lib/actions/sessions';
 import { formatDate } from '@/lib/utils';
-import { useTheme } from '@/hooks/useTheme';
 import DeleteButton from './DeleteButton';
 import CopyLinkButton from './CopyLinkButton';
 import ExportCSVButton from './ExportCSVButton';
@@ -41,7 +40,6 @@ export default function SessionDetailPage({
   params: { id: string };
 }) {
   const router = useRouter();
-  const theme = useTheme();
   const [session, setSession] = useState<Session | null>(null);
   const [attendance, setAttendance] = useState<Attendance[]>([]);
   const [absentMembers, setAbsentMembers] = useState<Member[]>([]);
@@ -70,7 +68,7 @@ export default function SessionDetailPage({
   if (loading) {
     return (
       <div className="max-w-[420px] mx-auto min-h-screen flex items-center justify-center">
-        <p style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>로딩 중...</p>
+        <p style={{ color: 'rgba(255,255,255,0.7)' }}>로딩 중...</p>
       </div>
     );
   }
@@ -93,31 +91,28 @@ export default function SessionDetailPage({
         <Link
           href="/admin/sessions"
           className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center transition-colors"
-          style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}
+          style={{ color: 'rgba(255,255,255,0.7)' }}
           aria-label="뒤로가기"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </Link>
-        <h1 className="text-xl font-bold text-center" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>Session Detail</h1>
+        <h1 className="text-xl font-bold text-center" style={{ color: '#FFFFFF' }}>Session Detail</h1>
       </div>
 
       <div
         className="rounded-[18px] px-5 py-5 mb-6"
-        style={theme === 'dark' ? {
+        style={{
           background: 'rgba(255,255,255,0.06)',
           backdropFilter: 'blur(12px)',
           border: '1px solid rgba(255,255,255,0.12)',
-        } : {
-          background: '#FFFFFF',
-          border: '1px solid #e5e7eb',
         }}
       >
-        <h3 className="font-bold text-lg mb-2" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>{session.name}</h3>
-        <p className="text-sm mb-3" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)' }}>{formatDate(session.date)}</p>
+        <h3 className="font-bold text-lg mb-2" style={{ color: '#FFFFFF' }}>{session.name}</h3>
+        <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>{formatDate(session.date)}</p>
         {session.note && (
-          <p className="text-sm mb-5" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>{session.note}</p>
+          <p className="text-sm mb-5" style={{ color: 'rgba(255,255,255,0.7)' }}>{session.note}</p>
         )}
 
         <div className="flex flex-col gap-2">
@@ -126,14 +121,10 @@ export default function SessionDetailPage({
           <Link
             href={`/admin/sessions/${params.id}/edit`}
             className="h-11 px-4 rounded-xl text-sm font-semibold flex items-center justify-center transition-all"
-            style={theme === 'dark' ? {
+            style={{
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
               color: '#FFFFFF',
-            } : {
-              background: '#FFFFFF',
-              border: '1px solid #D4D7DF',
-              color: '#1A1E27',
             }}
           >
             Edit Session
@@ -143,11 +134,11 @@ export default function SessionDetailPage({
       </div>
 
       <div className="mb-6">
-        <h3 className="font-semibold mb-3" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>
+        <h3 className="font-semibold mb-3" style={{ color: '#FFFFFF' }}>
           Attended ({attendance.length})
         </h3>
         {attendance.length === 0 ? (
-          <p className="text-sm" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }}>No attendance yet</p>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>No attendance yet</p>
         ) : (
           <div className="flex flex-col gap-2">
             {attendance.map((att) => {
@@ -156,26 +147,23 @@ export default function SessionDetailPage({
                 <div
                   key={att.id}
                   className="rounded-xl px-4 py-3"
-                  style={theme === 'dark' ? {
+                  style={{
                     background: 'rgba(255,255,255,0.06)',
                     backdropFilter: 'blur(12px)',
                     border: '1px solid rgba(255,255,255,0.12)',
-                  } : {
-                    background: '#FFFFFF',
-                    border: '1px solid #e5e7eb',
                   }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-xl">{emoji}</span>
                       <div>
-                        <span className="font-semibold" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>{att.memberName}</span>
-                        <span className="text-sm ml-2" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)' }}>
+                        <span className="font-semibold" style={{ color: '#FFFFFF' }}>{att.memberName}</span>
+                        <span className="text-sm ml-2" style={{ color: 'rgba(255,255,255,0.6)' }}>
                           {att.memberGroup}
                         </span>
                       </div>
                     </div>
-                    <span className="text-xs" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }}>
+                    <span className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
                       {formatDate(att.checkedAt)}
                     </span>
                   </div>
@@ -187,11 +175,11 @@ export default function SessionDetailPage({
       </div>
 
       <div>
-        <h3 className="font-semibold mb-3" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>
+        <h3 className="font-semibold mb-3" style={{ color: '#FFFFFF' }}>
           Absent ({absentMembers.length})
         </h3>
         {absentMembers.length === 0 ? (
-          <p className="text-sm" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }}>Everyone attended!</p>
+          <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Everyone attended!</p>
         ) : (
           <div className="flex flex-col gap-2">
             {absentMembers.map((member) => {
@@ -200,19 +188,16 @@ export default function SessionDetailPage({
                 <div
                   key={member.id}
                   className="rounded-xl px-4 py-3"
-                  style={theme === 'dark' ? {
+                  style={{
                     background: 'rgba(255,255,255,0.06)',
                     backdropFilter: 'blur(12px)',
                     border: '1px solid rgba(255,255,255,0.12)',
-                  } : {
-                    background: '#FFFFFF',
-                    border: '1px solid #e5e7eb',
                   }}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{emoji}</span>
-                    <span className="font-semibold" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>{member.name}</span>
-                    <span className="text-sm" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)' }}>
+                    <span className="font-semibold" style={{ color: '#FFFFFF' }}>{member.name}</span>
+                    <span className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
                       {member.group}
                     </span>
                   </div>
