@@ -16,6 +16,7 @@ export default function CheckInForm({
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isUpdate, setIsUpdate] = useState(false);
 
   // 핸드폰 번호 입력 (숫자만 4자리)
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +56,7 @@ export default function CheckInForm({
       const result = await response.json();
 
       if (result.success) {
+        setIsUpdate(result.isUpdate || false);
         setStep('complete');
       } else {
         setError(result.error || '출석 체크에 실패했습니다');
@@ -243,10 +245,14 @@ export default function CheckInForm({
           >
             <div className="text-center mb-5">
               <h2 className="text-2xl font-bold mb-2 text-white">
-                {status === 'attend' ? '참석 완료!' : '불참 처리 완료'}
+                {isUpdate
+                  ? '출석 상태가 수정되었습니다'
+                  : status === 'attend' ? '참석 완료!' : '불참 처리 완료'}
               </h2>
               <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                {status === 'attend'
+                {isUpdate
+                  ? '출석 정보가 업데이트되었습니다'
+                  : status === 'attend'
                   ? '출석이 정상적으로 기록되었습니다'
                   : '불참 사유가 전달되었습니다'}
               </p>
