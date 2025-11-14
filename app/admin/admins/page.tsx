@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { getAllAdmins } from '@/lib/actions/admin-users';
 import { formatDate } from '@/lib/utils';
 import DeleteAdminButton from './DeleteAdminButton';
-import { useTheme } from '@/hooks/useTheme';
 
 type Admin = {
   id: string;
@@ -14,7 +13,6 @@ type Admin = {
 };
 
 export default function AdminUsersPage() {
-  const theme = useTheme();
   const [admins, setAdmins] = useState<Admin[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,24 +28,21 @@ export default function AdminUsersPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>
+        <h2 className="text-lg font-semibold" style={{ color: '#FFFFFF' }}>
           Admin Users
         </h2>
         <Link
           href="/admin/admins/new"
           className="h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all"
-          style={theme === 'dark' ? {
+          style={{
             background: '#353C49',
-            color: '#FFFFFF',
-          } : {
-            background: '#1A1E27',
             color: '#FFFFFF',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? '#2A303B' : '#151823';
+            e.currentTarget.style.background = '#2A303B';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? '#353C49' : '#1A1E27';
+            e.currentTarget.style.background = '#353C49';
           }}
         >
           Add Admin
@@ -56,13 +51,13 @@ export default function AdminUsersPage() {
 
       {loading ? (
         <div className="text-center py-12" style={{
-          color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)'
+          color: 'rgba(255,255,255,0.5)'
         }}>
           <p>Loading...</p>
         </div>
       ) : admins.length === 0 ? (
         <div className="text-center py-12" style={{
-          color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)'
+          color: 'rgba(255,255,255,0.5)'
         }}>
           <p>No admin users</p>
         </div>
@@ -72,22 +67,19 @@ export default function AdminUsersPage() {
             <div
               key={admin.id}
               className="rounded-lg px-5 py-4"
-              style={theme === 'dark' ? {
+              style={{
                 background: 'rgba(255,255,255,0.06)',
                 backdropFilter: 'blur(12px)',
                 border: '1px solid rgba(255,255,255,0.12)',
-              } : {
-                background: '#FFFFFF',
-                border: '1px solid #e5e7eb',
               }}
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="font-semibold" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>
+                  <h3 className="font-semibold" style={{ color: '#FFFFFF' }}>
                     {admin.email}
                   </h3>
                   <p className="text-sm" style={{
-                    color: theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
+                    color: 'rgba(255,255,255,0.6)'
                   }}>
                     Created {formatDate(admin.createdAt)}
                   </p>

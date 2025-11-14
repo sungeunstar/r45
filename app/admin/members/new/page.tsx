@@ -3,12 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createMember } from '@/lib/actions/members';
-import { useTheme } from '@/hooks/useTheme';
 import CustomSelect from '@/components/CustomSelect';
 
 export default function NewMemberPage() {
   const router = useRouter();
-  const theme = useTheme();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [group, setGroup] = useState('보컬');
@@ -56,19 +54,19 @@ export default function NewMemberPage() {
         <button
           onClick={() => router.back()}
           className="absolute left-0 w-10 h-10 flex items-center justify-center transition-colors"
-          style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}
+          style={{ color: 'rgba(255,255,255,0.7)' }}
           aria-label="뒤로가기"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <h1 className="text-xl font-bold" style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>멤버 등록</h1>
+        <h1 className="text-xl font-bold" style={{ color: '#FFFFFF' }}>멤버 등록</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 flex-1 pb-6">
         <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
+          <label htmlFor="name" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
             이름
           </label>
           <input
@@ -78,21 +76,17 @@ export default function NewMemberPage() {
             onChange={(e) => setName(e.target.value)}
             required
             className="h-[52px] px-4 rounded-xl transition-all focus:outline-none"
-            style={theme === 'dark' ? {
+            style={{
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
               color: '#FFFFFF',
-            } : {
-              background: '#FFFFFF',
-              border: '1px solid #D4D7DF',
-              color: '#1A1E27',
             }}
             placeholder="홍길동"
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="phone" className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
+          <label htmlFor="phone" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
             전화번호
           </label>
           <input
@@ -106,24 +100,20 @@ export default function NewMemberPage() {
             required
             maxLength={11}
             className="h-[52px] px-4 rounded-xl transition-all focus:outline-none"
-            style={theme === 'dark' ? {
+            style={{
               background: 'rgba(255,255,255,0.08)',
               border: '1px solid rgba(255,255,255,0.14)',
               color: '#FFFFFF',
-            } : {
-              background: '#FFFFFF',
-              border: '1px solid #D4D7DF',
-              color: '#1A1E27',
             }}
             placeholder="01012345678"
           />
-          <p className="text-xs" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }}>
+          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
             하이픈 없이 숫자만 11자리 입력해주세요
           </p>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="group" className="text-sm font-medium" style={{ color: theme === 'dark' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)' }}>
+          <label htmlFor="group" className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
             그룹
           </label>
           <CustomSelect
@@ -150,23 +140,17 @@ export default function NewMemberPage() {
           type="submit"
           disabled={loading}
           className="w-full rounded-xl font-semibold text-base transition-all disabled:opacity-40 mt-auto"
-          style={theme === 'dark' ? {
+          style={{
             background: '#353C49',
             color: '#FFFFFF',
             padding: '16px 24px',
             border: 'none',
-          } : {
-            background: '#1A1E27',
-            color: '#FFFFFF',
-            padding: '16px 24px',
-            border: 'none',
-            boxShadow: '0 8px 20px rgba(26, 30, 39, 0.18)',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? '#2A303B' : '#151823';
+            e.currentTarget.style.background = '#2A303B';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? '#353C49' : '#1A1E27';
+            e.currentTarget.style.background = '#353C49';
           }}
         >
           {loading ? '등록 중...' : '멤버 등록'}
