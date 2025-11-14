@@ -219,26 +219,32 @@ const getSessionAttendanceCached = (sessionId: string) =>
       if (error) throw error;
       if (!attendance || attendance.length === 0) return [];
 
-      // Get all unique member IDs
-      const memberIds = [...new Set(attendance.map((att: any) => att.member_id))];
+      // Get all unique member IDs (filter out null values)
+      const memberIds = [...new Set(
+        attendance
+          .map((att: any) => att.member_id)
+          .filter((id: any) => id != null)
+      )];
 
-      // Fetch all members in one query
-      const { data: members, error: memberError } = await supabase
-        .from('Member')
-        .select('*')
-        .in('id', memberIds);
+      // Fetch all members in one query (only if there are member IDs)
+      let memberMap = new Map();
+      if (memberIds.length > 0) {
+        const { data: members, error: memberError } = await supabase
+          .from('Member')
+          .select('*')
+          .in('id', memberIds);
 
-      if (memberError) throw memberError;
+        if (memberError) throw memberError;
 
-      // Create member map for quick lookup
-      const memberMap = new Map();
-      (members || []).forEach((member: any) => {
-        memberMap.set(member.id, member);
-      });
+        // Create member map for quick lookup
+        (members || []).forEach((member: any) => {
+          memberMap.set(member.id, member);
+        });
+      }
 
       // Combine results
       return attendance.map((att: any) => {
-        const member = memberMap.get(att.member_id);
+        const member = att.member_id ? memberMap.get(att.member_id) : null;
         return {
           ...att,
           memberName: member?.name || 'Unknown',
@@ -344,7 +350,12 @@ const getAbsentMembersCached = (sessionId: string) =>
       if (sessionMembers.length === 0) return [];
 
       const memberIds = sessionMembers.map((sm: any) => sm.member_id);
-      const attendedMemberIds = new Set(attendance.map((a: any) => a.member_id));
+      // Filter out null member_ids from attendance
+      const attendedMemberIds = new Set(
+        attendance
+          .map((a: any) => a.member_id)
+          .filter((id: any) => id != null)
+      );
 
       // Get absent member IDs
       const absentMemberIds = memberIds.filter(id => !attendedMemberIds.has(id));
