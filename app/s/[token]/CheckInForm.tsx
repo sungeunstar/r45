@@ -15,6 +15,7 @@ export default function CheckInForm({
   const [status, setStatus] = useState<Status>(null);
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(false);
+  const [validating, setValidating] = useState(false);
   const [error, setError] = useState('');
   const [isUpdate, setIsUpdate] = useState(false);
 
@@ -23,14 +24,39 @@ export default function CheckInForm({
     const value = e.target.value.replace(/\D/g, '');
     if (value.length <= 4) {
       setPhoneLast4(value);
+      // 입력 중에는 에러 메시지 지우기
+      if (error) setError('');
     }
   };
 
-  // Step 1 → Step 2
-  const handlePhoneSubmit = () => {
-    if (phoneLast4.length === 4) {
-      setStep('status');
-      setError('');
+  // Step 1 → Step 2 (전화번호 검증)
+  const handlePhoneSubmit = async () => {
+    if (phoneLast4.length !== 4) return;
+
+    setValidating(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/validate-phone', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phoneLast4 }),
+      });
+
+      const result = await response.json();
+
+      if (result.valid) {
+        // 유효한 번호면 다음 단계로
+        setStep('status');
+        setError('');
+      } else {
+        // 유효하지 않으면 에러 표시
+        setError(result.error || '등록되지 않은 번호입니다');
+      }
+    } catch (error) {
+      setError('번호 확인에 실패했습니다');
+    } finally {
+      setValidating(false);
     }
   };
 
@@ -110,13 +136,13 @@ export default function CheckInForm({
 
           <button
             onClick={handlePhoneSubmit}
-            disabled={phoneLast4.length !== 4}
+            disabled={phoneLast4.length !== 4 || validating}
             className="h-14 rounded-xl font-semibold text-base text-black transition-all disabled:opacity-40"
             style={{
               background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
             }}
           >
-            계속하기
+            {validating ? '확인 중...' : '계속하기'}
           </button>
         </div>
       )}
