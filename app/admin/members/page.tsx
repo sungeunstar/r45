@@ -43,16 +43,10 @@ export default function MembersPage() {
         </h2>
         <Link
           href="/admin/members/new"
-          className="h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all"
+          className="add-member-btn h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all"
           style={{
             background: '#353C49',
             color: '#FFFFFF',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#2A303B';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#353C49';
           }}
         >
           Add Member
@@ -102,7 +96,7 @@ export default function MembersPage() {
               <Link
                 key={member.id}
                 href={`/admin/members/${member.id}/edit`}
-                className="rounded-lg px-5 py-4 transition-all"
+                className="member-card rounded-lg px-5 py-4 transition-all"
                 style={{
                   background: 'rgba(255,255,255,0.06)',
                   backdropFilter: 'blur(12px)',
@@ -141,6 +135,15 @@ export default function MembersPage() {
           })}
         </div>
       )}
+
+      <style jsx>{`
+        .add-member-btn:hover {
+          background: #2A303B !important;
+        }
+        .member-card:hover {
+          background: rgba(255,255,255,0.08) !important;
+        }
+      `}</style>
     </div>
   );
 }

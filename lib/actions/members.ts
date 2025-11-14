@@ -2,7 +2,7 @@
 
 import { supabase } from '@/lib/supabase';
 import { isAuthenticated } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export async function createMember(name: string, phone: string, group: string) {
@@ -19,6 +19,7 @@ export async function createMember(name: string, phone: string, group: string) {
     if (error) throw error;
 
     revalidatePath('/admin/members');
+    revalidateTag('members');
     return { success: true };
   } catch (error) {
     console.error('Create member error:', error);
@@ -41,6 +42,7 @@ export async function updateMember(id: string, name: string, phone: string, grou
     if (error) throw error;
 
     revalidatePath('/admin/members');
+    revalidateTag('members');
     return { success: true };
   } catch (error) {
     console.error('Update member error:', error);
@@ -63,6 +65,7 @@ export async function deleteMember(id: string) {
     if (error) throw error;
 
     revalidatePath('/admin/members');
+    revalidateTag('members');
     return { success: true };
   } catch (error) {
     console.error('Delete member error:', error);
@@ -70,7 +73,7 @@ export async function deleteMember(id: string) {
   }
 }
 
-export async function getAllMembers(groupFilter?: string) {
+const getAllMembersUncached = async (groupFilter?: string) => {
   let query = supabase
     .from('Member')
     .select('*')
@@ -84,7 +87,13 @@ export async function getAllMembers(groupFilter?: string) {
   const { data, error } = await query;
   if (error) throw error;
   return data || [];
-}
+};
+
+export const getAllMembers = unstable_cache(
+  getAllMembersUncached,
+  ['members'],
+  { revalidate: 60, tags: ['members'] }
+);
 
 export async function getMemberById(id: string) {
   const { data, error } = await supabase

@@ -1,7 +1,4 @@
-'use client';
-
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
 import { getAllSessions } from '@/lib/actions/sessions';
 import { getAllMembers } from '@/lib/actions/members';
 import { formatDate } from '@/lib/utils';
@@ -14,23 +11,14 @@ type Session = {
   attendanceCount: number;
 };
 
-export default function SessionsPage() {
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [totalMembers, setTotalMembers] = useState(0);
-  const [loading, setLoading] = useState(true);
+export default async function SessionsPage() {
+  const [sessionsData, membersData] = await Promise.all([
+    getAllSessions(),
+    getAllMembers()
+  ]);
 
-  useEffect(() => {
-    async function loadData() {
-      const [sessionsData, membersData] = await Promise.all([
-        getAllSessions(),
-        getAllMembers()
-      ]);
-      setSessions(sessionsData);
-      setTotalMembers(membersData.filter((m: any) => m.isActive).length);
-      setLoading(false);
-    }
-    loadData();
-  }, []);
+  const sessions = sessionsData;
+  const totalMembers = membersData.filter((m: any) => m.isActive).length;
 
   return (
     <div>
@@ -40,29 +28,17 @@ export default function SessionsPage() {
         </h2>
         <Link
           href="/admin/sessions/new"
-          className="h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all"
+          className="create-session-btn h-9 px-4 rounded-lg text-sm font-medium flex items-center transition-all"
           style={{
             background: '#FFFFFF',
             color: '#0b0b0b',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#f5f5f5';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#FFFFFF';
           }}
         >
           Create Session
         </Link>
       </div>
 
-      {loading ? (
-        <div className="text-center py-12" style={{
-          color: 'rgba(255,255,255,0.5)'
-        }}>
-          <p>Loading...</p>
-        </div>
-      ) : sessions.length === 0 ? (
+      {sessions.length === 0 ? (
         <div className="text-center py-16">
           <div className="mb-4 text-5xl">📭</div>
           <h3 className="text-base font-semibold" style={{ color: '#FFFFFF' }}>
@@ -75,7 +51,7 @@ export default function SessionsPage() {
             <Link
               key={session.id}
               href={`/admin/sessions/${session.id}`}
-              className="rounded-lg px-5 py-4 transition-all"
+              className="session-card rounded-lg px-5 py-4 transition-all"
               style={{
                 background: 'rgba(255,255,255,0.06)',
                 backdropFilter: 'blur(12px)',
@@ -109,6 +85,15 @@ export default function SessionsPage() {
           ))}
         </div>
       )}
+
+      <style jsx>{`
+        .create-session-btn:hover {
+          background: #f5f5f5 !important;
+        }
+        .session-card:hover {
+          background: rgba(255,255,255,0.08) !important;
+        }
+      `}</style>
     </div>
   );
 }

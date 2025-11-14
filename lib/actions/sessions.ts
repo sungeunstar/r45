@@ -3,7 +3,7 @@
 import { supabase } from '@/lib/supabase';
 import { isAuthenticated } from '@/lib/auth';
 import { generateToken } from '@/lib/utils';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, unstable_cache, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export async function createSession(name: string, note: string, date: string, memberIds: string[]) {
@@ -42,6 +42,7 @@ export async function createSession(name: string, note: string, date: string, me
     }
 
     revalidatePath('/admin/sessions');
+    revalidateTag('sessions');
     return { success: true, sessionId: session.id };
   } catch (error) {
     console.error('Create session error:', error);
@@ -90,6 +91,7 @@ export async function updateSession(id: string, name: string, note: string, date
 
     revalidatePath('/admin/sessions');
     revalidatePath(`/admin/sessions/${id}`);
+    revalidateTag('sessions');
     return { success: true };
   } catch (error) {
     console.error('Update session error:', error);
@@ -113,6 +115,7 @@ export async function deleteSession(id: string) {
     if (error) throw error;
 
     revalidatePath('/admin/sessions');
+    revalidateTag('sessions');
     return { success: true };
   } catch (error) {
     console.error('Delete session error:', error);
@@ -121,7 +124,7 @@ export async function deleteSession(id: string) {
 }
 
 // OPTIMIZED: Use RPC to get attendance counts in single query
-export async function getAllSessions() {
+const getAllSessionsUncached = async () => {
   const authenticated = await isAuthenticated();
   if (!authenticated) {
     redirect('/admin/login');
@@ -156,7 +159,13 @@ export async function getAllSessions() {
     ...session,
     attendanceCount: countMap.get(session.id) || 0,
   }));
-}
+};
+
+export const getAllSessions = unstable_cache(
+  getAllSessionsUncached,
+  ['sessions'],
+  { revalidate: 60, tags: ['sessions'] }
+);
 
 export async function getSessionById(id: string) {
   const authenticated = await isAuthenticated();
@@ -290,13 +299,14 @@ export async function getAbsentMembers(sessionId: string) {
     redirect('/admin/login');
   }
 
-  // Get invited members for this session
-  const invitedMembers = await getSessionMembers(sessionId);
-
-  const { data: attendance } = await supabase
-    .from('Attendance')
-    .select('member_id')
-    .eq('session_id', sessionId);
+  // Parallel fetch: invited members and attendance
+  const [invitedMembers, { data: attendance }] = await Promise.all([
+    getSessionMembers(sessionId),
+    supabase
+      .from('Attendance')
+      .select('member_id')
+      .eq('session_id', sessionId)
+  ]);
 
   const attendedMemberIds = new Set((attendance || []).map((a: any) => a.member_id));
   return invitedMembers.filter((m) => !attendedMemberIds.has(m.id));

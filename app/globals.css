@@ -16,80 +16,38 @@ body {
 }
 
 /* 다크 모드 (기본값) */
-html[data-theme="dark"],
-html:not([data-theme]) {
+html {
   background: #0B0B0B;
   color: #FFFFFF;
 }
 
-/* 라이트 모드 - 원래의 화이트 배경 */
-html[data-theme="light"] {
-  background: #FFFFFF;
-}
-
-/* AdminNav 스타일 - 다크 모드 */
-html[data-theme="dark"] .admin-nav-border,
-html:not([data-theme]) .admin-nav-border {
+/* AdminNav 스타일 */
+.admin-nav-border {
   border-bottom: 1px solid rgba(255,255,255,0.12);
 }
 
-html[data-theme="dark"] .admin-nav-title,
-html:not([data-theme]) .admin-nav-title {
+.admin-nav-title {
   color: #FFFFFF;
 }
 
-html[data-theme="dark"] .admin-nav-logout,
-html:not([data-theme]) .admin-nav-logout {
+.admin-nav-logout {
   color: rgba(255,255,255,0.6);
 }
 
-html[data-theme="dark"] .admin-nav-logout:hover,
-html:not([data-theme]) .admin-nav-logout:hover {
+.admin-nav-logout:hover {
   color: rgba(255,255,255,0.9);
 }
 
-html[data-theme="dark"] .admin-nav-tab[data-active="true"],
-html:not([data-theme]) .admin-nav-tab[data-active="true"] {
+.admin-nav-tab[data-active="true"] {
   color: #FFFFFF;
 }
 
-html[data-theme="dark"] .admin-nav-tab[data-active="false"],
-html:not([data-theme]) .admin-nav-tab[data-active="false"] {
+.admin-nav-tab[data-active="false"] {
   color: rgba(255,255,255,0.5);
 }
 
-html[data-theme="dark"] .admin-nav-indicator,
-html:not([data-theme]) .admin-nav-indicator {
+.admin-nav-indicator {
   background: #FFFFFF;
-}
-
-/* AdminNav 스타일 - 라이트 모드 */
-html[data-theme="light"] .admin-nav-border {
-  border-bottom: 1px solid rgba(0,0,0,0.12);
-}
-
-html[data-theme="light"] .admin-nav-title {
-  color: #000000;
-}
-
-html[data-theme="light"] .admin-nav-logout {
-  color: rgba(0,0,0,0.6);
-}
-
-html[data-theme="light"] .admin-nav-logout:hover {
-  color: rgba(0,0,0,0.9);
-}
-
-html[data-theme="light"] .admin-nav-tab[data-active="true"] {
-  color: #000000;
-}
-
-html[data-theme="light"] .admin-nav-tab[data-active="false"] {
-  color: rgba(0,0,0,0.5);
-}
-
-html[data-theme="light"] .admin-nav-indicator {
-  background: #000000;
 }
 
 body {
@@ -111,17 +69,4 @@ button {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-/* 라이트 모드에서 다크 스타일 오버라이드 */
-html[data-theme="light"] .text-white {
-  color: #000000 !important;
-}
-
-html[data-theme="light"] [class*="text-white/"] {
-  color: rgba(0,0,0,0.7) !important;
-}
-
-html[data-theme="light"] .hover\:text-white:hover {
-  color: rgba(0,0,0,0.9) !important;
 }
