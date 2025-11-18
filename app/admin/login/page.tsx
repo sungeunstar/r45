@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { loginAdmin } from '@/lib/actions/auth';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,10 +20,10 @@ export default function LoginPage() {
     const result = await loginAdmin(email, password);
 
     if (result.success) {
-      router.push('/admin/sessions');
+      router.push('/admin');
       router.refresh();
     } else {
-      setError(result.error || 'Login failed');
+      setError(result.error || '로그인에 실패했습니다.');
       setLoading(false);
     }
   }
@@ -115,9 +116,30 @@ export default function LoginPage() {
               background: 'linear-gradient(180deg, #FFFFFF 0%, #DADADA 100%)',
             }}
           >
-            {loading ? 'Signing in...' : 'Sign in'}
+            {loading ? '로그인 중...' : '로그인'}
           </button>
         </form>
+
+        {/* 교회 등록 링크 */}
+        <div style={{ textAlign: 'center', marginTop: '24px' }}>
+          <p
+            style={{
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.6)',
+            }}
+          >
+            아직 계정이 없으신가요?{' '}
+            <Link
+              href="/register"
+              style={{
+                color: '#FFFFFF',
+                textDecoration: 'underline',
+              }}
+            >
+              교회 등록
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

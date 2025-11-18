@@ -3,14 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { getSessionById } from '@/lib/actions/sessions';
-
-type Session = {
-  id: string;
-  name: string;
-  note: string | null;
-  date: Date;
-  public_token: string;
-};
+import { Session } from '@/lib/supabase';
 
 export default function SessionSuccessPage() {
   const router = useRouter();

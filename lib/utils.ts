@@ -9,7 +9,7 @@ export function generateToken(length: number = 12): string {
 }
 
 // Format date for display
-export function formatDate(date: Date): string {
+export function formatDate(date: Date | string): string {
   return new Intl.DateTimeFormat('ko-KR', {
     year: 'numeric',
     month: '2-digit',
@@ -20,7 +20,7 @@ export function formatDate(date: Date): string {
 }
 
 // Format datetime-local input value
-export function toDatetimeLocalString(date: Date): string {
+export function toDatetimeLocalString(date: Date | string): string {
   const d = new Date(date);
   const offset = d.getTimezoneOffset();
   const adjustedDate = new Date(d.getTime() - offset * 60 * 1000);

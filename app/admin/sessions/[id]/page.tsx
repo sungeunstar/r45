@@ -79,7 +79,7 @@ export default async function SessionDetailPage({
         }}
       >
         <h3 className="font-bold text-lg mb-2" style={{ color: '#FFFFFF' }}>{session.name}</h3>
-        <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>{formatDate(session.date)}</p>
+        <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.6)' }}>{formatDate(new Date(session.date))}</p>
         {session.note && (
           <p className="text-sm mb-5" style={{ color: 'rgba(255,255,255,0.7)' }}>{session.note}</p>
         )}

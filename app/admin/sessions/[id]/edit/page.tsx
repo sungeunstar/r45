@@ -24,7 +24,7 @@ export default function EditSessionPage() {
       if (session) {
         setName(session.name);
         setNote(session.note || '');
-        setDate(toDatetimeLocalString(session.date));
+        setDate(toDatetimeLocalString(new Date(session.date)));
       }
 
       const members = await getSessionMembers(sessionId);

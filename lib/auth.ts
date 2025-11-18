@@ -4,6 +4,11 @@ import { cookies } from 'next/headers';
 export interface SessionData {
   userId: string;
   email: string;
+  userName: string;
+  churchId: string;
+  churchName: string;
+  churchSlug: string;
+  role: string;
   isLoggedIn: boolean;
 }
 
