@@ -92,39 +92,38 @@ export default function Calendar({ sessions, onSessionClick, onDateClick }: Cale
 
   return (
     <div
+      className="calendar-container"
       style={{
         background: 'rgba(255, 255, 255, 0.06)',
         borderRadius: '18px',
-        padding: '20px',
       }}
     >
       {/* 헤더 */}
       <div
+        className="calendar-header"
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '20px',
         }}
       >
         <button
           onClick={prevMonth}
+          className="calendar-nav-btn"
           style={{
             background: 'rgba(255, 255, 255, 0.1)',
             border: 'none',
             borderRadius: '8px',
-            padding: '8px 12px',
             color: '#FFFFFF',
             cursor: 'pointer',
-            fontSize: '14px',
           }}
         >
           &lt;
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <h2
+            className="calendar-title"
             style={{
-              fontSize: '18px',
               fontWeight: 'bold',
               color: '#FFFFFF',
               margin: 0,
@@ -134,14 +133,13 @@ export default function Calendar({ sessions, onSessionClick, onDateClick }: Cale
           </h2>
           <button
             onClick={goToToday}
+            className="calendar-today-btn"
             style={{
               background: 'rgba(255, 255, 255, 0.1)',
               border: 'none',
               borderRadius: '6px',
-              padding: '4px 8px',
               color: 'rgba(255, 255, 255, 0.7)',
               cursor: 'pointer',
-              fontSize: '12px',
             }}
           >
             오늘
@@ -149,14 +147,13 @@ export default function Calendar({ sessions, onSessionClick, onDateClick }: Cale
         </div>
         <button
           onClick={nextMonth}
+          className="calendar-nav-btn"
           style={{
             background: 'rgba(255, 255, 255, 0.1)',
             border: 'none',
             borderRadius: '8px',
-            padding: '8px 12px',
             color: '#FFFFFF',
             cursor: 'pointer',
-            fontSize: '14px',
           }}
         >
           &gt;
@@ -174,12 +171,11 @@ export default function Calendar({ sessions, onSessionClick, onDateClick }: Cale
         {dayNames.map((day, index) => (
           <div
             key={day}
+            className="calendar-day-header"
             style={{
               textAlign: 'center',
-              fontSize: '12px',
               fontWeight: '500',
               color: index === 0 ? 'rgba(255, 100, 100, 0.8)' : 'rgba(255, 255, 255, 0.5)',
-              padding: '8px 0',
             }}
           >
             {day}
@@ -203,14 +199,13 @@ export default function Calendar({ sessions, onSessionClick, onDateClick }: Cale
           return (
             <div
               key={index}
+              className="calendar-cell"
               onClick={() => {
                 if (onDateClick && cell.isCurrentMonth) {
                   onDateClick(cell.date);
                 }
               }}
               style={{
-                minHeight: '80px',
-                padding: '4px',
                 background: isToday(cell.date)
                   ? 'rgba(100, 150, 255, 0.2)'
                   : cell.isCurrentMonth
@@ -221,8 +216,8 @@ export default function Calendar({ sessions, onSessionClick, onDateClick }: Cale
               }}
             >
               <div
+                className="calendar-day-number"
                 style={{
-                  fontSize: '12px',
                   fontWeight: isToday(cell.date) ? 'bold' : 'normal',
                   color: !cell.isCurrentMonth
                     ? 'rgba(255, 255, 255, 0.3)'
@@ -239,6 +234,7 @@ export default function Calendar({ sessions, onSessionClick, onDateClick }: Cale
               {daySessions.slice(0, 2).map((session) => (
                 <div
                   key={session.id}
+                  className="calendar-session-item"
                   onClick={(e) => {
                     e.stopPropagation();
                     if (onSessionClick) {
@@ -246,8 +242,6 @@ export default function Calendar({ sessions, onSessionClick, onDateClick }: Cale
                     }
                   }}
                   style={{
-                    fontSize: '10px',
-                    padding: '2px 4px',
                     background: 'rgba(100, 150, 255, 0.3)',
                     borderRadius: '4px',
                     marginBottom: '2px',
@@ -264,8 +258,8 @@ export default function Calendar({ sessions, onSessionClick, onDateClick }: Cale
               ))}
               {daySessions.length > 2 && (
                 <div
+                  className="calendar-more-indicator"
                   style={{
-                    fontSize: '9px',
                     color: 'rgba(255, 255, 255, 0.5)',
                     textAlign: 'center',
                   }}

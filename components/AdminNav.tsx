@@ -4,17 +4,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { logoutAdmin } from '@/lib/actions/auth';
 
-interface AdminNavProps {
-  churchName?: string;
-}
-
-export default function AdminNav({ churchName }: AdminNavProps) {
+export default function AdminNav() {
   const pathname = usePathname();
 
+  // 일정 탭 제거 (현재 화면이 일정), 관리자 탭 제거
+  // 멤버 탭만 남김
   const tabs = [
-    { name: '일정', href: '/admin/sessions' },
     { name: '멤버', href: '/admin/members' },
-    { name: '관리자', href: '/admin/admins' },
   ];
 
   const isActive = (href: string) => pathname.startsWith(href);
@@ -23,7 +19,7 @@ export default function AdminNav({ churchName }: AdminNavProps) {
     <div className="mb-6 admin-nav-border">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-semibold admin-nav-title">
-          {churchName || 'Flowing Chat'}
+          Flowing Chat
         </h1>
         <form action={logoutAdmin}>
           <button

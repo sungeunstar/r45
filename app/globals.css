@@ -70,3 +70,118 @@ button {
     text-wrap: balance;
   }
 }
+
+/* 캘린더 반응형 스타일 */
+.calendar-container {
+  padding: 20px;
+}
+
+.calendar-header {
+  margin-bottom: 20px;
+}
+
+.calendar-title {
+  font-size: 18px;
+}
+
+.calendar-nav-btn {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.calendar-today-btn {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.calendar-day-header {
+  font-size: 12px;
+  padding: 8px 0;
+}
+
+.calendar-cell {
+  min-height: 80px;
+  padding: 4px;
+}
+
+.calendar-day-number {
+  font-size: 12px;
+}
+
+.calendar-session-item {
+  font-size: 10px;
+  padding: 2px 4px;
+}
+
+.calendar-more-indicator {
+  font-size: 9px;
+}
+
+/* 모바일 반응형 (768px 이하) */
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 12px;
+  }
+
+  .calendar-header {
+    margin-bottom: 12px;
+  }
+
+  .calendar-title {
+    font-size: 15px;
+  }
+
+  .calendar-nav-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .calendar-today-btn {
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+
+  .calendar-day-header {
+    font-size: 10px;
+    padding: 4px 0;
+  }
+
+  .calendar-cell {
+    min-height: 60px;
+    padding: 2px;
+  }
+
+  .calendar-day-number {
+    font-size: 10px;
+  }
+
+  .calendar-session-item {
+    font-size: 8px;
+    padding: 1px 2px;
+  }
+
+  .calendar-more-indicator {
+    font-size: 8px;
+  }
+}
+
+/* 더 작은 화면 (480px 이하) */
+@media (max-width: 480px) {
+  .calendar-container {
+    padding: 8px;
+  }
+
+  .calendar-cell {
+    min-height: 50px;
+  }
+
+  .calendar-day-number {
+    font-size: 9px;
+  }
+
+  .calendar-session-item {
+    font-size: 7px;
+    padding: 1px 2px;
+    border-radius: 2px;
+  }
+}
