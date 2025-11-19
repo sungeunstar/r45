@@ -4,21 +4,31 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { logoutAdmin } from '@/lib/actions/auth';
 
-export default function AdminNav() {
+interface AdminNavProps {
+  churchName?: string;
+  userName?: string;
+}
+
+export default function AdminNav({ churchName, userName }: AdminNavProps) {
   const pathname = usePathname();
 
-  // 일정 탭 제거 (현재 화면이 일정), 관리자 탭 제거
-  // 멤버 탭만 남김
   const tabs = [
+    { name: '일정', href: '/admin' },
     { name: '멤버', href: '/admin/members' },
   ];
 
-  const isActive = (href: string) => pathname.startsWith(href);
+  const isActive = (href: string) => {
+    if (href === '/admin') {
+      return pathname === '/admin';
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <div className="mb-6 admin-nav-border">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-semibold admin-nav-title">
+      {/* 상단: Flowing Chat + 로그아웃 */}
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="text-lg font-semibold admin-nav-title">
           Flowing Chat
         </h1>
         <form action={logoutAdmin}>
@@ -31,6 +41,21 @@ export default function AdminNav() {
         </form>
       </div>
 
+      {/* 교회이름 + 인사 */}
+      {churchName && (
+        <div className="mb-4">
+          <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#FFFFFF', margin: 0 }}>
+            {churchName}
+          </p>
+          {userName && (
+            <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.6)', margin: '4px 0 0' }}>
+              안녕하세요, {userName}님
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* 탭 네비게이션 */}
       <nav className="flex gap-6">
         {tabs.map((tab) => (
           <Link

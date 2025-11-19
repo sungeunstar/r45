@@ -40,36 +40,11 @@ export default async function AdminDashboard() {
       }}
     >
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-        {/* 헤더 */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '24px',
-          }}
-        >
-          <div>
-            <h1
-              style={{
-                fontSize: '24px',
-                fontWeight: 'bold',
-                color: '#FFFFFF',
-                margin: 0,
-              }}
-            >
-              {user.churchName}
-            </h1>
-            <p
-              style={{
-                fontSize: '14px',
-                color: 'rgba(255, 255, 255, 0.6)',
-                margin: '4px 0 0',
-              }}
-            >
-              안녕하세요, {user.userName}님
-            </p>
-          </div>
+        {/* 네비게이션 (Flowing Chat + 교회이름 + 인사 + 탭) */}
+        <AdminNav churchName={user.churchName} userName={user.userName} />
+
+        {/* 새 일정 버튼 */}
+        <div style={{ marginBottom: '24px', textAlign: 'right' }}>
           <Link
             href="/admin/sessions/new"
             style={{
@@ -86,9 +61,6 @@ export default async function AdminDashboard() {
             + 새 일정
           </Link>
         </div>
-
-        {/* 네비게이션 */}
-        <AdminNav />
 
         {/* 캘린더 */}
         <div style={{ marginBottom: '32px' }}>
