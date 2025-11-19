@@ -104,25 +104,14 @@ export async function registerChurch(
 // 로그인 (User + ChurchUser 기반)
 export async function loginAdmin(email: string, password: string) {
   try {
-    // User 테이블에서 먼저 조회
-    const { data: user, error: userError } = await supabase
-      .from('User')
+    // 먼저 기존 AdminUser에서 조회 (마이그레이션 전 호환성)
+    const { data: admin, error: adminError } = await supabase
+      .from('AdminUser')
       .select('*')
       .eq('email', email)
       .single();
 
-    // User 테이블에 없으면 기존 AdminUser에서 조회 (하위 호환성)
-    if (userError || !user) {
-      const { data: admin, error: adminError } = await supabase
-        .from('AdminUser')
-        .select('*')
-        .eq('email', email)
-        .single();
-
-      if (adminError || !admin) {
-        return { success: false, error: '이메일 또는 비밀번호가 올바르지 않습니다.' };
-      }
-
+    if (admin && !adminError) {
       const isValid = await bcrypt.compare(password, admin.password);
       if (!isValid) {
         return { success: false, error: '이메일 또는 비밀번호가 올바르지 않습니다.' };
@@ -141,6 +130,17 @@ export async function loginAdmin(email: string, password: string) {
       await session.save();
 
       return { success: true };
+    }
+
+    // AdminUser에 없으면 User 테이블에서 조회
+    const { data: user, error: userError } = await supabase
+      .from('User')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (userError || !user) {
+      return { success: false, error: '이메일 또는 비밀번호가 올바르지 않습니다.' };
     }
 
     // 비밀번호 확인

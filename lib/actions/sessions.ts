@@ -185,20 +185,27 @@ export async function getAllSessions() {
   const getCachedSessions = unstable_cache(
     async (cId: string) => {
       // Get all sessions for this church
-      const { data: sessions, error: sessionError } = await supabase
+      // 마이그레이션 전에는 church_id 컬럼이 없을 수 있으므로 폴백 처리
+      let sessions;
+      const { data, error: sessionError } = await supabase
         .from('Session')
         .select('*')
-        .eq('church_id', cId)
         .order('date', { ascending: false });
 
       if (sessionError) throw sessionError;
+
+      // church_id가 있는 경우만 필터링, 없으면 전체 반환
+      sessions = (data || []).filter((s: any) =>
+        !s.church_id || s.church_id === cId
+      );
+
       if (!sessions || sessions.length === 0) return [];
 
       // Get all attendance counts in one query
-      const sessionIds = sessions.map(s => s.id);
+      const sessionIds = sessions.map((s: any) => s.id);
       const { data: attendanceCounts, error: countError } = await supabase
         .from('Attendance')
-        .select('session_id, status')
+        .select('session_id')
         .in('session_id', sessionIds);
 
       if (countError) throw countError;
@@ -208,13 +215,12 @@ export async function getAllSessions() {
       (attendanceCounts || []).forEach((att: any) => {
         const current = countMap.get(att.session_id) || { total: 0, present: 0, absent: 0 };
         current.total++;
-        if (att.status === 'present') current.present++;
-        else if (att.status === 'absent') current.absent++;
+        current.present++;
         countMap.set(att.session_id, current);
       });
 
       // Combine results
-      return sessions.map(session => ({
+      return sessions.map((session: any) => ({
         ...session,
         attendanceCount: countMap.get(session.id)?.total || 0,
         presentCount: countMap.get(session.id)?.present || 0,
@@ -261,14 +267,20 @@ export async function getSessionsByMonth(churchId: string, year: number, month: 
 export async function getSessionById(id: string) {
   const churchId = await getCurrentChurchId();
 
+  // 마이그레이션 전에는 church_id 컬럼이 없을 수 있으므로 id만으로 조회
   const { data, error } = await supabase
     .from('Session')
     .select('*')
     .eq('id', id)
-    .eq('church_id', churchId)
     .single();
 
   if (error) return null;
+
+  // church_id가 있는 경우만 검증, 없으면 통과
+  if (data?.church_id && data.church_id !== churchId) {
+    return null;
+  }
+
   return data as Session;
 }
 
