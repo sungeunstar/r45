@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Joyful Church - R45 Worship Team',
-  description: 'Attendance check-in system for R45 Worship Team',
+  title: 'Flowing Chat - 교회 일정/출석 관리',
+  description: '교회 및 예배팀을 위한 일정 관리 및 출석 체크 서비스',
 };
 
 export default function RootLayout({

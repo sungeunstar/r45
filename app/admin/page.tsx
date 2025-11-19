@@ -88,7 +88,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* 네비게이션 */}
-        <AdminNav />
+        <AdminNav churchName={user.churchName} />
 
         {/* 캘린더 */}
         <CalendarWrapper sessions={sessions} />

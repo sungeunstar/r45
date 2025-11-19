@@ -60,7 +60,7 @@ export default function NewAdminPage() {
               border: '1px solid rgba(255,255,255,0.14)',
               color: '#FFFFFF',
             }}
-            placeholder="user@joyful.app"
+            placeholder="admin@church.com"
           />
         </div>
 

@@ -43,7 +43,7 @@ export default function LoginPage() {
               lineHeight: '1.3'
             }}
           >
-            Joyful Church Admin
+            Flowing Chat
           </h1>
           <p
             style={{
@@ -54,7 +54,7 @@ export default function LoginPage() {
               lineHeight: '1.5'
             }}
           >
-            Joyful Church 예배팀 세션 관리 페이지입니다.
+            교회 일정 및 출석 관리 서비스입니다.
           </p>
         </div>
 
@@ -74,7 +74,7 @@ export default function LoginPage() {
                 background: 'rgba(255,255,255,0.08)',
                 border: '1px solid rgba(255,255,255,0.14)',
               }}
-              placeholder="admin@joyful.app"
+              placeholder="admin@church.com"
             />
           </div>
 
